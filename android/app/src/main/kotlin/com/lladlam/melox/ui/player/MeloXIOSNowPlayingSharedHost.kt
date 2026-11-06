@@ -789,43 +789,11 @@ fun MeloXIOSNowPlayingSharedHost(
                                 onShowActions = { showActions = true },
                                 onShowQuality = { showQuality = true },
                             )
-                        } else MeloXIOSNowPlayingScene(
-                            state = state,
-                            page = page,
-                            transitionSourcePage = transitionSourcePage,
-                            onDismiss = onDismiss,
-                            onPageChanged = { destination ->
-                                showLandscapeSkyline = false
-                                if (destination != page) {
-                                    transitionSourcePage = page
-                                    page = destination
-                                    if (rememberPlayerPage) {
-                                        MeloXSettingsPreferences.setString(context, "playback_last_page", destination.name)
-                                    }
-                                }
-                            },
-                            onShowActions = {
-                                showQuality = false
-                                showActions = true
-                            },
-                            onShowQuality = {
-                                showActions = false
-                                showQuality = true
-                            },
-                            showLandscapeSkyline = showLandscapeSkyline,
-                            onShowLandscapeSkyline = { showLandscapeSkyline = true },
-                            onHideLandscapeSkyline = { showLandscapeSkyline = false },
-                            onLyricsInterfaceHiddenChange = { lyricsInterfaceHidden = it },
-                            grabberDragModifier = alternateGrabberDragModifier,
-                            lyricsActive = page == MeloXNowPlayingPage.Lyrics &&
-                                expansionProgress >= 0.98f &&
-                                !showLandscapeSkyline,
-                            // ★ 常驻重层（歌词/队列）的首帧组合推到展开动画落定之后，见上方 latch 注释。
-                            residentLayersReady = residentLayersReady,
-                            orientTransition = orientTransition,
-                            columnCenterProgress = columnCenterProgress,
-                            sharedTransitionScope = sharedTransitionScope,
-                        )
+                        } else MeloXMaterialNowPlaying(
+                state = state,
+                onDismiss = onDismiss,
+                onOpenActions = { showActions = true },
+            )
                     }
                 }
 

@@ -4,6 +4,9 @@
 
 ## 未发布
 
+- 播放界面改按 AOSP / Material 3 基准重构：迷你播放条改为 MD3 扁平条（封面、标题/歌手、播放/下一首、底部细进度线），全屏播放页改为 MD3 播放器版式（大封面、标题/歌手、**波浪线进度条**、随机/上一首/播放暂停/下一首/循环、右上角更多），移除 iOS 玻璃与共享元素变形。
+- 新增 `.github/copilot-instructions.md`：固化「前端以 AOSP/Material 3 播放器为唯一基准」「每次改动后跑 `scripts/adb-verify.ps1`」「只改本 fork、不动上游」等长期约定。
+
 - 全站 Material3 化：页面与卡片背景统一走 MD3 容器色（`surfaceContainerLow` / `surfaceContainerHigh`），设置条目改用 MD3 `ListItem` + Material 图标，设置与搜索的搜索框统一为 MD3 `OutlinedTextField`（圆角 28dp、Material 搜索/清除/麦克风图标），强调色由硬编码红/蓝改为 `colorScheme.primary`（跟随莫奈取色）。
 - 外观页删除「液态玻璃」「深色模式保持暗色底栏」等玻璃相关选项，新增「取色方式」：动态取色（莫奈）/ MeloX 品牌配色。
 - 首页快捷入口卡片、搜索分类卡片改为 MD3 卡片（`surfaceContainerHigh` + `primaryContainer`/`secondaryContainer`）；搜索页推荐卡片上限 6 张、浏览分类上限 8 张。
