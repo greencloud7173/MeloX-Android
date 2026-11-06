@@ -237,14 +237,14 @@ internal fun WavyProgressBar(
     val phase by transition.animateFloat(
         initialValue = 0f,
         targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(durationMillis = 1600, easing = LinearEasing)),
+        animationSpec = infiniteRepeatable(tween(durationMillis = 2800, easing = LinearEasing)),
         label = "wavy-phase",
     )
     val wavePhase = if (animated) phase else 0f
 
     Canvas(
         modifier = modifier
-            .height(36.dp)
+            .height(40.dp)
             .pointerInput(durationMs) {
                 detectTapGestures { offset ->
                     if (durationMs > 0L && size.width > 0) {
@@ -256,27 +256,39 @@ internal fun WavyProgressBar(
     ) {
         val centerY = size.height / 2f
         val strokeWidth = 3.dp.toPx()
-        val amplitude = 5.dp.toPx()
-        val wavelength = 26.dp.toPx()
+        val amplitude = 6.dp.toPx()
+        val wavelength = 46.dp.toPx()
+        val playheadHalfHeight = 12.dp.toPx()
+        val playheadWidth = 4.dp.toPx()
 
+        val activeWidth = size.width * progress
+
+        // Unplayed part: a plain straight line.
         drawLine(
             color = track,
-            start = Offset(0f, centerY),
+            start = Offset(activeWidth, centerY),
             end = Offset(size.width, centerY),
             strokeWidth = strokeWidth,
             cap = StrokeCap.Round,
         )
 
-        val activeWidth = size.width * progress
-        if (activeWidth <= 0f) return@Canvas
+        if (activeWidth <= 0f) {
+            drawLine(
+                color = primary,
+                start = Offset(0f, centerY - playheadHalfHeight),
+                end = Offset(0f, centerY + playheadHalfHeight),
+                strokeWidth = playheadWidth,
+                cap = StrokeCap.Round,
+            )
+            return@Canvas
+        }
 
+        // Played part: a full wave, constant amplitude from the first pixel.
         val path = Path()
         var x = 0f
         var first = true
         while (x <= activeWidth) {
-            // Fade the wave in over the first wavelength so it leaves the track smoothly.
-            val fade = (x / wavelength).coerceIn(0f, 1f)
-            val y = centerY + sin((x / wavelength + wavePhase) * 2f * PI.toFloat()) * amplitude * fade
+            val y = centerY + sin((x / wavelength + wavePhase) * 2f * PI.toFloat()) * amplitude
             if (first) {
                 path.moveTo(x, y)
                 first = false
@@ -285,12 +297,22 @@ internal fun WavyProgressBar(
             }
             x += 2f
         }
+        val tailY = centerY + sin((activeWidth / wavelength + wavePhase) * 2f * PI.toFloat()) * amplitude
+        path.lineTo(activeWidth, tailY)
         drawPath(
             path = path,
             color = primary,
             style = Stroke(width = strokeWidth, cap = StrokeCap.Round),
         )
-        drawCircle(color = primary, radius = strokeWidth * 1.6f, center = Offset(activeWidth, centerY))
+
+        // Boundary between played and unplayed: a slightly taller vertical bar.
+        drawLine(
+            color = primary,
+            start = Offset(activeWidth, centerY - playheadHalfHeight),
+            end = Offset(activeWidth, centerY + playheadHalfHeight),
+            strokeWidth = playheadWidth,
+            cap = StrokeCap.Round,
+        )
     }
 }
 

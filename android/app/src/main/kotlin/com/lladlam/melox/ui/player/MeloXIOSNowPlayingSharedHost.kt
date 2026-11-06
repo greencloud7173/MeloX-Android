@@ -802,29 +802,9 @@ fun MeloXIOSNowPlayingSharedHost(
 
         // Keep the artwork outside the player surface's clip and stacking
         // layer so the shared flight remains above the expanding backdrop.
-        if (MeloXSettingsRuntime.playerShell != MeloXPlayerShell.Classic) {
-                SharedArtworkDestination(
-                    state = state,
-                    page = page,
-                    onArtworkTap = {
-                        transitionSourcePage = page
-                        page = if (page == MeloXNowPlayingPage.Artwork) MeloXNowPlayingPage.Lyrics else MeloXNowPlayingPage.Artwork
-                        if (rememberPlayerPage) {
-                            MeloXSettingsPreferences.setString(context, "playback_last_page", page.name)
-                        }
-                    },
-                    expansionProgress = expansionProgress,
-                    hidden = showLandscapeSkyline,
-                    // ⚠ 只在「播放页已完全展开（不在转场/收起途中）」才接管封面手势。
-                    gesturesEnabled = !transitionInFlight && !showLandscapeSkyline,
-                    orientTransition = orientTransition,
-                    columnCenterProgress = columnCenterProgress,
-                    sharedTransitionScope = sharedTransitionScope,
-                    animatedVisibilityScope = animatedVisibilityScope,
-                    closingIntent = closingIntent,
-                )
-        }
-
+        // The Material player draws its own artwork, so the shared host no longer
+        // keeps a second persistent artwork layer here (that produced a doubled
+        // cover behind the new now-playing screen).
         CompositionLocalProvider(LocalMeloXBackdrop provides actionsBackdrop) {
             MeloXNowPlayingActionsSheet(
                 state = state,
