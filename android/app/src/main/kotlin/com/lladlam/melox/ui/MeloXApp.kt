@@ -51,9 +51,29 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Cloud
+import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.Explore
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.LibraryMusic
+import androidx.compose.material.icons.filled.Podcasts
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Cloud
+import androidx.compose.material.icons.outlined.Download
+import androidx.compose.material.icons.outlined.Explore
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.LibraryMusic
+import androidx.compose.material.icons.outlined.Podcasts
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.runtime.Composable
@@ -84,9 +104,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
@@ -167,12 +185,7 @@ import com.lladlam.melox.ui.animation.meloXPageExit
 import com.lladlam.melox.ui.animation.sprungFrac
 import com.lladlam.melox.ui.controls.BOTTOM_GLASS_SURFACE_ALPHA
 import com.lladlam.melox.ui.controls.bottomGlassFallbackColor
-import com.lladlam.melox.ui.controls.bottomGlassSurfaceColor
-import com.lladlam.melox.ui.controls.bottomLiquidGlassTint
 import com.lladlam.melox.ui.controls.finiteOrZero
-import com.lladlam.melox.ui.controls.meloXBottomBarSurface
-import com.lladlam.melox.ui.controls.meloXChromeSurface
-import com.lladlam.melox.ui.controls.meloXTabIndicator
 import com.lladlam.melox.ui.controls.meloXBackdrop
 import com.lladlam.melox.ui.controls.publicdemo.PublicDampedDragAnimation
 import com.lladlam.melox.ui.controls.publicdemo.PublicInteractiveHighlight
@@ -181,7 +194,6 @@ import com.lladlam.melox.ui.layout.MeloXDetailPageOwner
 import com.lladlam.melox.ui.layout.MeloXDetailPaneState
 import com.lladlam.melox.ui.layout.MeloXListDetailLayout
 import com.lladlam.melox.ui.layout.MeloXPositionedChrome
-import com.lladlam.melox.ui.settings.meloXChromeScrollCoupled
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.animation.animateContentSize
@@ -292,18 +304,9 @@ fun MeloXApp(
     fun launchNeteaseLogin(returnTab: AppTab) {
         detailPaneState.openLogin(hostContext) { selectedTab = returnTab }
     }
-    var tabBarMinimized by rememberSaveable { mutableStateOf(false) }
-    var scrollAccumulator by remember { mutableFloatStateOf(0f) }
     val haptics = LocalHapticFeedback.current
-    // 底栏 tab / 搜索键 / 收缩态展开：选中类触感（轻 tick）。
+    // 底栏 tab 选中类触感（轻 tick）。
     val tabHaptic = meloXHaptic()
-    LaunchedEffect(tabBarMinimized) {
-        if (com.lladlam.melox.ui.settings.MeloXSettingsRuntime.hapticFeedbackEnabled)
-            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-    }
-    LaunchedEffect(MeloXSettingsRuntime.disableAutomaticTabBarShrink) {
-        if (MeloXSettingsRuntime.disableAutomaticTabBarShrink) tabBarMinimized = false
-    }
     var libraryModalVisible by remember { mutableStateOf(false) }
     var onboardingLoginRequested by rememberSaveable { mutableStateOf(false) }
     var onboardingPage by rememberSaveable {
@@ -336,7 +339,6 @@ fun MeloXApp(
         val persistedSource = MusicProviderSelectionStore.selectedSource(context)
         if (persistedSource != selectedSource) {
             selectedSource = persistedSource
-            tabBarMinimized = false
             libraryModalVisible = false
             heartModeLaunchAttempted = false
         }
@@ -557,50 +559,6 @@ fun MeloXApp(
     }
 
     val currentListDetailMode by rememberUpdatedState(listDetailMode)
-    val chromeConfiguration = "$listDetailMode:${MeloXSettingsRuntime.splitNavigationPosition.name}:" +
-        "${MeloXSettingsRuntime.splitMiniPlayerPosition.name}:${MeloXSettingsRuntime.disableAutomaticTabBarShrink}"
-    var previousChromeConfiguration by rememberSaveable { mutableStateOf(chromeConfiguration) }
-    LaunchedEffect(chromeConfiguration) {
-        if (previousChromeConfiguration != chromeConfiguration) {
-            tabBarMinimized = false
-            scrollAccumulator = 0f
-        }
-        previousChromeConfiguration = chromeConfiguration
-    }
-    val tabBarMinimizeConnection = remember {
-        object : NestedScrollConnection {
-            override fun onPreScroll(
-                available: Offset,
-                source: NestedScrollSource,
-            ): Offset {
-                if (source != NestedScrollSource.UserInput) return Offset.Zero
-                if (MeloXSettingsRuntime.disableAutomaticTabBarShrink || !meloXChromeScrollCoupled(
-                        currentListDetailMode, MeloXSettingsRuntime.splitNavigationPosition, MeloXSettingsRuntime.splitMiniPlayerPosition,
-                    )) {
-                    tabBarMinimized = false
-                    scrollAccumulator = 0f
-                    return Offset.Zero
-                }
-
-                if (available.y < 0f) {
-                    if (scrollAccumulator > 0f) scrollAccumulator = 0f
-                    scrollAccumulator += available.y
-                    if (scrollAccumulator <= -18f) {
-                        tabBarMinimized = true
-                        scrollAccumulator = 0f
-                    }
-                } else if (available.y > 0f) {
-                    if (scrollAccumulator < 0f) scrollAccumulator = 0f
-                    scrollAccumulator += available.y
-                    if (scrollAccumulator >= 18f) {
-                        tabBarMinimized = false
-                        scrollAccumulator = 0f
-                    }
-                }
-                return Offset.Zero
-            }
-        }
-    }
 
     LaunchedEffect(openNowPlayingRequest, playbackState.hasMedia) {
         if (openNowPlayingRequest > 0 && playbackState.hasMedia) {
@@ -673,10 +631,6 @@ fun MeloXApp(
 
     var previousSelectedTab by rememberSaveable { mutableStateOf(selectedTab) }
     LaunchedEffect(selectedTab) {
-        if (previousSelectedTab != selectedTab) {
-            tabBarMinimized = false
-            scrollAccumulator = 0f
-        }
         previousSelectedTab = selectedTab
         if (selectedTab != AppTab.Library) libraryModalVisible = false
         if (MeloXSettingsRuntime.rememberLastTab) {
@@ -920,7 +874,7 @@ fun MeloXApp(
                         state = detailPaneState,
                         session = neteaseSession,
                         hasMiniPlayer = playbackState.hasMedia,
-                        primaryModifier = Modifier.nestedScroll(tabBarMinimizeConnection),
+                    primaryModifier = Modifier,
                         onSourceSelected = { source ->
                             selectedSource = source
                             MusicProviderSelectionStore.setSelectedSource(context, source)
@@ -960,7 +914,6 @@ fun MeloXApp(
                             // Any non-home root page returns to the default launch
                             // page first. System back from the search page or any
                             // other tab no longer exits the app directly.
-                            tabBarMinimized = false
                             selectedTab = AppTab.Home
                             return@BackHandler
                         }
@@ -985,7 +938,6 @@ fun MeloXApp(
                              onSearchBackState = { searchTabAction = it },
                               onSearchExit = {
                                   detailPaneState.clearPages()
-                                 tabBarMinimized = false
                                  selectedTab = AppTab.Home
                              },
                              onOpenRecognition = { recognitionVisible = true },
@@ -1004,6 +956,7 @@ fun MeloXApp(
                                      }
                                  }
                             },
+                            onOpenSearch = { selectedTab = AppTab.Search },
                         )
                          AppTab.Explore -> if (selectedSourceId.builtIn == null) com.lladlam.melox.ui.provider.PluginSourcePage(selectedSourceId, "rankings") else if (selectedSource == MusicSource.Netease) MeloXExploreScreen() else ProviderExploreScreen(selectedSource)
                          AppTab.Library -> if (selectedSourceId.builtIn == null) com.lladlam.melox.ui.provider.PluginSourcePage(selectedSourceId, "library") else if (selectedSource == MusicSource.Netease) {
@@ -1030,7 +983,6 @@ fun MeloXApp(
                                  detailPaneState.clearPages()
                                  selectedSource = source
                                 MusicProviderSelectionStore.setSelectedSource(context, source)
-                                tabBarMinimized = false
                                 libraryModalVisible = false
                                 heartModeLaunchAttempted = false
                                 // Provider switching changes only the backing data source.
@@ -1108,24 +1060,18 @@ fun MeloXApp(
                     selectedTab = selectedTab,
                     source = selectedSource,
                     onSelect = { tab ->
-                        // ★ tab 点击触感（2026-10-06）：原先是 `meloXSelectionHaptic`（SegmentTick，最轻），
-                        //   用户反馈太弱 → 先换 Confirm（中等）仍嫌弱 → 换 LongPress（最重可用类型），
-                        //   明确强感、与收起落定的落定拍同款力度。只在 tab 真正切换时响
-                        //   （维持展开态的重复点击不响、与 tabBarMinimized 变化的 LongPress 不叠加成双 buzz）。
+                        // ★ tab 点击触感：只在 tab 真正切换时响一记。
                         if (tab != selectedTab) tabHaptic(HapticFeedbackType.LongPress)
                         if (tab != selectedTab) {
                             detailPaneState.clearPages()
                             messagesVisible = false
                             recognitionVisible = false
                         }
-                        tabBarMinimized = false
                         selectedTab = tab
                     },
                     hasMedia = playbackState.hasMedia,
-                    minimized = tabBarMinimized,
                     visibleRootTabs = visibleRootTabs,
-                    split = listDetailMode,
-                    navigationModifier = Modifier.onGloballyPositioned { toneState.updateBounds(it) },
+                    navigationModifier = Modifier,
                     modifier = Modifier
                         .align(if (listDetailMode) Alignment.BottomStart else Alignment.BottomCenter)
                         .then(if (listDetailMode) Modifier.fillMaxSize() else Modifier.fillMaxWidth()),
@@ -1681,688 +1627,57 @@ private val ChromeCompactSize = 46.dp
  *   保留此墓碑仅为阻止后来者重新发明它。
  */
 
+/**
+ * Material3 bottom navigation for the root tabs.
+ *
+ * Opaque by design: the container uses the dynamic (Monet) `surfaceContainer`
+ * role, so the bar follows the wallpaper palette instead of sampling whatever
+ * scrolls behind it. The previous liquid dock -- horizontal swipe collapse,
+ * scroll-coupled shrink, droplet indicator and the detached search key -- is
+ * gone, so the bar always stays expanded. Search moved to the home top bar.
+ */
 @Composable
 private fun MeloXBottomChrome(
     selectedTab: AppTab,
     source: MusicSource,
     onSelect: (AppTab) -> Unit,
     hasMedia: Boolean,
-    minimized: Boolean,
     visibleRootTabs: List<AppTab>,
-    split: Boolean = false,
     navigationModifier: Modifier = Modifier,
     modifier: Modifier = Modifier,
     miniPlayer: @Composable (compactProgress: Float) -> Unit,
 ) {
-    val tabsBackdrop = rememberLayerBackdrop()
-    val dockScope = rememberCoroutineScope()
-    val coupled = meloXChromeScrollCoupled(split, MeloXSettingsRuntime.splitNavigationPosition, MeloXSettingsRuntime.splitMiniPlayerPosition)
-    val inlineMini = !split || (coupled && !MeloXSettingsRuntime.splitNavigationPosition.isSideRail)
-    val rawProgress by animateFloatAsState(
-        targetValue = if (minimized && coupled) 1f else 0f,
-        // 展开 / 收缩各用**一条完整弹簧**（方向不同、手感不同）：
-        //   · 展开 bounce 0.245 → ζ=0.755，过冲 2.68% → 外扩 6.02dp（左 2.01 / 右 4.01dp，
-        //     与搜索键的 7dp 缝留 3.00dp 视觉余量）—— 空间受限，所以收着弹、且**偏右**落；
-        //   · 收缩 bounce 0.300 → ζ=0.700，过冲 4.60% → 10.30dp —— 四周空出来了，放开弹。
-        // ⚠ 别让两个方向共用 spec：共用时保护邻居只剩「对展开方向事后压缩」一条路，
-        //   而压缩后的曲线不再是弹簧（阻尼包络仍是 0.30 的），手感与收缩方向不对等。
-        //   target 与 spec 在同一帧一起算 —— 方向就是 targetValue 本身。
-        animationSpec = if (minimized) BottomBarCollapseSpec else BottomBarExpandSpec,
-        label = "melox-tab-minimize-progress",
-    )
-
-    // ★ 底栏弹簧触感 —— **双拍节奏**（2026-10-06 优化）：
-    //   不改强度，改「表现形式」。单记 LongPress 太单调，改成两拍：
-    //     · 拍 1（按下瞬间，`Confirm` 中等）："啪"——确认已激活、开始运动；
-    //     · 拍 2（弹簧落定，「LongPress」最重）："咚"——重重落定。
-    //   两拍形成「激活 → 落定」的弹簧回弹节奏，交互反馈明显更立体。
-    //   弹簧 stiffness=250 ⇒ response≈0.4s，落定约在切换后 450~500ms。
-    //   延迟量 = 99% 落定时间 ≈ 6.2 / ω = 6.2 / √250 ≈ 392ms，取 450ms 留余量。
-    //   ⚠ 快速来回切换时：新一轮 `LaunchedEffect` 启动会把上一轮的 450ms 延迟取消，
-    //     故只有最终静止态的那一记落定会响，不会叠出双落定。
-    val springHapticEngage = rememberSpringThump(HapticFeedbackType.Confirm)
-    val springHapticLand = rememberSpringThump(HapticFeedbackType.LongPress)
-    LaunchedEffect(minimized) {
-        springHapticEngage()          // 拍 1：按下瞬间「啪」——激活
-        kotlinx.coroutines.delay(450L) // 等弹簧落定
-        springHapticLand()            // 拍 2：重重「咚」——落定
-    }
-    // 语义值（alpha / 图层门控 / 选中态判定）必须夹在 [0,1]，否则负 alpha 会炸。
-    val progress = rawProgress.coerceIn(0f, 1f)
-
-    // 几何值 = 弹簧本身（带符号限幅）。两侧对称、不过任何窗口 —— 详见 sprungFrac 注释：
-    // 旧的窗口 [0.20,1.00] 在展开方向把几何钉死在弹簧峰值速度处，随后空转 246ms。
-    val bounceFrac = sprungFrac(rawProgress)
-
-    val labelStage = smoothStep(progress, 0.00f, 0.32f)   // alpha 用，保持夹住
-    val dropStage = smoothStep(progress, 0.78f, 1.00f)    // 容器高度，不参与过冲
-
-    val navHeight = lerpDpBouncy(ChromeExpandedSize, ChromeCompactSize, bounceFrac)
-    // ⚠ f 的**负方向**才是「展开外扩」（f=0 是展开稳态、f=1 是收缩稳态）。
-    // 这里只夹下界：搜索键右对齐，若跟着外扩会吃掉与 nav 之间的固有间隙，
-    // 而它自身的外扩量只有 0.9dp、肉眼不可见 —— 整段间隙留给 nav 的过冲更划算。
-    val searchSize = lerpDpBouncy(ChromeExpandedSize, ChromeCompactSize, bounceFrac.coerceAtLeast(0f))
-    val mediaReveal by animateFloatAsState(
-        targetValue = if (hasMedia && inlineMini) 1f else 0f,
-        // 下方是 miniLift × mediaReveal 的纯乘子，不经过 lerpDp 的夹取，
-        // 所以过冲天然可见 —— 播放栏出现时会先"弹过"再落位。
-        animationSpec = spring(
-            dampingRatio = MeloXSprings.dampingRatio(MeloXSprings.MiniPlayerRevealBounce),
-            stiffness = MeloXSprings.MiniPlayerRevealStiffness,
-        ),
-        label = "melox-mini-player-reveal",
-    )
-    val expandedChromeHeight by animateDpAsState(
-        targetValue = if (hasMedia && inlineMini) 124.dp else 64.dp,
-        animationSpec = spring(dampingRatio = 0.9f, stiffness = 360f),
-        label = "melox-chrome-height",
-    )
-    val chromeHeight = lerpDp(expandedChromeHeight, 56.dp, dropStage)
-    val labelAlpha = 1f - labelStage
-    val expandedLayerAlpha = 1f - smoothStep(progress, 0.43f, 0.72f)
-    val compactLayerAlpha = smoothStep(progress, 0.52f, 0.82f)
-
-    MeloXPositionedChrome(
-        split = split,
-        hasMedia = hasMedia && !inlineMini,
-        coupledProgress = if (coupled) progress else 0f,
-        navigationPosition = MeloXSettingsRuntime.splitNavigationPosition,
-        miniPlayerPosition = MeloXSettingsRuntime.splitMiniPlayerPosition,
-        modifier = modifier.then(if (split) Modifier.stableNavigationBarsPadding() else Modifier),
-        miniPlayer = {
-            Box(Modifier.fillMaxWidth().padding(
-                horizontal = if (MeloXSettingsRuntime.splitMiniPlayerPosition.isSideRail) 4.dp else 12.dp,
-                vertical = 8.dp,
-            )) { miniPlayer(if (coupled) progress else 0f) }
-        },
-    ) {
-    if (split && MeloXSettingsRuntime.splitNavigationPosition.isSideRail) {
-        MeloXVerticalNavigation(selectedTab, source, visibleRootTabs, onSelect, navigationModifier, if (coupled) progress else 0f, hasMedia && coupled)
-    } else {
-    Column(
-        modifier = navigationModifier
-            .fillMaxWidth()
-            // ⚠ 用 ViewCompat 稳定取数，不用 `navigationBarsPadding()`：edge-to-edge 后
-            //   这条 Compose insets 链在本机读到 0，胶囊会直接压到系统手势条上（见
-            //   stableNavigationBarsPadding 的说明）。
-            .then(if (split) Modifier else Modifier.stableNavigationBarsPadding())
-            // Mei keeps the 64dp navigation capsule 8dp above the gesture
-            // inset, giving the dock the same breathing room as iOS.
-            .padding(bottom = 8.dp),
-    ) {
-        BoxWithConstraints(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(chromeHeight),
+    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+        if (hasMedia) miniPlayer(0f)
+        Surface(
+            modifier = Modifier.fillMaxWidth(),
+            color = MaterialTheme.colorScheme.surfaceContainer,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+            tonalElevation = 3.dp,
+            shadowElevation = 6.dp,
         ) {
-            // Issue #94: the transparent gaps between the dock, search button and
-            // mini player were click-through to the page underneath. Keep one
-            // blocker behind the controls so those gaps consume taps, while the
-            // controls (later siblings, drawn on top) keep their own handlers.
-            Box(
-                Modifier.matchParentSize().pointerInput(Unit) {
-                    detectTapGestures { }
-                },
-            )
-            val horizontalMargin = 12.dp
-            val compactSize = 48.dp
-            // nav 胶囊右缘 ↔ 搜索键左缘的固有间隙（展开态）。
-            // 官方截图实测 = **10px = 7.12dp**（rim 峰法：nav 右缘 472 → 搜索键左缘 483，
-            // 阈值 140~205 全区间稳定），取 7dp。旧值 12dp 是「先加大缝好让过冲有地方去」的临时口径。
-            // ⚠ 这个缝同时是展开方向弹簧的约束：它定出右缘可用外扩 = 7 − 3（视觉余量）= 4dp，
-            //   再按 NavExpandLeftShare(左1:右2) 反推出总外扩 6dp 与 BottomBarExpandBounce 0.245。
-            //   改这个值必须回头重算那个常数。
-            val searchGap = 7.dp
-            val compactGap = 8.dp
-            val expandedNavWidth =
-                maxWidth - horizontalMargin * 2 - searchGap - ChromeExpandedSize
-            // 宽度就是弹簧本身：lerpDpBouncy 不夹取，展开方向 f<0 会让胶囊长到
-            // 272 + 6.02 = 278.02dp —— **不需要按预算压缩、也不需要限幅**，因为展开那条
-            // 弹簧（BottomBarExpandBounce）本来就是照着这点余地定出来的。
-            val navWidth = lerpDpBouncy(expandedNavWidth, compactSize, bounceFrac)
-            // 外扩 = 胶囊变大，多出来的宽度往哪边落由 NavExpandLeftShare 决定：
-            // 现取 **左 1 : 右 2（偏右）** —— 右侧固有缝只有 7dp，那点余量必须花在
-            // 「朝搜索键弹过去」这个方向上；左侧是 12dp 屏幕边距、没有邻居，让出 2dp 很安全。
-            // 代价：nav 中心在峰值轻微右漂 1dp（148 → 149），这是「右边弹得更多」的必然结果，
-            // 不是 bug —— 想消除就只能回到 1/2 等分，而那正是被否掉的「对称」。
-            // 收缩方向 f>0 宽度不超稳态，coerceAtLeast(0.dp) 让越界量归零 → 退回纯边距，
-            // 也就是收缩天然是**左锚定**（左缘恒 12dp、右缘 284 → 60dp）。
-            // 旧的「先喂右边、余量给左边」+「等比压缩」两层都被这一行替掉了。
-            val navOffsetX = horizontalMargin -
-                (navWidth - expandedNavWidth).coerceAtLeast(0.dp) * NavExpandLeftShare
-            val navShape = Capsule()
-            val primaryTabs = visibleRootTabs.map { it to it.rootGlyph() }
-
-            val desiredCompactMiniVisibleWidth =
-                (maxWidth - horizontalMargin * 2 - compactSize * 2 - compactGap * 2)
-                    .coerceAtLeast(80.dp)
-            val compactMiniWrapperWidth = desiredCompactMiniVisibleWidth
-            val compactMiniWrapperX = horizontalMargin + compactSize + compactGap
-            val miniWrapperWidth = lerpDpBouncy(maxWidth - horizontalMargin * 2, compactMiniWrapperWidth, bounceFrac)
-            val miniWrapperX = lerpDpBouncy(horizontalMargin, compactMiniWrapperX, bounceFrac)
-            val miniLift = lerpDpBouncy(66.dp, 0.dp, bounceFrac) * mediaReveal
-            // 收缩态下播放栏需与两侧底栏按钮/搜索键共中心线。
-            // 实测播放栏整体比按钮高 1dp（top/bottom 各差 4px），
-            // 这里随收缩进度补一个 1dp 下移，把两者垂直中心压平。
-            val miniCenterAlignNudge = lerpDpBouncy(0.dp, 1.dp, bounceFrac) * mediaReveal
-
-            if (hasMedia && inlineMini) {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .offset(
-                            x = miniWrapperX,
-                            y = -miniLift + miniCenterAlignNudge,
-                        )
-                        .width(miniWrapperWidth),
-                ) {
-                    miniPlayer(progress)
-                }
-            }
-
-            // ════════════════════════════════════════════════════════════════════════
-            //  一比一复刻 BiliNext `LiquidGlassTabsBar.kt`（2026-09-25 用户指令）
-            //
-            //  权威源：D:/bilinext/app/src/main/java/com/android/bilinext/ui/
-            //          components/LiquidGlassTabsBar.kt   （Apache-2.0 → GPL-3.0 允许）
-            //
-            //  BiliNext 三层结构（原值，**不再自创**）：
-            //    L1 可见面板   : height = maxHeight(= navHeight)
-            //                    + padding(horizontal = 10dp)
-            //                    + vibrancy + blur(8dp) + lens(24dp·aspectScale, 24dp)
-            //                    + layerBlock { scaleX = 1; scaleY = 1 }   ← 不随按压缩放
-            //                    + Highlight(0.55·2·rim) / InnerShadow / Shadow
-            //                    + onDrawSurface = drawRect(containerColor)
-            //    L2 隐形捕获层 : height = DropletHeight = **navHeight − 8dp**
-            //                    + padding(horizontal = 10dp)
-            //                    + 同一套 vibrancy/blur/lens 但 **H、A 都 ×p**
-            //                    + highlight ×p；**无 shadow / innerShadow**
-            //                    + onDrawSurface = drawRect(containerColor)
-            //                    + 内含**同一份 tab 内容**（图标用 accent 色染）
-            //    L3 水珠       : height = DropletHeight（**与 L2 等高**）
-            //                    width  = tabWidth × 1.15 + 2dp
-            //                    + lens(8.4dp·p, 11.8dp·p, chromatic)   // 10/14 × 47/56
-            //                    + Highlight/Shadow/InnerShadow(8dp·p) 全部 ×p
-            //                    + layerBlock { scaleX = damped.scaleX; … 速度修正 }
-            //                      ← **挂 dampedDragAnimation.modifier ⇒ 缩放真的生效**
-            //                    + onDrawSurface = 0.22 黑/白 ×(1−p) + 0.03 黑 ×p
-            //    ⇒ 源码 L101-102 的恒等式：
-            //       「水珠 = Layer 2 高度，且都小于 Layer 1，让水珠边缘恰好触及 Layer 2 边界」
-            //
-            //  ⚠ 本项目的两处**保留差异**（用户口径优先，不跟 BiliNext 改）：
-            //    ① 指示器颜色 = 黑/白（MeloX 用户拍板「指示器是黑白，不是蓝色」），
-            //       BiliNext 的 accent 蓝只染 L2 的 tab 图标。
-            //    ② 选中 tab 图标用红色（MeloX 既有主题口径），非 BiliNext 的 accent 蓝。
-            // ════════════════════════════════════════════════════════════════════════
-            // ⚠ 这里**不能再读 `isMeloXDarkTheme()`** —— 必须接同一个 `LocalBottomBarTone`，
-            //   否则在 d 处于中间态时，容器色 / 指示器色会与别层的进度脱节。
-            val tone = bottomBarTone()
-            val frostedGlass = MeloXSettingsRuntime.frostedGlassEnabled
-            // BiliNext L131-133：containerColor = 0xFAFAFA/0x121212 @ 0.35
-            val containerColor = lerp(
-                Color(0xFFFAFAFA).copy(0.35f),
-                Color(0xFF121212).copy(0.35f),
-                tone,
-            )
-            // 指示器本体涂层（黑白）。2026-10-02 定档：**黑白分档**——
-            //   浅色（黑涂层）0.18（用户定档；黑涂层直接封顶内容红明度，终色 R = 1−a = 0.82）；
-            //   深色（白涂层）0.25（用户终定：0.3 回试后改回 0.25；A/B 结论白侧 0.25 更优）。
-            // 与 accentColor 联动：终色 = (1−a)×源 + a×涂层；源色纯红 ⇒
-            //   黑涂层下极限红 0xFFD10000；白涂层 0.25 下终色 = 0xFFFF4000（R=1, G=0.25）。
-            val selectionTint = lerp(
-                Color.Black.copy(0.18f),
-                Color.White.copy(0.25f),
-                tone,
-            )
-
-
-            BoxWithConstraints(
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .offset(x = navOffsetX, y = 0.dp)
-                    .width(navWidth)
-                    .height(navHeight),
-                contentAlignment = Alignment.CenterStart,
+            // NavigationBar already applies the navigation-bar window insets, so
+            // no extra padding here.
+            NavigationBar(
+                modifier = navigationModifier.fillMaxWidth(),
+                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                tonalElevation = 0.dp,
             ) {
-                val density = LocalDensity.current
-                val tabCount = primaryTabs.size.coerceAtLeast(1)
-
-                // BiliNext L152-156：tabWidth = (maxWidth − 20dp) / n（= 两侧 10dp padding）
-                val tabWidth = (maxWidth - 20.dp) / tabCount
-                val tabWidthPx = with(density) { tabWidth.toPx() }
-
-                // ★ 核心恒等式：水珠与 Layer 2 **等高**，两者都比 Layer 1 矮 8dp
-                //   （BiliNext：L1=55dp / L2=DropletHeight=47dp / L3=47dp）
-                val dropletHeight = (navHeight - 8.dp).coerceAtLeast(1.dp)
-                // ⚠ `dropletWidth` 必须夹取，`dropletHeight` 同理（上面已夹）。
-                //   `navWidth` 是**不夹取的弹簧**（见 `lerpDpBouncy` 的注释），收缩/回弹过冲的
-                //   某一帧会跌破 `compactSize`(48dp)；而 `tabWidth = (navWidth − 20dp)/tabCount`
-                //   在 navWidth < 20dp 时变负 ⇒ `dropletWidth` 跟着变 0 / 负。
-                //   水珠是 `drawBackdrop` 节点，0 或负尺寸会让 `GraphicsLayer.record()` 拿到
-                //   空/非法尺寸并在 draw 阶段直接抛（不在任何 try/catch 内）。
-                //   你 vivo（360dp 宽 / 固定 4 tab）过冲后仍为正所以没触发；
-                //   **窄屏（320~340dp）、折叠屏外屏、开「显示大小」放大**的机型会。
-                //   夹到 1.dp 只在退化帧生效，正常区间数值完全不变。
-                // ★ 边缘 tab（value=0 / value=tabCount−1）时水珠左/右缘必须离胶囊外缘
-                //   至少 `capsuleEdgeInset`。水珠中心在 value=0 处 = `edgePadding + 0.5·tabWidth`
-                //   （edgePadding=10dp 是 tab 行内边距，见 L1807 的 translationX 起点）：
-                //     dropletLeft = edgePadding + 0.5·tabWidth − dropletWidth/2 ≥ capsuleEdgeInset
-                //   ⇒ dropletWidth ≤ tabWidth + 2·(edgePadding − capsuleEdgeInset)。
-                //   `capsuleEdgeInset = 4.dp` 刻意 = 上下 inset（水珠与 L2 等高 = navHeight − 8dp，
-                //   在 CenterStart 的 Box 里垂直居中 ⇒ 上下各 4dp），保证**左右不比上下少**。
-                //   正常 4 tab 竖屏 tabWidth≈63dp，1.15×公式(≈74dp) 远小于上限(≈75dp) 不触发；
-                //   **只有 tab 少(2 tab)或横屏 tabWidth 变大时 1.15×公式才超上限**，此时夹到上限
-                //   ⇒ 边缘水珠恰离胶囊缘 4dp（与上下一致），不再溢出（修复真机「横屏/2-tab 指示器超长」）。
-                //   `coerceAtMost` 只在水珠本就会溢出时收缩，正常区间数值恒等、观感零变化。
-                val capsuleEdgeInset = 4.dp
-                val edgePadding = 10.dp
-                val dropletWidth = (tabWidth * 1.15f + 2.dp)
-                    .coerceAtMost(tabWidth + (edgePadding - capsuleEdgeInset) * 2f)
-                    .coerceAtLeast(1.dp)
-
-                val selectedIndex = primaryTabs.indexOfFirst { it.first == selectedTab }
-                val dockExpanded = progress < 0.56f
-                val currentProgress by rememberUpdatedState(progress)
-                val currentSelectedTab by rememberUpdatedState(selectedTab)
-                val currentPrimaryTabs by rememberUpdatedState(primaryTabs)
-                val currentTabWidthPx by rememberUpdatedState(tabWidthPx)
-                val currentOnSelect by rememberUpdatedState(onSelect)
-                // ⚠ **必须走 rememberUpdatedState**（2026-09-25 修 bug）。
-                //   `dampedDock` 是 `remember(tabCount)` —— 只有 tab 数变化才会重建，
-                //   所以它内部所有 lambda 会在**首次组合**时把当时的局部值**捕获死**。
-                //   `selectedIndex` 若不是 State 包装，`onDragStopped` 里那句
-                //   `if (target != selectedIndex)` 就永远在跟「App 启动时的选中下标」比：
-                //   启动在首页(0) ⇒ 拖动指示器回首页时 `0 != 0` 为假 ⇒ **不触发切换**
-                //   （真机症状：「拖到首页 tab 没反应，只有点击才行」）。
-                val currentSelectedIndex by rememberUpdatedState(selectedIndex)
-                val currentDropletWidthPx by rememberUpdatedState(with(density) { dropletWidth.toPx() })
-
-                // BiliNext L158-166 面板 recoil：拖动时整条面板轻微反向偏移
-                val panelOffsetAnim = remember { Animatable(0f) }
-                val panelOffset by remember(density) {
-                    derivedStateOf {
-                        val fraction = (panelOffsetAnim.value / constraints.maxWidth)
-                            .coerceIn(-1f, 1f)
-                        val sign = if (fraction >= 0f) 1f else -1f
-                        with(density) {
-                            4.dp.toPx() * sign * EaseOut.transform(abs(fraction))
-                        }
-                    }
-                }
-
-                val dampedDock = remember(tabCount) {
-                    PublicDampedDragAnimation(
-                        animationScope = dockScope,
-                        initialValue = selectedIndex.coerceAtLeast(0).toFloat(),
-                        valueRange = 0f..(tabCount - 1).toFloat(),
-                        visibilityThreshold = 0.001f,
-                        initialScale = 1f,
-                        // BiliNext L185：pressedScale = 78/56
-                        pressedScale = 78f / 56f,
-                        onTap = { position ->
-                            // ⚠ position.x 是**水珠局部**坐标（手势挂在 L3 水珠 Box 上，
-                            //   宽仅 ~1.15 个 tab）。旧算法把它当面板坐标直接除 tabWidthPx
-                            //   ⇒ 恒落在 0/1 ⇒ 「点水珠盖着的 tab 必跳首页」。
-                            //   换算：水珠中心当前停在 value 格，落点 = value + 局部位移/tabWidth。
-                            val index = (value +
-                                (position.x - currentDropletWidthPx / 2f) /
-                                currentTabWidthPx.coerceAtLeast(1f))
-                                .roundToInt()
-                                .coerceIn(0, tabCount - 1)
-                            if (currentProgress < 0.56f) {
-                                currentOnSelect(currentPrimaryTabs[index].first)
-                            } else if (currentProgress >= 0.68f) {
-                                currentOnSelect(currentSelectedTab)
-                            }
-                        },
-                        onDragStopped = {
-                            val target = targetValue.roundToInt().coerceIn(0, tabCount - 1)
-                            animateToValue(target.toFloat())
-                            // ⚠ 用 `currentSelectedIndex`（rememberUpdatedState）而不是捕获死的
-                            //   `selectedIndex` —— 见上面 currentSelectedIndex 的长注释。
-                            if (target != currentSelectedIndex) {
-                                currentOnSelect(currentPrimaryTabs[target].first)
-                            }
-                            dockScope.launch {
-                                panelOffsetAnim.animateTo(
-                                    0f,
-                                    spring(dampingRatio = 1f, stiffness = 300f, visibilityThreshold = 0.5f),
-                                )
-                            }
-                        },
-                        onDrag = { _, dragAmount ->
-                            updateValue(
-                                (targetValue + dragAmount.x / currentTabWidthPx.coerceAtLeast(1f))
-                                    .coerceIn(0f, (tabCount - 1).toFloat()),
-                            )
-                            dockScope.launch {
-                                panelOffsetAnim.snapTo(panelOffsetAnim.value + dragAmount.x)
-                            }
-                        },
-                    )
-                }
-                // 「呼出」判定：上一个选中是搜索 ⇒ 这次是从搜索返回，水珠要 Q 弹落格
-                // （animateToValueBouncy 带过冲）；普通 tab 切换/拖拽回位仍走临界阻尼。
-                var prevSelectedTab by remember { mutableStateOf(selectedTab) }
-                LaunchedEffect(selectedIndex, dockExpanded, selectedTab) {
-                    if (dockExpanded && selectedIndex >= 0) {
-                        if (prevSelectedTab == AppTab.Search && selectedTab != AppTab.Search) {
-                            dampedDock.animateToValueBouncy(selectedIndex.toFloat())
-                        } else {
-                            dampedDock.animateToValue(selectedIndex.toFloat())
-                        }
-                    }
-                    prevSelectedTab = selectedTab
-                }
-                val dockHighlight = remember(dockScope, dampedDock) {
-                    PublicInteractiveHighlight(
-                        animationScope = dockScope,
-                        position = { size, _ ->
-                            // BiliNext：(value + 0.5) × tabWidthPx + panelOffset
-                            Offset(
-                                (dampedDock.value + 0.5f) * currentTabWidthPx + panelOffset,
-                                size.height / 2f,
+                visibleRootTabs.forEach { tab ->
+                    val selected = tab == selectedTab
+                    NavigationBarItem(
+                        selected = selected,
+                        onClick = { onSelect(tab) },
+                        icon = { Icon(tab.md3Icon(selected), contentDescription = null) },
+                        label = {
+                            Text(
+                                text = tab.titleFor(source),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
                             )
                         },
                     )
-                }
-
-                val tabsBackdrop = rememberLayerBackdrop()
-                // BiliNext L245：L2 的 tab 缩放（按压时图标放大 1.2×，只作用于捕获层内容）
-                val tabScale: () -> Float = { lerp(1f, 1.2f, dampedDock.pressProgress) }
-                // BiliNext L130：`accentColor = if (isDarkTheme) TabAccentDark else TabAccentLight`。
-                // MeloX 保留自己的口径 —— 强调色 = 主题红（与选中 tab / 收缩态圆心标一致）。
-                // 2026-10-02 终版：**极限红方案**（用户拍板「不要求 iOS 红，红色够明显即可，
-                // 暗红也没关系」）。源色 = 纯红 0xFFFF0000，G/B 归零 ⇒ 混色后饱和度最大：
-                //   浅色（黑涂层 0.18）: 终色 = 0.82×(1,0,0) = **0xFFD10000** —— 深红、饱和度拉满。
-                //   深色（白涂层 0.25）: 终色 = 0xFFFF4000 —— 比 0.3 档（0xFFFF4D4D）更纯。
-                // ⚠ 与 selectionTint 的 alpha 绑定（终色 = (1−a)×源 + a×涂层）。
-                // 「涂料下沉」试验（tint 搬进捕获层、真机无差异）已回退。
-                // 只影响 L2 捕获层（水珠透出的红）；毛玻璃模式 / 收缩态圆心标仍用
-                // MeloXSystemColors.Red。
-                val accentColor = Color(0xFFFF0000)
-
-                // ══ Layer 1：可见面板（BiliNext 原样）════════════════════════════
-                // ⚠ **收缩态必须把 tab 行淡出**（2026-09-25 修 bug）：
-                //   `navWidth` 会从展开 272dp 弹簧到 `compactSize` 48dp，而本 Row 里是
-                //   `primaryTabs.forEach { RootTabButton(weight(1f)) }` —— 4 个 tab 在
-                //   48dp − 20dp(padding) = 28dp 里各分 7dp，24dp 图标互相重叠、挤出容器，
-                //   真机表现为**左侧一个糊成一团的畸形图标**（截图 tmp/mx_col2_bar.png）。
-                //   ⇒ 用既有的 `expandedLayerAlpha`（progress 0.43→0.72 之间淡出）把
-                //     **图标那层**隐去，收缩态改由下面的 compact 层渲染单个圆心标。
-                //   ⚠ 淡出必须只作用在**内容**上，不能连 `meloXBottomBarSurface` 一起淡 ——
-                //     面板玻璃在收缩全程都得在（否则收缩中胶囊会闪一下消失）。
-                Row(
-                    modifier = Modifier
-                        .graphicsLayer { translationX = panelOffset }
-                        .meloXBottomBarSurface(
-                            shape = navShape,
-                            tint = bottomLiquidGlassTint(),
-                            surfaceColor = bottomGlassSurfaceColor(),
-                            // 官方 LiquidBottomTabs L174-179：面板随水珠按压整体膨胀
-                            // （scale = 1 + 16dp/width · p）。原先写死 0f，长按无反馈。
-                            pressProgress = dampedDock.pressProgress,
-                        )
-                        .then(dockHighlight.modifier)
-                        .height(navHeight)
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    // 内容层：随收缩进度淡出（不含面板材质）
-                    Row(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .graphicsLayer { alpha = expandedLayerAlpha }
-                            .padding(horizontal = 10.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        primaryTabs.forEach { (tab, glyph) ->
-                            RootTabButton(
-                                title = tab.titleFor(source),
-                                glyph = glyph,
-                                // BiliNext L364：可见面板的图标**永远用未激活色**，
-                                // 强调色只来自 L2 捕获层透出（`colorFilterTint = null` ⇒
-                                // 这里的 `selected` 已无着色作用，仅用于关掉点击后的 shape 语义）。
-                                selected = false,
-                                // ⚠ **毛玻璃模式的红色唯一来源**：毛玻璃下 L3 水珠整段不挂
-                                //   （见下面 `if (indicatorAlpha > 0.001f && !frostedGlass)`），
-                                //   L2 那张「全染强调色」的捕获层也就无从被采样 ⇒ 强调色彻底失去出口，
-                                //   选中 tab 会退化成和未选中完全一样。⇒ 让 L1 自己上色。
-                                //   与 `selected` 解耦的原因见 `RootTabButton` 的参数注释。
-                                selectedTint = frostedGlass && tab == selectedTab,
-                                contentColor = if (tab == selectedTab) MaterialTheme.colorScheme.onSurface.copy(alpha = 0.78f) else null,
-                                labelAlpha = labelAlpha,
-                                interactive = dockExpanded,
-                                onClick = { onSelect(tab) },
-                            )
-                        }
-                    }
-                }
-
-                // ══ 收缩态圆心标（MeloX 既有惯例，BiliNext 的「末位 tab 居中」等价物）════
-                //   收缩后胶囊只剩 48dp 宽，4 个 tab 放不下 ⇒ 只留**当前选中 tab**的图标，
-                //   居中、红色、25dp。`expandedLayerAlpha`/`compactLayerAlpha` 是一条交叉淡入
-                //   淡出（0.43~0.72 淡出旧层 / 0.52~0.82 淡入新层），中间有重叠区，避免闪空。
-                if (compactLayerAlpha > 0.001f) {
-                    // ⚠ 收缩态「当前选中」图标：选中搜索时搜索键是独立的右侧按钮，
-                    //   左侧收缩胶囊没有搜索格可显示 ⇒ 默认回落首页房子图标（与上面
-                    //   「选搜索时左侧指示器消失」同一个语义：搜索不算左侧 nav 的一员）。
-                    //   选搜索时图标**不着红色**——红色是「左侧 nav 当前选中」的语义，
-                    //   回落的房子只是占位，用未激活色（与右侧搜索键未选中态同口径）。
-                    val compactGlyph =
-                        if (selectedTab == AppTab.Search) RootGlyph.Home else selectedTab.rootGlyph()
-                    // ⚠ 收缩态点击展开（2026-09-25 修 bug）：
-                    //   展开的手势只挂在 L3 水珠上（dampedDock.modifier @ L1404），而水珠在收缩态
-                    //   被定位到胶囊最左缘（(value+0.5)*tabWidth，tabWidth 仅 7dp），并不在用户看到的
-                    //   居中红图标下方；L2 捕获层又 alpha(0f) 铺满整条并 onClick={} 拦截 ⇒
-                    //   点中间的「左边按钮」命中不到展开手势，无法展开。
-                    //   ⇒ 让收缩态这块居中红图标本身可点：zIndex 抬到最上层（盖过 L2/L3），
-                    //      **仅在收缩态**（compactLayerAlpha>0.5f）挂 clickable 调 onSelect(selectedTab)
-                    //     （onSelect 在调用方会把 tabBarMinimized=false ⇒ 展开）。
-                    //   ⚠ 展开态不挂 clickable，否则会抢掉 L1 tab 的点击 / 水珠拖拽。
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .graphicsLayer { alpha = compactLayerAlpha }
-                            .zIndex(2f)
-                            .then(
-                                if (compactLayerAlpha > 0.5f) {
-                                    Modifier.clickable { onSelect(selectedTab) }
-                                } else {
-                                    Modifier
-                                },
-                            ),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        RootGlyphIcon(
-                            glyph = compactGlyph,
-                            modifier = Modifier.size(25.dp),
-                            color = if (selectedTab == AppTab.Search) {
-                                MaterialTheme.colorScheme.onSurface
-                            } else {
-                                MeloXSystemColors.Red
-                            },
-                            selected = selectedTab != AppTab.Search,
-                        )
-                    }
-                }
-
-                // ══ Layer 2：隐形捕获层（BiliNext 原样，**一块真玻璃**）══════════
-                CompositionLocalProvider(LocalGlassTabScale provides tabScale) {
-                    Row(
-                        modifier = Modifier
-                            .clearAndSetSemantics { }
-                            .alpha(0f)
-                            .layerBackdrop(tabsBackdrop)
-                            .graphicsLayer { translationX = panelOffset }
-                            .meloXChromeSurface(
-                                shape = Capsule(),
-                                surfaceColor = bottomGlassSurfaceColor(),
-                                pressProgress = dampedDock.pressProgress,
-                            )
-                            .then(dockHighlight.modifier)
-                            .height(dropletHeight)
-                            .fillMaxWidth()
-                            .padding(horizontal = 10.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        primaryTabs.forEach { (tab, glyph) ->
-                            RootTabButton(
-                                title = tab.titleFor(source),
-                                glyph = glyph,
-                                // ⚠ 捕获层里 `selected` 必须传 false、改用 colorFilterTint ——
-                                //   见 RootTabButton 里 colorFilterTint 的长注释。
-                                //   传 true 会让「只有选中格有色」，水珠划过别的格就没有变色效果。
-                                selected = false,
-                                labelAlpha = labelAlpha,
-                                interactive = false,
-                                // kyant0 / BiliNext 的「划过才变色」核心：
-                                //   整层 tab 全染强调色（层 alpha=0 看不见），
-                                //   水珠一采样 ⇒ 只把它盖住那一格"照"出来。
-                                colorFilterTint = accentColor,
-                                onClick = {},
-                            )
-                        }
-                    }
-                }
-
-                // ══ Layer 3：水珠指示器（BiliNext 原样，**缩放真的生效**）════════
-                // BiliNext L444-448：alpha 走弹簧（不是二值开关），退出搜索时同步淡出
-                // ⚠ 选中搜索键时左侧指示器消失：搜索不在 primaryTabs 里、没有对应水珠格，
-                //   仍挂着会停在上一格导致「选中态错位」。所以选搜索时 target 直接归 0。
-                val indicatorAlpha by animateFloatAsState(
-                    targetValue = if (dockExpanded && selectedTab != AppTab.Search) 1f else 0f,
-                    animationSpec = spring(stiffness = 180f, dampingRatio = 0.7f),
-                    label = "melox-indicator-alpha",
-                )
-                if (indicatorAlpha > 0.001f && !frostedGlass) {
-                    // ⚠ 原先这里建了一个 `rememberCombinedBackdrop(...)` 赋给 `indicatorBackdrop`
-                    //   但**从未被使用**（真正生效的是下面 `meloXTabIndicator` 内部按
-                    //   `(LocalMeloXBackdrop, panelBackdrop = tabsBackdrop)` 自己建的那一枚）。
-                    //   它白白多占一整张 GPU 图层，且因为挂在 `if (indicatorAlpha > 0.001f && ...)`
-                    //   这个条件分支里，水珠每次显隐都会重新分配/释放一次 —— 低端机上等于
-                    //   反复抖动一大块显存。已删除；组合关系由 `meloXTabIndicator` 内部负责。
-                    Box(
-                        modifier = Modifier
-                            .graphicsLayer {
-                                // BiliNext L489-494：
-                                //   tx = 10dp + (value + 0.5)·tabWidthPx − size.width/2 + panelOffset
-                                translationX = with(density) { 10.dp.toPx() } +
-                                    (dampedDock.value + 0.5f) * tabWidthPx -
-                                    size.width / 2f +
-                                    panelOffset
-                                alpha = indicatorAlpha
-                            }
-                            .padding(horizontal = 10.dp)
-                            .then(dockHighlight.gestureModifier)
-                            .then(dampedDock.modifier)
-                            .meloXTabIndicator(
-                                shape = Capsule(),
-                                selected = true,
-                                tint = selectionTint,
-                                panelBackdrop = tabsBackdrop,
-                                pressProgress = dampedDock.pressProgress,
-                                // ★ BiliNext L534-541：缩放**照抄**，因为水珠挂了
-                                //   dampedDock.modifier ⇒ press() 对整个子树生效，
-                                //   scaleX/scaleY 会真的走到 pressedScale = 78/56。
-                                layerBlock = {
-                                    // ⚠ 这段是**裸变换**，直接写进 HWUI RenderNode 的变换矩阵。
-                                    //   `dampedDock.scaleX/velocity` 由弹簧驱动，必须保证
-                                    //   NaN / ±Inf 不进矩阵（矩阵不可逆 ⇒ 绘制结果未定义，
-                                    //   在能跑玻璃的机型上就是一次「自身原因」的异常）。
-                                    //   正常区间数值恒等，观感零变化。
-                                    scaleX = dampedDock.scaleX.finiteOrZero()
-                                    scaleY = dampedDock.scaleY.finiteOrZero()
-                                    val velocity = (dampedDock.velocity / 10f).finiteOrZero()
-                                    scaleX /= 1f - (velocity * 0.75f).coerceIn(-0.2f, 0.2f)
-                                    scaleY *= 1f - (velocity * 0.25f).coerceIn(-0.2f, 0.2f)
-                                    scaleX = scaleX.finiteOrZero()
-                                    scaleY = scaleY.finiteOrZero()
-                                },
-                            )
-                            .height(dropletHeight)
-                            .width(dropletWidth),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                    }
-                }
-            }
-
-            val searchContentDescription = stringResource(R.string.tab_search)
-            Box(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .offset(x = -horizontalMargin, y = 0.dp)
-                    .size(searchSize)
-                    // 搜索键材质与底栏 nav 胶囊完全同源：同样走
-                    // meloXBottomBarSurface（vibrancy + blur + lens，且只叠
-                    // surfaceColor、不额外加 Screen 白纱与 Hue tint），
-                    // 避免观感与左侧底栏对不上。
-                    .meloXBottomBarSurface(
-                        shape = Capsule(),
-                        tint = bottomLiquidGlassTint(),
-                        surfaceColor = bottomGlassSurfaceColor(),
-                        refractionHeight = lerpDp(10.dp, 8.dp, bounceFrac),
-                    )
-                    .clickable(role = Role.Button) { onSelect(AppTab.Search) }
-                    .semantics {
-                        contentDescription = searchContentDescription
-                    },
-                contentAlignment = Alignment.Center,
-            ) {
-                RootGlyphIcon(
-                    glyph = RootGlyph.Search,
-                    modifier = Modifier.size(lerpDp(28.dp, 27.dp, bounceFrac)),
-                    // ⚠ 搜索键的字形同样不能写死 —— 它读的是同一个被插值的 scheme。
-                    color = if (selectedTab == AppTab.Search) {
-                        MeloXSystemColors.Red
-                    } else {
-                        MaterialTheme.colorScheme.onSurface
-                    },
-                    selected = selectedTab == AppTab.Search,
-                )
-            }
-        }
-    }
-    }
-}
-
-}
-
-@Composable
-private fun MeloXVerticalNavigation(
-    selectedTab: AppTab,
-    source: MusicSource,
-    tabs: List<AppTab>,
-    onSelect: (AppTab) -> Unit,
-    modifier: Modifier = Modifier,
-    compactProgress: Float = 0f,
-    reserveMiniSlot: Boolean = false,
-) {
-    Box(modifier.fillMaxWidth().animateContentSize().padding(horizontal = 4.dp, vertical = 8.dp)) {
-        Column(
-            Modifier.fillMaxWidth()
-                .meloXBottomBarSurface(shape = Capsule(), tint = bottomLiquidGlassTint(), surfaceColor = bottomGlassSurfaceColor())
-                .verticalScroll(rememberScrollState())
-                .padding(vertical = 8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            (if (compactProgress > .5f) listOf(
-                if (selectedTab == AppTab.Search) tabs.firstOrNull() ?: AppTab.Settings else selectedTab,
-                AppTab.Search,
-            ) else tabs + AppTab.Search).distinct().forEach { tab ->
-                if (tab == AppTab.Search && compactProgress > .5f && reserveMiniSlot) Spacer(Modifier.height(56.dp))
-                val active = tab == selectedTab
-                val color = if (active) MeloXSystemColors.Red else MaterialTheme.colorScheme.onSurface
-                Column(
-                    Modifier.fillMaxWidth().height(56.dp)
-                        .semantics { selected = active }
-                        .clickable(role = Role.Tab, onClick = { onSelect(tab) }),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                ) {
-                    RootGlyphIcon(tab.rootGlyph(), Modifier.size(24.dp), color, selected = active)
-                    Text(tab.titleFor(source), fontSize = 10.sp, maxLines = 1, overflow = TextOverflow.Ellipsis, color = color)
                 }
             }
         }
@@ -2370,180 +1685,20 @@ private fun MeloXVerticalNavigation(
 }
 
 @Composable
-private fun RowScope.RootTabButton(
-    title: String,
-    glyph: RootGlyph,
-    selected: Boolean,
-    // ⚠ **只上强调色，不动字形/语义** —— 专给「毛玻璃模式下没有水珠指示器」用。
-    //   为什么不直接复用 `selected`：`selected` 是**三件事捆在一起**的开关 ——
-    //     ① `desiredForeground` 的强调红；② `RootGlyphIcon` 的 Fill/Regular 字形；
-    //     ③ 语义 `selected`。
-    //   而液态模式透过水珠看到的那张图来自 **L2 捕获层**，那里是恒 `selected = false`
-    //   ⇒ 折射出来的是 **Regular 轮廓 + 强调红 + SemiBold 标签**。
-    //   若毛玻璃模式直接传 `selected = true`，字形会跳成 Fill ⇒ 同一个 tab 在两种
-    //   模式下的**图标形状**都对不上（「毛玻璃模式的房子是实心的，玻璃模式是空心的」）。
-    //   ⇒ 拆出这个参数，让毛玻璃模式与液态模式的观感逐项相等。
-    selectedTint: Boolean = false,
-    labelAlpha: Float,
-    // 原先这里有个 `dark: Boolean` 且完全没人用。改成「整棵子树插值配色」后，
-    // 前景直接读 `colorScheme.onSurface` 就会跟着动 ⇒ 该参数连调用点一并删掉。
-    interactive: Boolean = true,
-    // ⚠ **「指示器划过才变色」的全部机关就在这一个参数**（BiliNext `GlassTabItem.colorFilterTint`）：
-    //   非 null ⇒ 该 tab 无条件用这个颜色（`selected` 被无视），用于 **L2 隐形捕获层**，
-    //   把整层 tab 都染成强调色；层本身 `alpha(0f)` 看不见，**只有水珠采样到的那一格会被"照"出来**
-    //   ⇒ 水珠移到哪，哪格就亮成强调色 —— 不需要任何逐 tab 动画。
-    //   L1 可见面板传 null ⇒ `selected` 生效（MeloX 保留红色口径）。
-    colorFilterTint: Color? = null,
-    // 2026-10-02 新增：iOS 风格「感知对比度增强」的内容颜色补偿。
-    //   非 null 时覆盖默认的 `onSurface.copy(0.78f)`，用于 L1 可见面板的选中 tab。
-    //   优先级低于 `colorFilterTint`（L2 捕获层）和 `selectedTint`（毛玻璃模式），
-    //   所以只在 L1 选中 tab 且算法激活时生效。
-    contentColor: Color? = null,
-    onClick: () -> Unit,
-) {
-    val desiredForeground = when {
-        colorFilterTint != null -> colorFilterTint
-        // `selectedTint`（毛玻璃模式的强调色）与 `selected` 同色、同动画路径。
-        selected || selectedTint -> MeloXSystemColors.Red
-        // 算法补偿色：iOS 风格「内容穿透指示器」的可读性补偿。
-        contentColor != null -> contentColor
-        // 回到 `colorScheme.onSurface` —— 外层 `BottomBarToneTheme` 已经把整套配色
-        // 插值过，这个读值自己就会跟着动，**不需要**再在这里写端点。
-        else -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.78f)
-    }
-    val foreground by animateColorAsState(
-        targetValue = desiredForeground,
-        animationSpec = spring(dampingRatio = 0.84f, stiffness = 480f),
-        label = "melox-tab-foreground",
-    )
-    // BiliNext `GlassTabItem(scaleOverride = tabScale)` 的等价物：
-    // Layer 2 捕获层里的 tab 内容随按压放大（1 → 1.2×），只影响**被水珠折射的那张图**。
-    // 可见面板（Layer 1）不提供 LocalGlassTabScale ⇒ 默认恒 1f，不受影响。
-    val tabScale = LocalGlassTabScale.current()
-    Column(
-        modifier = Modifier
-            .weight(1f)
-            .fillMaxHeight()
-            .graphicsLayer {
-                scaleX = tabScale
-                scaleY = tabScale
-            }
-            .padding(horizontal = 4.dp, vertical = 4.dp)
-            .then(
-                if (interactive) Modifier
-                    .clickable(
-                        interactionSource = null,
-                        indication = null,
-                        role = Role.Tab,
-                        onClick = onClick,
-                    )
-                    .semantics {
-                        contentDescription = title
-                        role = Role.Tab
-                        this.selected = selected
-                    }
-                else Modifier.clearAndSetSemantics { },
-            ),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        RootGlyphIcon(
-            glyph = glyph,
-            modifier = Modifier.size(24.dp),
-            color = foreground,
-            selected = selected,
-        )
-        Text(
-            text = title,
-            modifier = Modifier.graphicsLayer { alpha = labelAlpha },
-            fontSize = 11.sp,
-            lineHeight = 13.sp,
-            // BiliNext L704：`colorFilterTint != null` 也算「强调」→ SemiBold
-            // ⚠ `selectedTint` 也算：液态模式下透过水珠看到的标签就是 SemiBold
-            //   （L2 恒 `colorFilterTint != null`）⇒ 毛玻璃模式必须同字重，否则
-            //   「切到毛玻璃标签变细」。
-            fontWeight = if (selected || selectedTint || colorFilterTint != null) {
-                FontWeight.SemiBold
-            } else {
-                FontWeight.Medium
-            },
-            color = foreground,
-        )
-    }
-}
-
-private enum class RootGlyph { Home, Explore, Library, Podcasts, Downloads, Cloud, Settings, Search }
-
-@Composable
-@Suppress("UNUSED_PARAMETER")
 private fun AppTab.titleFor(source: MusicSource): String = stringResource(titleRes)
 
-private fun AppTab.rootGlyph(): RootGlyph = when (this) {
-    AppTab.Home -> RootGlyph.Home
-    AppTab.Explore -> RootGlyph.Explore
-    AppTab.Library -> RootGlyph.Library
-    AppTab.Podcasts -> RootGlyph.Podcasts
-    AppTab.Downloads -> RootGlyph.Downloads
-    AppTab.Cloud -> RootGlyph.Cloud
-    AppTab.Settings -> RootGlyph.Settings
-    AppTab.Search -> RootGlyph.Search
+/** Material3 tab icon: filled while selected, outlined otherwise. */
+private fun AppTab.md3Icon(selected: Boolean): ImageVector = when (this) {
+    AppTab.Home -> if (selected) Icons.Filled.Home else Icons.Outlined.Home
+    AppTab.Explore -> if (selected) Icons.Filled.Explore else Icons.Outlined.Explore
+    AppTab.Library -> if (selected) Icons.Filled.LibraryMusic else Icons.Outlined.LibraryMusic
+    AppTab.Podcasts -> if (selected) Icons.Filled.Podcasts else Icons.Outlined.Podcasts
+    AppTab.Downloads -> if (selected) Icons.Filled.Download else Icons.Outlined.Download
+    AppTab.Cloud -> if (selected) Icons.Filled.Cloud else Icons.Outlined.Cloud
+    AppTab.Settings -> if (selected) Icons.Filled.Settings else Icons.Outlined.Settings
+    AppTab.Search -> if (selected) Icons.Filled.Search else Icons.Outlined.Search
 }
 
-@Composable
-private fun RootGlyphIcon(
-    glyph: RootGlyph,
-    modifier: Modifier,
-    color: Color,
-    selected: Boolean = false,
-) {
-    // The home tab uses the custom house vector (traced from the user's image)
-    // instead of the tinted symbol glyph, so tint applies to it like the others.
-    if (glyph == RootGlyph.Home) {
-        Icon(
-            painter = painterResource(R.drawable.melox_home_tab),
-            contentDescription = null,
-            modifier = modifier.meloXIconDrawingScale(),
-            tint = color,
-        )
-        return
-    }
-    MeloXSymbolIcon(
-        symbol = when (glyph) {
-            RootGlyph.Home -> MeloXSymbol.Home
-            RootGlyph.Explore -> MeloXSymbol.Explore
-            RootGlyph.Library -> MeloXSymbol.Library
-            RootGlyph.Podcasts -> MeloXSymbol.RadioWaves
-            RootGlyph.Downloads -> MeloXSymbol.Download
-            RootGlyph.Cloud -> MeloXSymbol.Storage
-            RootGlyph.Settings -> MeloXSymbol.Settings
-            RootGlyph.Search -> MeloXSymbol.Search
-        },
-        modifier = modifier,
-        color = color,
-        variant = if (selected) MeloXSymbolVariant.Fill else MeloXSymbolVariant.Regular,
-    )
-}
-
-// ⚠⚠ 2026-10-03：时长改走 `meloXPlayerTweenDurationMillis()`（**唯一时长出口**）。
-//   Compose 的 `tween(D)` 会被 `MotionDurationScale` 自动乘 `ANIMATOR_DURATION_SCALE`
-//   （本机实测三键全 1.35 ⇒ 设 360ms 实跑 486ms，用户报障「速度跟设置对不上」）。
-//   除以系统缩放后，**墙钟恰好等于设置值**，且与 `MeloXIOSNowPlayingSharedHost` /
-//   `MeloXIOSMiniPlayer` / `MeloXPlayerRecedeSpec` 三处**同一口径**
-//   （它们都读同一个函数，见 `MeloXPlayerTransitionSpec`）。
-//   ⚠ 本函数是驱动 `SeekableTransitionState` 的那条 master，**漏这一处 = 整体错拍**。
-//
-// ⚠⚠⚠ 2026-10-03 回退记录（**别再试**）：曾被改成 `MeloXPlayerAppleEasing`，并把几何 /
-//   圆角 / 内容 / recede **全部改成线性跟随 fraction**（把「形状」统一到 fraction 一处），
-//   目的是把尾段下沉窗口在墙钟上从 ~89ms 铺开到 ~156ms。**用户实测「反而比上版本效果差」**
-//   ⇒ 已整条回退。
-//
-// ⚠⚠ 2026-10-06 更新：本函数**当前已不再被 `playerOpen/CloseFractionSpec` 调用** ——
-//   那两条已统一到用户认可的 [playerSettleMasterSpec]。这里**特意保留**，专供一行回退：
-//   把 `playerOpenFractionSpec` / `playerCloseFractionSpec` 改回本函数即可。
-//   ⚠ 上面那条「fraction 保持线性」的历史结论，针对的是「把几何/圆角/内容/recede
-//     **全部**改成线性跟随 fraction」；与 2026-10-06 这次「**只换 master 这一条曲线、
-//     几何层原样不动**」是两件事，不要混为一谈。
-@Suppress("unused")
 private fun playerAutomaticFractionSpec() = tween<Float>(
     durationMillis = meloXPlayerTweenDurationMillis(),
     easing = LinearEasing,

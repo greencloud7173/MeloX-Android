@@ -45,7 +45,11 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -349,16 +353,17 @@ private sealed interface HomeBlock {
 fun MeloXHomeScreen(
     source: MusicSource = MusicSource.Netease,
     onOpenTool: (String) -> Unit = {},
+    onOpenSearch: () -> Unit = {},
 ) {
     if (source == MusicSource.Netease) {
-        NeteaseHomeDataScreen(onOpenTool)
+        NeteaseHomeDataScreen(onOpenTool, onOpenSearch)
     } else {
-        ProviderHomeDataScreen(source, onOpenTool)
+        ProviderHomeDataScreen(source, onOpenTool, onOpenSearch)
     }
 }
 
 @Composable
-private fun NeteaseHomeDataScreen(onOpenTool: (String) -> Unit) {
+private fun NeteaseHomeDataScreen(onOpenTool: (String) -> Unit, onOpenSearch: () -> Unit = {}) {
     val onDetailSelected = rememberMeloXDetailSelection()
     val hostContext = LocalContext.current
     val context = LocalContext.current.applicationContext
@@ -518,6 +523,7 @@ private fun NeteaseHomeDataScreen(onOpenTool: (String) -> Unit) {
         CompositionLocalProvider(LocalIndication provides HomeNoIndication) {
         MeloXHomeLayout(
             source = MusicSource.Netease,
+            onOpenSearch = onOpenSearch,
             account = account,
             blocks = blocks,
             refreshing = refreshing,
@@ -809,7 +815,7 @@ private fun HomeSongListDetail(
 }
 
 @Composable
-private fun ProviderHomeDataScreen(source: MusicSource, onOpenTool: (String) -> Unit) {
+private fun ProviderHomeDataScreen(source: MusicSource, onOpenTool: (String) -> Unit, onOpenSearch: () -> Unit = {}) {
     val onDetailSelected = rememberMeloXDetailSelection()
     val context = LocalContext.current.applicationContext
     val scope = rememberCoroutineScope()
@@ -901,6 +907,7 @@ private fun ProviderHomeDataScreen(source: MusicSource, onOpenTool: (String) -> 
         Box(Modifier.fillMaxSize().meloXPageRecede { homeRecede.value }) {
             MeloXHomeLayout(
                 source = source,
+                onOpenSearch = onOpenSearch,
                 account = accountUi,
                 blocks = blocks,
                 refreshing = refreshing,
@@ -957,6 +964,8 @@ private fun MeloXHomeLayout(
     // 当前打开的 collection key。被打开的那张卡片必须「退出」，否则
     // sharedElement 没有 enter/exit 可配对，封面不会 morph（官方范式）。
     selectedCollectionKey: String? = null,
+    // 首页右上角的搜索入口（原先挂在底栏的独立搜索键上）。
+    onOpenSearch: () -> Unit = {},
     // 由 host 顶层 SharedTransitionLayout 传入；为空时卡片不做共享元素。
     sharedTransitionScope: SharedTransitionScope? = null,
 ) {
@@ -985,6 +994,13 @@ private fun MeloXHomeLayout(
                         title = stringResource(R.string.tab_home),
                         contentPadding = PaddingValues(horizontal = 20.dp),
                         actions = {
+                            // Search moved here from the removed bottom-bar key.
+                            IconButton(onClick = onOpenSearch) {
+                                Icon(
+                                    Icons.Filled.Search,
+                                    contentDescription = stringResource(R.string.tab_search),
+                                )
+                            }
                             account?.let { HomeAccountButton(it) }
                         },
                     )

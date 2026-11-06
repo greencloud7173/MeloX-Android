@@ -4,6 +4,9 @@
 
 ## 未发布
 
+- 底栏改为 Material3 标准 `NavigationBar`：不透明（`surfaceContainer` + `tonalElevation`），图标换成 MD3 图标（选中实心 / 未选中描边），移除横向拖动收起、滚动联动收缩、水珠指示器与独立搜索键；搜索入口移到首页右上角。
+- 主题改用 Android 12+ 的莫奈取色（`dynamicLightColorScheme` / `dynamicDarkColorScheme`），低版本或无动态取色设备回退品牌配色。
+
 - 界面控件全部迁移到 Compose：悬浮歌词浮窗由 `LinearLayout`/`TextView` 改为 `ComposeView`（同一套圆角、描边、字号与拖动跟手逻辑），应用内提示由 `Toast` 改为主题层统一渲染的 Compose 胶囊提示。仅前端实现变化，歌词加载、播放器连接、设置读写等逻辑未改动。
 - **移除自研 iOS 风格控件层**：删除 `ui/glass`（约 4,400 行自绘 Liquid Glass 组件、背景折射、色调采样），控件一律改用 Material3 实现——
   `MeloXGlassButton`→`MeloXButton`、`MeloXGlassTextField`→`MeloXTextField`、`MeloXGlassToggle`→`MeloXSwitch`、

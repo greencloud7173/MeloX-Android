@@ -11,6 +11,8 @@ import androidx.compose.material3.Typography
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Surface
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -105,7 +107,16 @@ fun MeloXTheme(
     val view = LocalView.current
     val fontFamily = rememberMeloXFontFamily(context)
     val hotColors by MeloXHotStyles.colors.collectAsState()
-    val baseScheme = if (darkTheme) DarkColors else LightColors
+    // Monet: Android 12+ derives the whole scheme from the wallpaper. Older
+    // platforms (and the rare device without dynamic color) keep the brand
+    // palettes so the app never renders with a half-initialised scheme.
+    val baseScheme = when {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        }
+        darkTheme -> DarkColors
+        else -> LightColors
+    }
     val colorScheme = remember(baseScheme, hotColors, darkTheme) {
         baseScheme.withHotOverrides(hotColors, darkTheme)
     }
