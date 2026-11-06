@@ -111,7 +111,7 @@ fun MeloXTheme(
     // platforms (and the rare device without dynamic color) keep the brand
     // palettes so the app never renders with a half-initialised scheme.
     val baseScheme = when {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && MeloXSettingsRuntime.dynamicColorEnabled -> {
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
         darkTheme -> DarkColors

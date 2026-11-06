@@ -47,9 +47,17 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.AutoAwesome
+import androidx.compose.material.icons.outlined.CalendarMonth
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Podcasts
+import androidx.compose.material.icons.outlined.Whatshot
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -93,6 +101,7 @@ import org.json.JSONObject
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -1175,33 +1184,72 @@ private fun HomeQuickActionCard(
     perform: (String) -> Unit,
     modifier: Modifier,
 ) {
-    Column(
-        modifier = modifier.clickable(enabled = active == null) { perform(action.title) },
+    Card(
+        onClick = { perform(action.title) },
+        enabled = active == null,
+        modifier = modifier,
+        shape = MaterialTheme.shapes.medium,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+        ),
     ) {
-        Text(action.eyebrow.uppercase(), color = MaterialTheme.colorScheme.onBackground.copy(alpha = .55f), fontSize = 10.sp, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
-        Text(action.title, modifier = Modifier.padding(top = 2.dp), fontSize = 17.sp, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
-        Text(action.subtitle, modifier = Modifier.padding(top = 1.dp), color = MaterialTheme.colorScheme.onBackground.copy(alpha = .52f), fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-        Box(
-            Modifier
-                .fillMaxWidth()
-                .padding(top = 6.dp)
-                .aspectRatio(1.25f)
-                .clip(RoundedCornerShape(14.dp))
-                .background(Brush.linearGradient(action.colors)),
-            contentAlignment = Alignment.Center,
-        ) {
-            MeloXSymbolIcon(
-                symbol = action.symbol,
-                modifier = Modifier.fillMaxSize(),
-                color = Color.White.copy(alpha = .24f),
-                iconSize = 48.sp,
+        Column(Modifier.padding(14.dp)) {
+            Text(
+                action.eyebrow.uppercase(),
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.labelSmall,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
-            Text(action.title, modifier = Modifier.align(Alignment.BottomStart).padding(14.dp), color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            if (active == action.title) {
-                CircularProgressIndicator(Modifier.size(40.dp), color = Color.White, strokeWidth = 3.dp)
+            Text(
+                action.title,
+                modifier = Modifier.padding(top = 2.dp),
+                style = MaterialTheme.typography.titleMedium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Text(
+                action.subtitle,
+                modifier = Modifier.padding(top = 1.dp),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.bodySmall,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp)
+                    .aspectRatio(1.6f)
+                    .clip(MaterialTheme.shapes.small)
+                    .background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    imageVector = action.symbol.md3QuickActionIcon(),
+                    contentDescription = null,
+                    modifier = Modifier.size(40.dp),
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+                if (active == action.title) {
+                    CircularProgressIndicator(
+                        Modifier.size(32.dp),
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        strokeWidth = 3.dp,
+                    )
+                }
             }
         }
     }
+}
+
+private fun MeloXSymbol.md3QuickActionIcon(): ImageVector = when (this) {
+    MeloXSymbol.Calendar -> Icons.Outlined.CalendarMonth
+    MeloXSymbol.Flame -> Icons.Outlined.Whatshot
+    MeloXSymbol.Heart -> Icons.Outlined.FavoriteBorder
+    MeloXSymbol.RadioWaves -> Icons.Outlined.Podcasts
+    else -> Icons.Outlined.AutoAwesome
 }
 
 @Composable

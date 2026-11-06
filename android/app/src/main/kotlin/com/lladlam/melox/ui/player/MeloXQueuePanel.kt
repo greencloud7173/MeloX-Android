@@ -23,6 +23,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import com.lladlam.melox.ui.meloXEdgeOverscrollHaptic
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -341,7 +342,7 @@ private fun QueueModeButton(
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(12.dp))
-                        .background(Color(0xFF1C1C1E).copy(alpha = 0.88f))
+                        .background(MaterialTheme.colorScheme.surfaceContainer)
                         .padding(horizontal = 12.dp, vertical = 8.dp),
                 ) {
                     Text(

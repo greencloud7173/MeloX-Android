@@ -282,7 +282,7 @@ fun ProviderServicesScreen(
         Spacer(Modifier.size(26.dp))
 
         ServicesSectionLabel(stringResource(R.string.provider_sources))
-        MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
+        MeloXGroupedList() {
             MusicProviderSelectionStore.visibleSources().forEachIndexed { index, source ->
                 val account = accountManager.state(source)
                 MeloXListRow(
@@ -306,7 +306,7 @@ fun ProviderServicesScreen(
         Spacer(Modifier.size(24.dp))
         ServicesSectionLabel(stringResource(R.string.provider_current_account))
         PluginServiceSection()
-        MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
+        MeloXGroupedList() {
                 MeloXListRow(
                     title = currentSource.displayName,
                     subtitle = when {
@@ -359,7 +359,7 @@ fun ProviderServicesScreen(
         }
         if (currentSource == MusicSource.Local) {
             ServicesSectionLabel(stringResource(R.string.provider_local_library))
-            MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
+            MeloXGroupedList() {
                 MeloXListRow(
                     title = if (localScanBusy) stringResource(R.string.provider_scanning_local) else stringResource(R.string.provider_scan_device),
                     subtitle = stringResource(R.string.provider_scan_subtitle, localTrackCount),
@@ -401,7 +401,7 @@ fun ProviderServicesScreen(
             Spacer(Modifier.size(24.dp))
         }
         ServicesSectionLabel(stringResource(R.string.provider_third_party))
-        MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
+        MeloXGroupedList() {
             MeloXListRow(
                 title = "Jellyfin",
                 subtitle = if (accountManager.state(MusicSource.Jellyfin).loggedIn) stringResource(R.string.provider_jellyfin_connected) else stringResource(R.string.provider_jellyfin_connect_hint),
@@ -461,7 +461,7 @@ fun ProviderServicesScreen(
         if (thirdPartySourcesEnabled) {
             Spacer(Modifier.size(24.dp))
             ServicesSectionLabel(stringResource(R.string.provider_added_sources))
-            MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
+            MeloXGroupedList() {
                 MeloXListRow(
                     title = stringResource(R.string.provider_add_source),
                     subtitle = stringResource(R.string.provider_add_source_subtitle),
@@ -490,7 +490,7 @@ fun ProviderServicesScreen(
 
         Spacer(Modifier.size(24.dp))
         ServicesSectionLabel(stringResource(R.string.provider_cross_search))
-        MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
+        MeloXGroupedList() {
             MeloXListRow(
                 title = stringResource(R.string.provider_unified_title),
                 subtitle = stringResource(R.string.provider_unified_subtitle),

@@ -2,6 +2,7 @@ package com.lladlam.melox.ui.controls
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,8 +25,11 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -37,6 +41,8 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
@@ -144,14 +150,14 @@ fun MeloXIconButton(
 @Composable
 fun MeloXCard(
     modifier: Modifier = Modifier,
-    shape: Shape = MeloXShapes.card,
+    shape: Shape = MaterialTheme.shapes.medium,
     material: MeloXSurfaceTone = MeloXSurfaceTone.Regular,
     surfaceColor: Color = Color.Unspecified,
     onClick: (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val colors = CardDefaults.cardColors(
-        containerColor = if (surfaceColor != Color.Unspecified) surfaceColor else MaterialTheme.colorScheme.surfaceVariant,
+        containerColor = if (surfaceColor != Color.Unspecified) surfaceColor else MaterialTheme.colorScheme.surfaceContainerLow,
     )
     if (onClick != null) {
         Card(onClick = onClick, modifier = modifier, shape = shape, colors = colors) {
@@ -178,6 +184,7 @@ fun MeloXTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     onFocusChanged: ((Boolean) -> Unit)? = null,
+    shape: Shape = RoundedCornerShape(28.dp),
 ) {
     OutlinedTextField(
         value = value,
@@ -195,6 +202,7 @@ fun MeloXTextField(
         trailingIcon = trailingContent,
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions,
+        shape = shape,
     )
 }
 
@@ -298,16 +306,21 @@ fun MeloXTopBar(
 @Composable
 fun MeloXGroupedList(
     modifier: Modifier = Modifier,
-    surfaceColor: Color = MaterialTheme.colorScheme.surfaceVariant,
+    surfaceColor: Color = Color.Unspecified,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(MeloXShapes.largeCard)
-            .background(surfaceColor),
-        content = content,
-    )
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        shape = MeloXShapes.largeCard,
+        color = if (surfaceColor != Color.Unspecified) {
+            surfaceColor
+        } else {
+            MaterialTheme.colorScheme.surfaceContainerLow
+        },
+        contentColor = MaterialTheme.colorScheme.onSurface,
+    ) {
+        Column(content = content)
+    }
 }
 
 @Composable
@@ -322,66 +335,59 @@ fun MeloXListRow(
     onClick: (() -> Unit)? = null,
     showTopSeparator: Boolean = true,
 ) {
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(modifier.fillMaxWidth()) {
         if (showTopSeparator) {
             HorizontalDivider(
-                modifier = Modifier.padding(horizontal = 16.dp),
+                modifier = Modifier.padding(start = 16.dp),
                 thickness = 1.dp,
-                color = MaterialTheme.colorScheme.outlineVariant,
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
             )
         }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(if (subtitle == null) 56.dp else 68.dp)
-                .then(
-                    if (onClick != null) {
-                        Modifier.combinedClickable(onClick = onClick, onLongClick = null)
-                    } else {
-                        Modifier
-                    },
-                )
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            leading?.let {
-                it()
-                Spacer(Modifier.width(12.dp))
-            }
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        ListItem(
+            headlineContent = {
                 Text(
-                    title,
-                    style = MeloXTypography.body.inheritAmbientFamily(),
+                    text = title,
+                    style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
-                subtitle?.let {
+            },
+            supportingContent = subtitle?.let {
+                {
                     Text(
-                        it,
-                        style = MeloXTypography.subheadline.inheritAmbientFamily(),
+                        text = it,
+                        style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                     )
                 }
-            }
-            detail?.let {
-                Text(
-                    it,
-                    style = MeloXTypography.subheadline.inheritAmbientFamily(),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-            trailing?.invoke()
-            if (onClick != null && trailing == null) {
-                Spacer(Modifier.width(8.dp))
-                MeloXSymbolIcon(
-                    MeloXSymbol.ChevronRight,
-                    Modifier.size(20.dp),
-                    chevronTint,
-                    iconSize = 19.sp,
-                )
-            }
-        }
+            },
+            leadingContent = leading,
+            trailingContent = {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    detail?.let {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    trailing?.invoke()
+                    if (onClick != null && trailing == null) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            contentDescription = null,
+                            tint = chevronTint,
+                        )
+                    }
+                }
+            },
+            colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+            modifier = when {
+                onClick == null -> Modifier
+                else -> Modifier.clickable(onClick = onClick)
+            },
+        )
     }
 }
 

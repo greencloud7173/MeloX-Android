@@ -161,7 +161,13 @@ fun Modifier.meloXContentSurface(
     surfaceColor: Color = Color.Unspecified,
 ): Modifier = this
     .clip(shape)
-    .background(if (surfaceColor != Color.Unspecified) surfaceColor else MaterialTheme.colorScheme.surface)
+    .background(
+        if (surfaceColor != Color.Unspecified) {
+            surfaceColor
+        } else {
+            MaterialTheme.colorScheme.surfaceContainerLow
+        },
+    )
 
 @Composable
 fun Modifier.meloXBottomBarSurface(

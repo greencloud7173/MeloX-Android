@@ -36,7 +36,7 @@ class PluginTrackLinkActivity : ComponentActivity() {
             var message by remember { mutableStateOf<String?>(null) }
             Column(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding().padding(20.dp)) {
                 MeloXTopBar(title = "音乐源歌曲")
-                MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
+                MeloXGroupedList() {
                     MeloXListRow(title = track.title, subtitle = "${provider?.displayName ?: "来源缺失或已禁用"}\n${track.id.sourceId.value}\n${track.id.value}", onClick = {})
                 }
                 Button(enabled = provider?.supports(MusicCapability.Playback) == true, onClick = {

@@ -26,11 +26,11 @@ object MeloXSystemColors {
     val Separator = Color(0x4A3C3C43)
 }
 
-/** Shared corner geometry, expressed with plain Compose shapes. */
+/** Shared corner geometry, aligned with the Material3 shape scale. */
 object MeloXShapes {
     val capsule: Shape = RoundedCornerShape(50)
-    val compact: Shape = RoundedCornerShape(16.dp)
-    val card: Shape = RoundedCornerShape(22.dp)
+    val compact: Shape = RoundedCornerShape(12.dp)
+    val card: Shape = RoundedCornerShape(16.dp)
     val largeCard: Shape = RoundedCornerShape(28.dp)
     val sheet: Shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
     val circle: Shape = CircleShape

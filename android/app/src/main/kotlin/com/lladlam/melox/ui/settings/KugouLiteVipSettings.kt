@@ -113,7 +113,7 @@ internal fun KugouLiteVipSettings() {
         onDispose { lifecycle.removeObserver(observer) }
     }
 
-    MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
+    MeloXGroupedList() {
         MeloXListRow(
             title = "酷狗概念版账号",
             subtitle = if (session.isLoggedIn) "账号 ID：${session.userId}" else "登录概念版账号后即可签到领会员",
@@ -144,7 +144,7 @@ internal fun KugouLiteVipSettings() {
     Spacer(Modifier.height(18.dp))
     Text("每日签到", Modifier.padding(start = 8.dp, bottom = 8.dp), fontSize = 13.sp,
         color = MaterialTheme.colorScheme.onBackground.copy(alpha = .48f))
-    MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
+    MeloXGroupedList() {
         MeloXListRow(
             title = "今日签到",
             subtitle = today,

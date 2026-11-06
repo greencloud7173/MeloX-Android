@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -91,13 +92,13 @@ fun MeloXTransientMessageOverlay(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .widthIn(max = 420.dp)
                 .clip(MeloXTransientMessageShape)
-                .background(Color(0xE626262C))
+                .background(MaterialTheme.colorScheme.inverseSurface)
                 .border(1.dp, Color(0x33FFFFFF), MeloXTransientMessageShape)
                 .padding(horizontal = 18.dp, vertical = 12.dp),
         ) {
             Text(
                 text = shownText,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.inverseOnSurface,
                 fontSize = 14.sp,
                 lineHeight = 19.sp,
                 textAlign = TextAlign.Center,

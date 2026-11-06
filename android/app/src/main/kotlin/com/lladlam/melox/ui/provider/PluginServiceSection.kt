@@ -24,7 +24,7 @@ internal fun PluginServiceSection() {
     val selected = remember(revision) { MusicProviderSelectionStore.selectedSourceId(context) }
     var expanded by remember { mutableStateOf<String?>(null) }
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
+        MeloXGroupedList() {
             if (selected.builtIn == null && selected !in plugins) {
                 MeloXListRow(title = "所选来源缺失", subtitle = selected.value, onClick = {})
             }

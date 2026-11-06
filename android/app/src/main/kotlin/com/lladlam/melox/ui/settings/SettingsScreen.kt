@@ -53,6 +53,44 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Slider
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Apps
+import androidx.compose.material.icons.outlined.AutoAwesome
+import androidx.compose.material.icons.outlined.Block
+import androidx.compose.material.icons.outlined.BugReport
+import androidx.compose.material.icons.outlined.CardGiftcard
+import androidx.compose.material.icons.outlined.Cast
+import androidx.compose.material.icons.outlined.CloudSync
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Download
+import androidx.compose.material.icons.outlined.Dashboard
+import androidx.compose.material.icons.outlined.Devices
+import androidx.compose.material.icons.outlined.Extension
+import androidx.compose.material.icons.outlined.Fullscreen
+import androidx.compose.material.icons.outlined.Gavel
+import androidx.compose.material.icons.outlined.Groups
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.MailOutline
+import androidx.compose.material.icons.outlined.MenuBook
+import androidx.compose.material.icons.outlined.Mic
+import androidx.compose.material.icons.outlined.Palette
+import androidx.compose.material.icons.outlined.PictureInPictureAlt
+import androidx.compose.material.icons.outlined.MusicNote
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.PlayCircle
+import androidx.compose.material.icons.outlined.Podcasts
+import androidx.compose.material.icons.outlined.Public
+import androidx.compose.material.icons.outlined.Science
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Shield
+import androidx.compose.material.icons.outlined.Storage
+import androidx.compose.material.icons.outlined.Subtitles
+import androidx.compose.material.icons.outlined.Widgets
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -71,6 +109,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -167,7 +206,6 @@ import com.lladlam.melox.ui.layout.rememberMeloXStableStatusBarHeight
 import com.lladlam.melox.ui.controls.MeloXSymbol
 import com.lladlam.melox.ui.controls.MeloXSymbolIcon
 import com.lladlam.melox.ui.controls.MeloXSymbolVariant
-import com.lladlam.melox.ui.controls.MeloXSystemColors
 import com.lladlam.melox.ui.controls.meloXContentSurface
 import com.lladlam.melox.ui.controls.meloXButtonSurface
 import com.lladlam.melox.ui.legal.MELOX_LEGAL_VERSION
@@ -220,6 +258,36 @@ enum class SettingsRoute(private val fallbackTitle: String, private val titleRes
 
     val title: String
         @Composable get() = if (titleRes == 0) fallbackTitle else stringResource(titleRes)
+}
+
+/** Material3 replacement for the SF-style glyphs still named in the settings data. */
+private fun MeloXSymbol.md3SettingsIcon(): ImageVector = when (this) {
+    MeloXSymbol.Person -> Icons.Outlined.Person
+    MeloXSymbol.MusicNote -> Icons.Outlined.MusicNote
+    MeloXSymbol.Storage -> Icons.Outlined.Storage
+    MeloXSymbol.Info -> Icons.Outlined.Info
+    MeloXSymbol.Download -> Icons.Outlined.Download
+    MeloXSymbol.Trash -> Icons.Outlined.Delete
+    MeloXSymbol.Plus -> Icons.Outlined.Add
+    MeloXSymbol.Book -> Icons.Outlined.MenuBook
+    MeloXSymbol.Apps -> Icons.Outlined.Apps
+    MeloXSymbol.AutoMix -> Icons.Outlined.AutoAwesome
+    MeloXSymbol.RadioWaves -> Icons.Outlined.Podcasts
+    else -> Icons.Outlined.Settings
+}
+
+@Composable
+private fun SettingsIcon(
+    symbol: MeloXSymbol,
+    modifier: Modifier = Modifier.size(24.dp),
+    color: Color = MaterialTheme.colorScheme.primary,
+) {
+    Icon(
+        imageVector = symbol.md3SettingsIcon(),
+        contentDescription = null,
+        modifier = modifier,
+        tint = color,
+    )
 }
 
 private data class SettingsItem(
@@ -394,18 +462,33 @@ private fun SettingsSearchField(value: String, onValueChange: (String) -> Unit) 
         onValueChange = onValueChange,
         modifier = Modifier.fillMaxWidth(),
         leadingContent = {
-            MeloXSymbolIcon(
-                symbol = MeloXSymbol.Search,
-                modifier = Modifier.size(20.dp),
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = .55f),
+            Icon(
+                imageVector = Icons.Filled.Search,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         },
-        placeholder = { Text(stringResource(R.string.settings_search_placeholder), color = MaterialTheme.colorScheme.onSurface.copy(alpha = .42f), fontSize = 16.sp) },
-        textStyle = androidx.compose.ui.text.TextStyle(
-            color = MaterialTheme.colorScheme.onSurface,
-            fontSize = 16.sp,
-            lineHeight = 21.sp,
-        ),
+        trailingContent = if (value.isNotEmpty()) {
+            {
+                IconButton(onClick = { onValueChange("") }) {
+                    Icon(
+                        imageVector = Icons.Filled.Clear,
+                        contentDescription = stringResource(R.string.search_clear),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+        } else {
+            null
+        },
+        placeholder = {
+            Text(
+                stringResource(R.string.settings_search_placeholder),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+        },
+        textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface),
     )
 }
 
@@ -416,14 +499,14 @@ private fun SettingsAccountCard(
     onOpenAccount: (() -> Unit)?,
     onOpenServices: (() -> Unit)?,
 ) {
-    val accent = com.lladlam.melox.ui.controls.MeloXSystemColors.Red
+    val accent = MaterialTheme.colorScheme.primary
     Text(
         stringResource(R.string.accessibility_account),
         modifier = Modifier.padding(start = 8.dp, bottom = 8.dp),
         fontSize = 13.sp,
         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.48f),
     )
-    MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
+    MeloXGroupedList() {
         when {
             session.isLoggedIn && session.profile != null -> {
                 val profile = session.profile!!
@@ -444,7 +527,7 @@ private fun SettingsAccountCard(
             )
             else -> MeloXListRow(
                 title = stringResource(R.string.app_login_netease),
-                leading = { MeloXSymbolIcon(MeloXSymbol.Person, Modifier.size(30.dp), accent, MeloXSymbolVariant.Fill) },
+                leading = { SettingsIcon(MeloXSymbol.Person, Modifier.size(30.dp), accent) },
                 chevronTint = accent,
                  onClick = onOpenAccount ?: onLogin,
                 showTopSeparator = false,
@@ -453,7 +536,7 @@ private fun SettingsAccountCard(
         if (onOpenServices != null) {
             MeloXListRow(
                 title = stringResource(R.string.tab_services),
-                leading = { MeloXSymbolIcon(MeloXSymbol.MusicNote, Modifier.size(30.dp), accent) },
+                leading = { SettingsIcon(MeloXSymbol.MusicNote, Modifier.size(30.dp), accent) },
                 chevronTint = accent,
                 onClick = onOpenServices,
                 showTopSeparator = true,
@@ -464,22 +547,50 @@ private fun SettingsAccountCard(
 
 @Composable
 private fun SettingsSectionCard(section: SettingsSection, onOpen: (SettingsRoute) -> Unit) {
-    val accent = com.lladlam.melox.ui.controls.MeloXSystemColors.Red
-    MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
+    MeloXGroupedList {
         section.items.forEach { item ->
             MeloXListRow(
                 title = item.route.title,
                 leading = {
-                    Box(Modifier.size(28.dp), contentAlignment = Alignment.Center) {
-                        MeloXActionIcon(item.symbol, Modifier.size(22.dp), accent)
-                    }
+                    Icon(
+                        imageVector = item.route.md3Icon(),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
                 },
-                chevronTint = accent,
                 onClick = { onOpen(item.route) },
                 showTopSeparator = item != section.items.first(),
             )
         }
     }
+}
+
+/** Material3 icon for each settings destination. */
+private fun SettingsRoute.md3Icon(): ImageVector = when (this) {
+    SettingsRoute.Playback -> Icons.Outlined.PlayCircle
+    SettingsRoute.PlayerAppearance -> Icons.Outlined.Palette
+    SettingsRoute.Lyrics -> Icons.Outlined.Subtitles
+    SettingsRoute.SystemPlayback -> Icons.Outlined.Cast
+    SettingsRoute.SkylineLyrics -> Icons.Outlined.Fullscreen
+    SettingsRoute.FloatingLyrics -> Icons.Outlined.PictureInPictureAlt
+    SettingsRoute.RearDisplay -> Icons.Outlined.Devices
+    SettingsRoute.Plugins -> Icons.Outlined.Extension
+    SettingsRoute.ContentFeatures -> Icons.Outlined.Widgets
+    SettingsRoute.Blocklist -> Icons.Outlined.Block
+    SettingsRoute.Recognition -> Icons.Outlined.Mic
+    SettingsRoute.Messages -> Icons.Outlined.MailOutline
+    SettingsRoute.ListenTogether -> Icons.Outlined.Groups
+    SettingsRoute.KugouLiteVip -> Icons.Outlined.CardGiftcard
+    SettingsRoute.Content -> Icons.Outlined.Public
+    SettingsRoute.Storage -> Icons.Outlined.Storage
+    SettingsRoute.TabLayout -> Icons.Outlined.Dashboard
+    SettingsRoute.General -> Icons.Outlined.Settings
+    SettingsRoute.RemoteConfig -> Icons.Outlined.CloudSync
+    SettingsRoute.About -> Icons.Outlined.Info
+    SettingsRoute.Legal -> Icons.Outlined.Gavel
+    SettingsRoute.Privacy -> Icons.Outlined.Shield
+    SettingsRoute.Developer -> Icons.Outlined.BugReport
+    SettingsRoute.Experimental -> Icons.Outlined.Science
 }
 
 @Composable
@@ -556,14 +667,14 @@ private fun LegalSettings(context: android.content.Context) {
         }
     }
     Spacer(Modifier.height(10.dp))
-    MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
+    MeloXGroupedList() {
         MeloXListRow(
             title = stringResource(R.string.legal_privacy),
             leading = {
-                MeloXSymbolIcon(
+                SettingsIcon(
                     MeloXSymbol.Info,
                     Modifier.size(24.dp),
-                    MeloXSystemColors.Blue,
+                    MaterialTheme.colorScheme.primary,
                 )
             },
             onClick = { selectedDocument = MeloXLegalDocument.PrivacyPolicy },
@@ -572,10 +683,10 @@ private fun LegalSettings(context: android.content.Context) {
         MeloXListRow(
             title = stringResource(R.string.settings_legal_disclaimer),
             leading = {
-                MeloXSymbolIcon(
+                SettingsIcon(
                     MeloXSymbol.Book,
                     Modifier.size(24.dp),
-                    MeloXSystemColors.Blue,
+                    MaterialTheme.colorScheme.primary,
                 )
             },
             onClick = { selectedDocument = MeloXLegalDocument.Disclaimer },
@@ -584,10 +695,10 @@ private fun LegalSettings(context: android.content.Context) {
         MeloXListRow(
             title = stringResource(R.string.legal_cloud),
             leading = {
-                MeloXSymbolIcon(
+                SettingsIcon(
                     MeloXSymbol.Info,
                     Modifier.size(24.dp),
-                    MeloXSystemColors.Blue,
+                    MaterialTheme.colorScheme.primary,
                 )
             },
             onClick = { selectedDocument = MeloXLegalDocument.CloudControlPrivacy },
@@ -596,10 +707,10 @@ private fun LegalSettings(context: android.content.Context) {
         MeloXListRow(
             title = stringResource(R.string.settings_legal_third_party),
             leading = {
-                MeloXSymbolIcon(
+                SettingsIcon(
                     MeloXSymbol.Book,
                     Modifier.size(24.dp),
-                    MeloXSystemColors.Blue,
+                    MaterialTheme.colorScheme.primary,
                 )
             },
             onClick = { selectedDocument = MeloXLegalDocument.ThirdPartyMusicSources },
@@ -1157,20 +1268,20 @@ private fun ExperimentalSettings(context: android.content.Context, source: Music
             MeloXListRow(
                 title = stringResource(R.string.account_netease),
                 subtitle = if (NeteaseSessionStore.containsMusicU(neteaseCookie)) stringResource(R.string.provider_logged_in) else stringResource(R.string.provider_not_signed_in),
-                leading = { MeloXSymbolIcon(MeloXSymbol.MusicNote, Modifier.size(24.dp), MaterialTheme.colorScheme.primary) },
+                leading = { SettingsIcon(MeloXSymbol.MusicNote, Modifier.size(24.dp), MaterialTheme.colorScheme.primary) },
                 onClick = { neteaseLoginLauncher.launch(MeloXNeteaseLoginActivity.createIntent(context, PlaybackAccountSlot.Playback)) },
                 showTopSeparator = false,
             )
             MeloXListRow(
                 title = stringResource(R.string.settings_qq_music),
                 subtitle = if (qqLoggedIn) stringResource(R.string.provider_logged_in) else stringResource(R.string.provider_not_signed_in),
-                leading = { MeloXSymbolIcon(MeloXSymbol.MusicNote, Modifier.size(24.dp), MaterialTheme.colorScheme.primary) },
+                leading = { SettingsIcon(MeloXSymbol.MusicNote, Modifier.size(24.dp), MaterialTheme.colorScheme.primary) },
                 onClick = { showQQLogin = true },
             )
             MeloXListRow(
                 title = stringResource(R.string.settings_apple_music),
                 subtitle = stringResource(R.string.settings_apple_second_account),
-                leading = { MeloXSymbolIcon(MeloXSymbol.MusicNote, Modifier.size(24.dp), MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)) },
+                leading = { SettingsIcon(MeloXSymbol.MusicNote, Modifier.size(24.dp), MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)) },
                 onClick = null,
             )
         }
@@ -1751,13 +1862,20 @@ private fun PlayerAppearanceSettings(context: android.content.Context) {
         }
     }
     Spacer(Modifier.height(10.dp))
-    SettingsToggleRow(
-        context,
-        stringResource(R.string.settings_frosted_glass),
-        "player_frosted_glass",
-        false,
-        stringResource(R.string.settings_frosted_glass_note),
-    )
+    SettingsGlassGroup {
+        MeloXDropdown(
+            title = "取色方式",
+            selected = if (MeloXSettingsRuntime.dynamicColorEnabled) "monet" else "brand",
+            items = listOf(
+                "monet" to "动态取色（莫奈）",
+                "brand" to "MeloX 品牌配色",
+            ),
+            onSelected = { mode ->
+                MeloXSettingsPreferences.setBoolean(context, "theme_dynamic_color", mode == "monet")
+            },
+            grouped = true,
+        )
+    }
     Spacer(Modifier.height(10.dp))
     SettingsGlassGroup {
         MeloXDropdown(
@@ -1803,7 +1921,7 @@ private fun PlayerAppearanceSettings(context: android.content.Context) {
                         contentAlignment = Alignment.Center,
                     ) {
                         if (customBackgroundPath == null) {
-                            MeloXSymbolIcon(
+                            SettingsIcon(
                                 MeloXSymbol.Plus,
                                 Modifier.size(18.dp),
                                 MaterialTheme.colorScheme.onSurface.copy(alpha = .55f),
@@ -1900,17 +2018,6 @@ private fun PlayerAppearanceSettings(context: android.content.Context) {
             "immersive_playback",
             false,
             "播放器全屏时自动隐藏顶部系统状态栏",
-            grouped = true,
-        )
-    }
-    Spacer(Modifier.height(10.dp))
-    SettingsGlassGroup {
-        SettingsToggleRow(
-            context,
-            "深色模式保持暗色底栏",
-            "bottom_bar_lock_dark_in_dark_mode",
-            true,
-            "深色模式下底栏不再根据背后内容自适应翻成浅色；浅色模式不受影响。",
             grouped = true,
         )
     }
@@ -2760,7 +2867,7 @@ private fun ListenTogetherSettings(context: android.content.Context) {
             MeloXListRow(
                 title = stringResource(R.string.settings_listen_solo),
                 subtitle = stringResource(R.string.settings_listen_solo_note),
-                leading = { MeloXSymbolIcon(MeloXSymbol.Person, Modifier.size(24.dp), MeloXSystemColors.Red) },
+                leading = { SettingsIcon(MeloXSymbol.Person, Modifier.size(24.dp), MaterialTheme.colorScheme.primary) },
                 trailing = {
                     MeloXSwitch(
                         checked = state.solo,
@@ -2840,7 +2947,7 @@ private fun StorageSettings(context: android.content.Context) {
     val deviceFraction = if (usage.deviceTotal > 0L) deviceUsed.toFloat() / usage.deviceTotal else 0f
     Box(Modifier.fillMaxWidth().meloXContentSurface(MeloXShapes.largeCard).padding(20.dp)) {
         Column(verticalArrangement = Arrangement.spacedBy(9.dp)) {
-            MeloXSymbolIcon(MeloXSymbol.Storage, Modifier.size(30.dp), MaterialTheme.colorScheme.onSurface)
+            SettingsIcon(MeloXSymbol.Storage, Modifier.size(30.dp), MaterialTheme.colorScheme.onSurface)
             Text(stringResource(R.string.settings_storage_managed), color = MaterialTheme.colorScheme.onSurface.copy(alpha = .55f))
             Text(if (loading) stringResource(R.string.settings_storage_calculating) else formatBytes(usage.managed), fontSize = 34.sp, fontWeight = FontWeight.Bold)
             LinearProgressIndicator(
@@ -3020,7 +3127,7 @@ private fun StorageUsageRow(symbol: MeloXSymbol, title: String, bytes: Long, sho
     MeloXListRow(
         title = title,
         detail = formatBytes(bytes),
-        leading = { MeloXSymbolIcon(symbol, Modifier.size(22.dp), MeloXSystemColors.Red) },
+        leading = { SettingsIcon(symbol, Modifier.size(22.dp), MaterialTheme.colorScheme.primary) },
         showTopSeparator = showSeparator,
     )
 }
@@ -3029,7 +3136,7 @@ private fun StorageUsageRow(symbol: MeloXSymbol, title: String, bytes: Long, sho
 private fun StorageActionRow(symbol: MeloXSymbol, title: String, showSeparator: Boolean, onClick: () -> Unit) {
     MeloXListRow(
         title = title,
-        leading = { MeloXSymbolIcon(symbol, Modifier.size(22.dp), MeloXSystemColors.Red) },
+        leading = { SettingsIcon(symbol, Modifier.size(22.dp), MaterialTheme.colorScheme.primary) },
         onClick = onClick,
         showTopSeparator = showSeparator,
     )
@@ -4102,7 +4209,7 @@ private fun SettingsGlassGroup(content: @Composable ColumnScope.() -> Unit) {
     val rowIndex = remember { mutableIntStateOf(0) }
     rowIndex.intValue = 0
     CompositionLocalProvider(LocalSettingsGroupRowIndex provides rowIndex) {
-        MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surface, content = content)
+        MeloXGroupedList(content = content)
     }
 }
 

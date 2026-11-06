@@ -47,7 +47,15 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -132,7 +140,6 @@ import com.lladlam.melox.ui.controls.meloXContentSurface
 import com.lladlam.melox.ui.controls.MeloXTopBar
 import com.lladlam.melox.ui.controls.MeloXActionIcon
 import com.lladlam.melox.ui.controls.MeloXSymbol
-import com.lladlam.melox.ui.controls.MeloXSearchBackMorphIcon
 import com.lladlam.melox.ui.controls.MeloXSymbolIcon
 import com.lladlam.melox.ui.controls.MeloXSystemColors
 import com.lladlam.melox.ui.controls.MeloXSwipeAction
@@ -181,6 +188,9 @@ private const val OverlayTransitionSettleMillis = 60L
 // ≈0.27~0.34s、标称 350ms；再留 80ms 确保「组合真页面」发生在动画**完全落定之后**，
 // 不会和最后几帧抢 UI 线程。⚠ 走 `meloXSettledMillis` ⇒ 自动跟随系统动画缩放。
 private const val SubPageComposeSettleMillis = 80L
+private const val SEARCH_DISCOVERY_CARD_LIMIT = 6
+private const val SEARCH_CATEGORY_CARD_LIMIT = 8
+
 private val SearchCategories = listOf("排行榜", "播客", "华语", "欧美", "日语", "韩语", "粤语", "流行", "摇滚", "民谣", "电子", "说唱", "R&B/Soul", "古典", "ACG", "影视原声", "学习", "工作", "放松", "夜晚")
 
 private sealed interface ProviderSearchDestination {
@@ -1085,15 +1095,13 @@ private fun SearchField(
         modifier = Modifier
             .padding(horizontal = 20.dp),
         leadingContent = {
-            MeloXSearchBackMorphIcon(
-                focused = focused,
-                modifier = Modifier
-                    .size(44.dp)
-                    .clickable(role = Role.Button, onClick = onBack)
-                    .padding(11.dp),
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = .58f),
-                contentDescription = stringResource(if (focused) R.string.action_back else R.string.tab_search),
-            )
+            IconButton(onClick = onBack) {
+                Icon(
+                    imageVector = if (focused) Icons.AutoMirrored.Filled.ArrowBack else Icons.Filled.Search,
+                    contentDescription = stringResource(if (focused) R.string.action_back else R.string.tab_search),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         },
         placeholder = {
             Text(
@@ -1112,10 +1120,10 @@ private fun SearchField(
                             .semantics { contentDescription = "搜索" },
                         contentAlignment = Alignment.Center,
                     ) {
-                        MeloXSymbolIcon(
-                            symbol = MeloXSymbol.Search,
-                            modifier = Modifier.size(18.dp),
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = .56f),
+                        Icon(
+                            imageVector = Icons.Filled.Search,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                     Box(
@@ -1125,10 +1133,10 @@ private fun SearchField(
                             .semantics { contentDescription = clearDescription },
                         contentAlignment = Alignment.Center,
                     ) {
-                        MeloXSymbolIcon(
-                            symbol = MeloXSymbol.Xmark,
-                            modifier = Modifier.size(15.dp),
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = .56f),
+                        Icon(
+                            imageVector = Icons.Filled.Close,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                 } else {
@@ -1143,10 +1151,10 @@ private fun SearchField(
                     ) {
                         // Microphone 已在 MeloXSymbolIcon 里被换成 ic_melox_mic
                         // （同 Settings 的品牌矢量分支），这里写法与相邻图标保持一致即可。
-                        MeloXSymbolIcon(
-                            symbol = MeloXSymbol.Microphone,
-                            modifier = Modifier.size(18.dp),
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = .56f),
+                        Icon(
+                            imageVector = Icons.Filled.Mic,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                 }
@@ -1216,7 +1224,7 @@ private fun SearchDiscovery(
             item { Text(stringResource(R.string.search_trending), modifier = Modifier.padding(start = 20.dp, top = 14.dp, bottom = 12.dp), fontSize = 24.sp, fontWeight = FontWeight.Bold) }
             item {
                 LazyRow(contentPadding = PaddingValues(horizontal = 20.dp), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                    items(recommendations, key = { it.id }) { p ->
+                    items(recommendations.take(SEARCH_DISCOVERY_CARD_LIMIT), key = { it.id }) { p ->
                         val destinationKey = SearchDetailDestination.Netease(p.asSearchItem()).key
                         SearchCardVisibility(
                             destinationKey = destinationKey,
@@ -1253,7 +1261,7 @@ private fun SearchDiscovery(
             }
         }
         item { Text(stringResource(R.string.search_browse), modifier = Modifier.padding(start = 20.dp, top = 26.dp, bottom = 12.dp), fontSize = 24.sp, fontWeight = FontWeight.Bold) }
-        items(SearchCategories.filter { it != "播客" || MeloXSettingsRuntime.podcastsEnabled }.chunked(categoryColumns)) { pair ->
+        items(SearchCategories.filter { it != "播客" || MeloXSettingsRuntime.podcastsEnabled }.take(SEARCH_CATEGORY_CARD_LIMIT).chunked(categoryColumns)) { pair ->
             Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 6.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 pair.forEach { category -> SearchCategoryCard(category, Modifier.weight(1f)) { onCategory(category) } }
                 repeat(categoryColumns - pair.size) { Spacer(Modifier.weight(1f)) }
@@ -1281,7 +1289,7 @@ private fun ProviderSearchDiscovery(
             item { Text(stringResource(R.string.search_trending), modifier = Modifier.padding(start = 20.dp, top = 14.dp, bottom = 12.dp), fontSize = 24.sp, fontWeight = FontWeight.Bold) }
             item {
                 LazyRow(contentPadding = PaddingValues(horizontal = 20.dp), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                    items(recommendations, key = { "${it.id.sourceId.value}:${it.id.value}" }) { p ->
+                    items(recommendations.take(SEARCH_DISCOVERY_CARD_LIMIT), key = { "${it.id.sourceId.value}:${it.id.value}" }) { p ->
                         val destinationKey = SearchDetailDestination.Provider(ProviderSearchDestination.Playlist(p)).key
                         SearchCardVisibility(
                             destinationKey = destinationKey,
@@ -1319,18 +1327,17 @@ private fun ProviderSearchDiscovery(
 
 @Composable
 private fun SearchCategoryCard(title: String, modifier: Modifier, onClick: () -> Unit) {
-    val tint = when (title.hashCode().mod(5)) {
-        0 -> Color(0xFFE76F51); 1 -> Color(0xFF7B61FF); 2 -> Color(0xFF2A9D8F); 3 -> Color(0xFFE84A8A); else -> Color(0xFF3A86FF)
+    Surface(
+        onClick = onClick,
+        modifier = modifier.height(96.dp),
+        shape = MaterialTheme.shapes.medium,
+        color = MaterialTheme.colorScheme.secondaryContainer,
+        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+    ) {
+        Box(Modifier.fillMaxSize().padding(14.dp), contentAlignment = Alignment.BottomStart) {
+            Text(title, style = MaterialTheme.typography.titleMedium)
+        }
     }
-    Box(
-        modifier
-            .height(96.dp)
-            .clip(MeloXShapes.compact)
-            .background(tint)
-            .clickable(onClick = onClick)
-            .padding(14.dp),
-        contentAlignment = Alignment.BottomStart,
-    ) { Text(title, color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold) }
 }
 
 @Composable

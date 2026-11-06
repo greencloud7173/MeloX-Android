@@ -35,7 +35,7 @@ internal fun YouTubeAccountControls(onRelogin: () -> Unit) {
         YouTubeSessionStore.revalidate(context)
     }
     if (!session.isLoggedIn) return
-    MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
+    MeloXGroupedList() {
         MeloXListRow(
             title = stringResource(R.string.youtube_channel),
             subtitle = session.accountName,

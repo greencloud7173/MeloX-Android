@@ -117,6 +117,9 @@ object MeloXSettingsRuntime {
         internal set
     var frostedGlassEnabled by mutableStateOf(false)
         internal set
+    /** Monet dynamic color (Android 12+). Off = MeloX brand palettes. */
+    var dynamicColorEnabled by mutableStateOf(true)
+        internal set
     /**
      * 深色模式下**锁死暗色底栏**：关闭底栏按背后内容自适应翻成浅色的逻辑。
      *
@@ -493,6 +496,7 @@ object MeloXSettingsRuntime {
             MeloXSettingsPreferences.playerTransitionDurationMs(app)
         playerBackgroundIsolationEnabled = MeloXSettingsPreferences.boolean(app, "player_background_isolation", true)
         frostedGlassEnabled = MeloXSettingsPreferences.boolean(app, "player_frosted_glass", false)
+        dynamicColorEnabled = MeloXSettingsPreferences.boolean(app, "theme_dynamic_color", true)
         bottomBarLockDarkInDarkMode = MeloXSettingsPreferences.boolean(app, "bottom_bar_lock_dark_in_dark_mode", true)
         keepScreenOn = MeloXSettingsPreferences.boolean(app, "player_keep_screen_on", false)
         screenAwakeMode = runCatching {
@@ -817,6 +821,7 @@ object MeloXSettingsPreferences {
             "reduce_motion" -> MeloXSettingsRuntime.reduceMotion = value
             "player_background_isolation" -> MeloXSettingsRuntime.playerBackgroundIsolationEnabled = value
             "player_frosted_glass" -> MeloXSettingsRuntime.frostedGlassEnabled = value
+            "theme_dynamic_color" -> MeloXSettingsRuntime.dynamicColorEnabled = value
             "bottom_bar_lock_dark_in_dark_mode" -> MeloXSettingsRuntime.bottomBarLockDarkInDarkMode = value
             "player_keep_screen_on" -> MeloXSettingsRuntime.keepScreenOn = value
             "lyrics_translation" -> MeloXSettingsRuntime.showLyricTranslation = value
