@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
 import androidx.compose.material3.Shapes
@@ -17,6 +18,8 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalView
@@ -24,6 +27,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.unit.dp
 import com.lladlam.melox.core.remoteconfig.MeloXHotStyles
+import com.lladlam.melox.ui.feedback.MeloXTransientMessageOverlay
 import com.lladlam.melox.ui.settings.MeloXSettingsRuntime
 import com.lladlam.melox.ui.settings.MeloXThemeMode
 import com.lladlam.melox.ui.glass.MeloXTypography as GlassTypography
@@ -125,8 +129,15 @@ fun MeloXTheme(
             Surface(
                 color = MaterialTheme.colorScheme.background,
                 contentColor = MaterialTheme.colorScheme.onBackground,
-                content = content,
-            )
+            ) {
+                // Deliberately not `fillMaxSize`: this Box must never change the
+                // size the Surface reports (transparent dialog activities rely on
+                // it staying content-sized). The overlay is zero-sized while idle.
+                Box {
+                    content()
+                    MeloXTransientMessageOverlay(Modifier.align(Alignment.BottomCenter))
+                }
+            }
         }
     }
 }

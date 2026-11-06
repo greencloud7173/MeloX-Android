@@ -6,7 +6,6 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.ComponentName
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.PixelFormat
 import android.os.Handler
 import android.os.IBinder
@@ -14,12 +13,23 @@ import android.os.Build
 import android.os.Looper
 import android.provider.Settings
 import android.view.Gravity
-import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
-import android.widget.LinearLayout
-import android.widget.TextView
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.setViewTreeLifecycleOwner
+import androidx.lifecycle.setViewTreeViewModelStoreOwner
+import androidx.savedstate.SavedStateRegistry
+import androidx.savedstate.SavedStateRegistryController
+import androidx.savedstate.SavedStateRegistryOwner
+import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
@@ -30,10 +40,12 @@ import com.lladlam.melox.core.lyrics.LyricsDocument
 import com.lladlam.melox.playback.MeloXPlaybackService
 import com.lladlam.melox.playback.PlaybackTrackIdentity
 import com.lladlam.melox.playback.ProviderPlaybackRuntime
+import com.lladlam.melox.ui.player.MeloXFloatingLyricsOverlay
 import com.lladlam.melox.ui.player.MeloXProviderLyricsLoader
 import com.lladlam.melox.ui.settings.MeloXSettingsPreferences
 import com.lladlam.melox.ui.settings.MeloXSecondaryLyricMode
 import java.util.concurrent.Executor
+import kotlin.math.roundToInt
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -50,8 +62,9 @@ class MeloXFloatingLyricsService : Service() {
     private var controller: MediaController? = null
     private var windowManager: WindowManager? = null
     private var overlay: View? = null
-    private var primaryText: TextView? = null
-    private var secondaryText: TextView? = null
+    private var overlayOwner: OverlayViewOwner? = null
+    private val primaryLine = mutableStateOf("")
+    private val secondaryLine = mutableStateOf("")
     private var lyrics: LyricsDocument? = null
     private var lyricsMediaId: String? = null
     private var lyricsJob: Job? = null
@@ -138,8 +151,8 @@ class MeloXFloatingLyricsService : Service() {
         lyricsMediaId = mediaId
         lyrics = null
         lastIndex = Int.MIN_VALUE
-        primaryText?.text = getString(R.string.floating_lyrics_loading)
-        secondaryText?.text = ""
+        primaryLine.value = getString(R.string.floating_lyrics_loading)
+        secondaryLine.value = ""
         lyricsJob?.cancel()
         val metadata = item.mediaMetadata
         val durationMs = metadata.durationMs?.takeIf { it > 0L }
@@ -172,8 +185,8 @@ class MeloXFloatingLyricsService : Service() {
         lyricsMediaId = null
         lyrics = null
         lastIndex = Int.MIN_VALUE
-        primaryText?.text = ""
-        secondaryText?.text = ""
+        primaryLine.value = ""
+        secondaryLine.value = ""
     }
 
     private fun updateText(): Long {
@@ -194,7 +207,7 @@ class MeloXFloatingLyricsService : Service() {
         if (index != lastIndex) {
             lastIndex = index
             val line = document.lines.getOrNull(index)
-            primaryText?.text = line?.text.orEmpty()
+            primaryLine.value = line?.text.orEmpty()
             val mode = runCatching {
                 MeloXSecondaryLyricMode.valueOf(
                     MeloXSettingsPreferences.string(this, "floating_lyrics_secondary_mode", MeloXSecondaryLyricMode.Auto.name),
@@ -203,7 +216,7 @@ class MeloXFloatingLyricsService : Service() {
             val translation = line?.translation.orEmpty()
             val romanization = line?.romanization.orEmpty()
             val nextLineText = document.lines.getOrNull(index + 1)?.text.orEmpty()
-            secondaryText?.text = when (mode) {
+            secondaryLine.value = when (mode) {
                 MeloXSecondaryLyricMode.Translation -> translation
                 MeloXSecondaryLyricMode.Romanization -> romanization
                 MeloXSecondaryLyricMode.NextLine -> nextLineText
@@ -227,31 +240,7 @@ class MeloXFloatingLyricsService : Service() {
         val density = resources.displayMetrics.density
         val highContrast = MeloXSettingsPreferences.boolean(this, "floating_lyrics_high_contrast", true)
         val fontSize = MeloXSettingsPreferences.int(this, "floating_lyrics_font_size", 18).coerceIn(14, 28)
-        val container = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER
-            setPadding((18 * density).toInt(), (10 * density).toInt(), (18 * density).toInt(), (10 * density).toInt())
-            background = android.graphics.drawable.GradientDrawable().apply {
-                setColor(if (highContrast) Color.argb(205, 12, 12, 16) else Color.argb(125, 18, 18, 22))
-                cornerRadius = 22 * density
-                setStroke((1 * density).toInt(), Color.argb(75, 255, 255, 255))
-            }
-        }
-        primaryText = TextView(this).apply {
-            setTextColor(Color.WHITE)
-            textSize = fontSize.toFloat()
-            gravity = Gravity.CENTER
-            maxLines = 2
-            text = getString(R.string.floating_lyrics_title)
-        }
-        secondaryText = TextView(this).apply {
-            setTextColor(Color.argb(150, 255, 255, 255))
-            textSize = (fontSize * .68f).coerceAtLeast(10f)
-            gravity = Gravity.CENTER
-            maxLines = 1
-        }
-        container.addView(primaryText, LinearLayout.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT))
-        container.addView(secondaryText, LinearLayout.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT).apply { topMargin = (3 * density).toInt() })
+        primaryLine.value = getString(R.string.floating_lyrics_title)
         val params = WindowManager.LayoutParams(
             (330 * density).toInt(),
             WindowManager.LayoutParams.WRAP_CONTENT,
@@ -265,38 +254,31 @@ class MeloXFloatingLyricsService : Service() {
             x = (18 * density).toInt()
             y = (110 * density).toInt()
         }
-        makeDraggable(container, params)
-        manager.addView(container, params)
-        overlay = container
-    }
-
-    private fun makeDraggable(view: View, params: WindowManager.LayoutParams) {
-        var startX = 0
-        var startY = 0
-        var touchX = 0f
-        var touchY = 0f
-        view.setOnTouchListener { _, event ->
-            when (event.actionMasked) {
-                MotionEvent.ACTION_DOWN -> {
-                    startX = params.x
-                    startY = params.y
-                    touchX = event.rawX
-                    touchY = event.rawY
-                    true
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    params.x = startX + (event.rawX - touchX).toInt()
-                    params.y = startY + (event.rawY - touchY).toInt()
-                    windowManager?.updateViewLayout(view, params)
-                    true
-                }
-                MotionEvent.ACTION_UP -> {
-                    view.performClick()
-                    true
-                }
-                else -> false
-            }
+        val owner = OverlayViewOwner().apply { onCreate() }
+        overlayOwner = owner
+        val composeView = ComposeView(this).apply {
+            // The window can be torn down from the service at any time, so the
+            // composition must follow the view and never outlive it.
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindow)
+            setViewTreeLifecycleOwner(owner)
+            setViewTreeSavedStateRegistryOwner(owner)
+            setViewTreeViewModelStoreOwner(owner)
         }
+        composeView.setContent {
+            MeloXFloatingLyricsOverlay(
+                primary = primaryLine.value,
+                secondary = secondaryLine.value,
+                highContrast = highContrast,
+                fontSizeSp = fontSize,
+                onDrag = { delta ->
+                    params.x += delta.x.roundToInt()
+                    params.y += delta.y.roundToInt()
+                    runCatching { windowManager?.updateViewLayout(composeView, params) }
+                },
+            )
+        }
+        manager.addView(composeView, params)
+        overlay = composeView
     }
 
     private fun createNotificationChannel() {
@@ -343,6 +325,8 @@ class MeloXFloatingLyricsService : Service() {
         controller = null
         overlay?.let { runCatching { windowManager?.removeView(it) } }
         overlay = null
+        overlayOwner?.onDestroy()
+        overlayOwner = null
         scope.cancel()
         super.onDestroy()
     }
@@ -351,6 +335,32 @@ class MeloXFloatingLyricsService : Service() {
         const val CHANNEL_ID = "melox_floating_lyrics"
         const val NOTIFICATION_ID = 1800
         const val ACTION_STOP = "com.lladlam.melox.action.STOP_FLOATING_LYRICS"
+    }
+}
+
+/**
+ * Minimal owners required to host a [ComposeView] outside an Activity.
+ *
+ * The overlay lives in a `WindowManager` window owned by a service, so no
+ * Activity lifecycle is available; Compose only needs the three view-tree
+ * owners to be present and their state to follow the window.
+ */
+private class OverlayViewOwner : LifecycleOwner, SavedStateRegistryOwner, ViewModelStoreOwner {
+    private val lifecycleRegistry = LifecycleRegistry(this)
+    private val savedStateController = SavedStateRegistryController.create(this)
+    override val lifecycle: Lifecycle get() = lifecycleRegistry
+    override val savedStateRegistry: SavedStateRegistry get() = savedStateController.savedStateRegistry
+    override val viewModelStore = ViewModelStore()
+
+    fun onCreate() {
+        savedStateController.performAttach()
+        savedStateController.performRestore(null)
+        lifecycleRegistry.currentState = Lifecycle.State.RESUMED
+    }
+
+    fun onDestroy() {
+        lifecycleRegistry.currentState = Lifecycle.State.DESTROYED
+        viewModelStore.clear()
     }
 }
 

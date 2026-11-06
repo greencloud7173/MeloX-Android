@@ -11,7 +11,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -118,6 +117,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.Velocity
 import coil3.compose.AsyncImage
 import com.lladlam.melox.R
+import com.lladlam.melox.ui.feedback.MeloXTransientMessage
 import com.lladlam.melox.core.account.NeteaseSessionStore
 import com.lladlam.melox.core.audio.MusicQualityPreferences
 import com.lladlam.melox.core.download.MeloXDownloadStore
@@ -2925,7 +2925,7 @@ private fun MeloXPlaylistDetailScreen(
                                             error.message ?: if (isAlbum) "专辑收藏操作失败" else "歌单收藏操作失败"
                                         }
                                         errorMessage = message
-                                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                                        MeloXTransientMessage.show(message)
                                     } finally {
                                         savingPlaylist = false
                                     }

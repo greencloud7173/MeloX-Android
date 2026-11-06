@@ -4,6 +4,8 @@
 
 ## 未发布
 
+- 界面控件全部迁移到 Compose：悬浮歌词浮窗由 `LinearLayout`/`TextView` 改为 `ComposeView`（同一套圆角、描边、字号与拖动跟手逻辑），应用内提示由 `Toast` 改为主题层统一渲染的 Compose 胶囊提示。仅前端实现变化，歌词加载、播放器连接、设置读写等逻辑未改动。
+
 ## 0.7.2 — 2026-11-06
 
 - 版本号升级为 `0.7.2`，`versionCode` 提升至 **27**；发布标签 `0.7.2`，正式产物为 `MeloX-Android-0.7.2-arm64-v8a.apk` 与 `MeloX-Android-0.7.2-armeabi-v7a.apk`。

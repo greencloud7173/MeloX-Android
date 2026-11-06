@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.net.Uri
-import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -128,6 +127,7 @@ import com.lladlam.melox.R
 import com.lladlam.melox.core.music.model.MusicSource
 import com.lladlam.melox.core.music.provider.MusicProviderSelectionStore
 import com.lladlam.melox.ui.account.MeloXAccountActivity
+import com.lladlam.melox.ui.feedback.MeloXTransientMessage
 import com.kyant.backdrop.backdrops.layerBackdrop
 import com.kyant.backdrop.backdrops.rememberLayerBackdrop
 import com.kyant.shapes.Capsule
@@ -969,7 +969,7 @@ fun MeloXApp(
                             (hostContext as? Activity)?.finish()
                         } else {
                             pendingExitAtMs = now
-                            Toast.makeText(hostContext, hostContext.getString(R.string.app_exit_confirm), Toast.LENGTH_SHORT).show()
+                            MeloXTransientMessage.show(hostContext.getString(R.string.app_exit_confirm))
                         }
                     }
                     AnimatedContent(

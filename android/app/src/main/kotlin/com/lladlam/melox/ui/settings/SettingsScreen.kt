@@ -10,7 +10,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.StatFs
 import android.provider.Settings as AndroidSettings
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -90,6 +89,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.app.NotificationCompat
 import coil3.compose.AsyncImage
 import com.lladlam.melox.R
+import com.lladlam.melox.ui.feedback.MeloXTransientMessage
 import com.lladlam.melox.BuildConfig
 import com.lladlam.melox.core.account.NeteaseSessionStore
 import com.lladlam.melox.core.diagnostics.MeloXLogExporter
@@ -1720,7 +1720,7 @@ private fun PlayerAppearanceSettings(context: android.content.Context) {
                 MeloXCustomBackgroundStore.import(context, uri)
             }
             if (imported == null) {
-                Toast.makeText(context, R.string.settings_custom_background_failed, Toast.LENGTH_SHORT).show()
+                MeloXTransientMessage.show(context.getString(R.string.settings_custom_background_failed))
                 restoreArtworkModeIfCustomImageEmpty()
             } else {
                 MeloXSettingsPreferences.setString(context, "player_custom_background_path", imported)
