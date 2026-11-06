@@ -1,4 +1,4 @@
-﻿package com.lladlam.melox.ui.player
+package com.lladlam.melox.ui.player
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ContentTransform
@@ -74,9 +74,9 @@ import com.lladlam.melox.core.audio.MusicQualityPreferences
 import com.lladlam.melox.core.audio.MusicQualityRuntime
 import com.lladlam.melox.core.audio.NeteaseQualityClient
 import com.lladlam.melox.core.audio.SongAudioAvailability
-import com.lladlam.melox.ui.glass.meloXLiquidButton
-import com.lladlam.melox.ui.glass.MeloXGlassMaterial
-import com.lladlam.melox.ui.glass.meloXGlassSurface
+import com.lladlam.melox.ui.controls.meloXButtonSurface
+import com.lladlam.melox.ui.controls.MeloXSurfaceTone
+import com.lladlam.melox.ui.controls.meloXControlSurface
 import com.lladlam.melox.ui.settings.MeloXSettingsRuntime
 import com.lladlam.melox.ui.settings.MeloXPlayerBackgroundMode
 import com.lladlam.melox.ui.animation.MeloXMotion
@@ -603,7 +603,7 @@ private fun MeloXQualityChipV3(
                     scaleY = scale
                 }
                 .height(24.dp)
-                .meloXLiquidButton(
+                .meloXButtonSurface(
                     shape = RoundedCornerShape(7.dp),
                     surfaceColor = Color.White.copy(alpha = 0.10f),
                     lensRadius = 6.dp,
@@ -639,11 +639,11 @@ private fun MeloXQualityChipV3(
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-            modifier = Modifier.meloXGlassSurface(
+            modifier = Modifier.meloXControlSurface(
                 shape = RoundedCornerShape(20.dp),
                 // The quality menu floats over album artwork, so it uses the
                 // clear variant rather than inventing a third material level.
-                material = MeloXGlassMaterial.Clear,
+                material = MeloXSurfaceTone.Clear,
                 tint = Color.White.copy(alpha = 0.10f),
                 surfaceColor = Color.Black.copy(alpha = 0.16f),
             ),

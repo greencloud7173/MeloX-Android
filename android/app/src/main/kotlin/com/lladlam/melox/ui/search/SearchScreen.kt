@@ -123,20 +123,20 @@ import com.lladlam.melox.ui.animation.meloXSettledMillis
 import com.lladlam.melox.ui.meloXPageRecede
 import com.lladlam.melox.ui.account.MeloXAccountActivity
 import com.lladlam.melox.ui.collection.MeloXCollectionDetailActivity
-import com.lladlam.melox.ui.glass.MeloXGlassButton
-import com.lladlam.melox.ui.glass.MeloXGlassButtonStyle
-import com.lladlam.melox.ui.glass.MeloXGlassTextField
-import com.lladlam.melox.ui.glass.MeloXShapes
-import com.lladlam.melox.ui.glass.MeloXTypography
-import com.lladlam.melox.ui.glass.meloXContentSurface
-import com.lladlam.melox.ui.glass.MeloXIosTopBar
-import com.lladlam.melox.ui.glass.MeloXActionIcon
-import com.lladlam.melox.ui.glass.MeloXSymbol
-import com.lladlam.melox.ui.glass.MeloXSearchBackMorphIcon
-import com.lladlam.melox.ui.glass.MeloXSymbolIcon
-import com.lladlam.melox.ui.glass.MeloXSystemColors
-import com.lladlam.melox.ui.glass.MeloXSwipeAction
-import com.lladlam.melox.ui.glass.MeloXSwipeActionRow
+import com.lladlam.melox.ui.controls.MeloXButton
+import com.lladlam.melox.ui.controls.MeloXButtonStyle
+import com.lladlam.melox.ui.controls.MeloXTextField
+import com.lladlam.melox.ui.controls.MeloXShapes
+import com.lladlam.melox.ui.controls.MeloXTypography
+import com.lladlam.melox.ui.controls.meloXContentSurface
+import com.lladlam.melox.ui.controls.MeloXTopBar
+import com.lladlam.melox.ui.controls.MeloXActionIcon
+import com.lladlam.melox.ui.controls.MeloXSymbol
+import com.lladlam.melox.ui.controls.MeloXSearchBackMorphIcon
+import com.lladlam.melox.ui.controls.MeloXSymbolIcon
+import com.lladlam.melox.ui.controls.MeloXSystemColors
+import com.lladlam.melox.ui.controls.MeloXSwipeAction
+import com.lladlam.melox.ui.controls.MeloXSwipeRow
 import com.lladlam.melox.ui.podcast.MeloXPodcastScreen
 import com.lladlam.melox.ui.library.MeloXUnifiedPlaylistDetailScreen
 import com.lladlam.melox.ui.library.MeloXUnifiedProviderAlbumDetailScreen
@@ -1079,7 +1079,7 @@ private fun SearchField(
 ) {
     var focused by remember { mutableStateOf(false) }
     val clearDescription = stringResource(R.string.search_clear)
-    MeloXGlassTextField(
+    MeloXTextField(
         value = value,
         onValueChange = onValueChange,
         modifier = Modifier
@@ -1174,12 +1174,12 @@ private fun SearchScopes(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items(availableKinds) { item ->
-            MeloXGlassButton(
+            MeloXButton(
                 onClick = { onKind(item) },
                 modifier = Modifier
                     .height(44.dp)
                     .padding(horizontal = 0.dp),
-                style = MeloXGlassButtonStyle.Bordered,
+                style = MeloXButtonStyle.Bordered,
                 shape = MeloXShapes.capsule,
                 tint = if (item == kind) MeloXSystemColors.Blue.copy(alpha = .28f) else Color.Transparent,
                 surfaceColor = if (item == kind) MeloXSystemColors.Blue.copy(alpha = .16f) else MaterialTheme.colorScheme.onBackground.copy(alpha = .045f),
@@ -1483,7 +1483,7 @@ private fun SearchSwipeSongRow(
     sourceLabel: String? = null,
 ) {
     val context = LocalContext.current
-    MeloXSwipeActionRow(
+    MeloXSwipeRow(
         startActions = listOf(
             MeloXSwipeAction(stringResource(R.string.player_play_next), MeloXSymbol.Next, Color(0xFF8E5AF7)) { PlaybackCommands.playNext(context, song) },
             MeloXSwipeAction(stringResource(R.string.artist_play_later), MeloXSymbol.Queue, Color(0xFFFF9F0A)) { PlaybackCommands.addToQueue(context, song) },
@@ -1860,7 +1860,7 @@ private fun SearchCollectionDetail(
 @Composable
 private fun SearchDetailHeader(title: String, onBack: () -> Unit) {
     Row(Modifier.fillMaxWidth().height(54.dp).padding(horizontal = 20.dp), verticalAlignment = Alignment.CenterVertically) {
-        MeloXGlassButton(
+        MeloXButton(
             onClick = onBack,
             modifier = Modifier.size(44.dp),
             shape = CircleShape,
@@ -1875,10 +1875,10 @@ private fun SearchDetailHeader(title: String, onBack: () -> Unit) {
 
 @Composable
 private fun SearchPlayButton(title: String, onClick: () -> Unit) {
-    MeloXGlassButton(
+    MeloXButton(
         onClick = onClick,
         modifier = Modifier.height(44.dp).width(120.dp),
-        style = MeloXGlassButtonStyle.BorderedProminent,
+        style = MeloXButtonStyle.BorderedProminent,
         shape = MeloXShapes.capsule,
         contentPadding = PaddingValues(horizontal = 16.dp),
     ) {

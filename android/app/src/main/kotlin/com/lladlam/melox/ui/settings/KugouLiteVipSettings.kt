@@ -31,12 +31,12 @@ import com.lladlam.melox.core.provider.kugou.KugouLiteDailyCheckIn
 import com.lladlam.melox.core.provider.kugou.KugouLiteProvider
 import com.lladlam.melox.core.provider.kugou.KugouLiteVip
 import com.lladlam.melox.core.provider.kugou.KugouSessionStore
-import com.lladlam.melox.ui.glass.MeloXGlassButton
-import com.lladlam.melox.ui.glass.MeloXGlassButtonStyle
-import com.lladlam.melox.ui.glass.MeloXGlassDialog
-import com.lladlam.melox.ui.glass.MeloXGlassToggle
-import com.lladlam.melox.ui.glass.MeloXIosGroupedList
-import com.lladlam.melox.ui.glass.MeloXIosListRow
+import com.lladlam.melox.ui.controls.MeloXButton
+import com.lladlam.melox.ui.controls.MeloXButtonStyle
+import com.lladlam.melox.ui.controls.MeloXDialog
+import com.lladlam.melox.ui.controls.MeloXSwitch
+import com.lladlam.melox.ui.controls.MeloXGroupedList
+import com.lladlam.melox.ui.controls.MeloXListRow
 import com.lladlam.melox.ui.provider.MeloXProviderServicesActivity
 import java.text.DateFormat
 import java.time.LocalDate
@@ -113,15 +113,15 @@ internal fun KugouLiteVipSettings() {
         onDispose { lifecycle.removeObserver(observer) }
     }
 
-    MeloXIosGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
-        MeloXIosListRow(
+    MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
+        MeloXListRow(
             title = "酷狗概念版账号",
             subtitle = if (session.isLoggedIn) "账号 ID：${session.userId}" else "登录概念版账号后即可签到领会员",
             detail = if (session.isLoggedIn) "已登录" else "去登录",
             onClick = if (busy) null else ({ MeloXProviderServicesActivity.launch(context) }),
             showTopSeparator = false,
         )
-        MeloXIosListRow(
+        MeloXListRow(
             title = "会员状态",
             detail = when {
                 !session.isLoggedIn -> "未登录"
@@ -134,7 +134,7 @@ internal fun KugouLiteVipSettings() {
             showTopSeparator = true,
         )
         vip?.expiresAtEpochSeconds?.takeIf { it > 0L }?.let { expiry ->
-            MeloXIosListRow(
+            MeloXListRow(
                 title = "会员有效期",
                 detail = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(expiry * 1_000L)),
                 showTopSeparator = true,
@@ -144,8 +144,8 @@ internal fun KugouLiteVipSettings() {
     Spacer(Modifier.height(18.dp))
     Text("每日签到", Modifier.padding(start = 8.dp, bottom = 8.dp), fontSize = 13.sp,
         color = MaterialTheme.colorScheme.onBackground.copy(alpha = .48f))
-    MeloXIosGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
-        MeloXIosListRow(
+    MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
+        MeloXListRow(
             title = "今日签到",
             subtitle = today,
             detail = when {
@@ -156,21 +156,21 @@ internal fun KugouLiteVipSettings() {
             },
             showTopSeparator = false,
         )
-        MeloXIosListRow(
+        MeloXListRow(
             title = "今日畅听 VIP",
             detail = if (checkIn.successDay == today) "已领取" else "待领取",
             showTopSeparator = true,
         )
-        MeloXIosListRow(
+        MeloXListRow(
             title = "今日概念版 VIP",
             detail = if (checkIn.upgradedDay == today) "已升级" else "待升级",
             showTopSeparator = true,
         )
-        MeloXIosListRow(
+        MeloXListRow(
             title = "自动签到会员",
             subtitle = "每天首次打开 MeloX 时自动领取畅听 VIP，并同时申请概念版 VIP 升级",
             trailing = {
-                MeloXGlassToggle(
+                MeloXSwitch(
                     checked = checkIn.autoEnabled,
                     onCheckedChange = { enabled ->
                         KugouLiteCheckInStore.setAutoEnabled(app, enabled)
@@ -188,14 +188,14 @@ internal fun KugouLiteVipSettings() {
                 fontSize = 13.sp, lineHeight = 19.sp,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = .62f),
             )
-            MeloXGlassButton(
+            MeloXButton(
                 onClick = { confirmCheckIn = true },
                 enabled = session.isLoggedIn && !busy,
                 modifier = Modifier.fillMaxWidth(),
-                style = MeloXGlassButtonStyle.BorderedProminent,
+                style = MeloXButtonStyle.BorderedProminent,
             ) { Text(if (busy) "处理中…" else "签到领取畅听 + 概念版 VIP") }
-            MeloXGlassButton(onClick = refresh, enabled = !busy, modifier = Modifier.fillMaxWidth(),
-                style = MeloXGlassButtonStyle.Plain) { Text("刷新会员状态") }
+            MeloXButton(onClick = refresh, enabled = !busy, modifier = Modifier.fillMaxWidth(),
+                style = MeloXButtonStyle.Plain) { Text("刷新会员状态") }
             message?.let { Text(it, fontSize = 13.sp, lineHeight = 19.sp, color = MaterialTheme.colorScheme.onSurface) }
         }
     }
@@ -207,7 +207,7 @@ internal fun KugouLiteVipSettings() {
     )
 
     if (confirmCheckIn) {
-        MeloXGlassDialog(visible = true, onDismiss = { confirmCheckIn = false }) {
+        MeloXDialog(visible = true, onDismiss = { confirmCheckIn = false }) {
             Text("签到领会员", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
             Text(
                 "确认使用当前概念版账号领取今日畅听 VIP，并同时申请概念版 VIP 升级？",
@@ -215,9 +215,9 @@ internal fun KugouLiteVipSettings() {
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = .62f),
             )
             Row(Modifier.fillMaxWidth().padding(top = 18.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                MeloXGlassButton(onClick = { confirmCheckIn = false }, modifier = Modifier.weight(1f),
-                    style = MeloXGlassButtonStyle.Plain) { Text("取消") }
-                MeloXGlassButton(
+                MeloXButton(onClick = { confirmCheckIn = false }, modifier = Modifier.weight(1f),
+                    style = MeloXButtonStyle.Plain) { Text("取消") }
+                MeloXButton(
                     enabled = !busy,
                     onClick = {
                         confirmCheckIn = false
@@ -241,7 +241,7 @@ internal fun KugouLiteVipSettings() {
                             }
                         }
                     },
-                    modifier = Modifier.weight(1f), style = MeloXGlassButtonStyle.BorderedProminent,
+                    modifier = Modifier.weight(1f), style = MeloXButtonStyle.BorderedProminent,
                 ) { Text("确认领取") }
             }
         }

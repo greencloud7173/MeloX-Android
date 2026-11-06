@@ -51,10 +51,10 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil3.compose.AsyncImage
 import com.lladlam.melox.R
-import com.lladlam.melox.ui.glass.MeloXSymbol
-import com.lladlam.melox.ui.glass.MeloXSymbolIcon
-import com.lladlam.melox.ui.glass.meloXGlassSurface
-import com.lladlam.melox.ui.glass.meloXLiquidButton
+import com.lladlam.melox.ui.controls.MeloXSymbol
+import com.lladlam.melox.ui.controls.MeloXSymbolIcon
+import com.lladlam.melox.ui.controls.meloXControlSurface
+import com.lladlam.melox.ui.controls.meloXButtonSurface
 
 /** Compact artwork-led output panel; the glass renderer remains shared with the player. */
 @Composable
@@ -86,7 +86,7 @@ internal fun MeloXAudioOutputPlaybackPanel(
                     Modifier.safeDrawingPadding().padding(horizontal = 28.dp)
                         .widthIn(max = 360.dp).fillMaxWidth()
                         .clip(RoundedCornerShape(38.dp))
-                        .meloXGlassSurface(
+                        .meloXControlSurface(
                             shape = RoundedCornerShape(38.dp),
                             tint = Color.Black.copy(alpha = .10f),
                             surfaceColor = Color.Black.copy(alpha = .28f),
@@ -157,7 +157,7 @@ internal fun MeloXAudioOutputPlaybackPanel(
                     actions()
                     Row(
                         Modifier.fillMaxWidth().height(56.dp).clip(RoundedCornerShape(22.dp))
-                            .meloXLiquidButton(
+                            .meloXButtonSurface(
                                 shape = RoundedCornerShape(22.dp),
                                 surfaceColor = if (localSelected) Color(0xFFFFFDEB) else Color.Black.copy(alpha = .40f),
                             )
@@ -230,7 +230,7 @@ private fun OutputPanelSlider(
         Box(
             Modifier.fillMaxWidth().height(if (volume) 30.dp else 6.dp)
                 .clip(CircleShape)
-                .meloXGlassSurface(CircleShape, surfaceColor = Color.White.copy(alpha = .20f)),
+                .meloXControlSurface(CircleShape, surfaceColor = Color.White.copy(alpha = .20f)),
         ) {
             Box(Modifier.fillMaxHeight().fillMaxWidth(value.coerceIn(0f, 1f)).background(Color.White.copy(alpha = .95f), CircleShape))
         }

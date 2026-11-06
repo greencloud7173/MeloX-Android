@@ -19,9 +19,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import com.lladlam.melox.ui.glass.MeloXIosTopBar
-import com.lladlam.melox.ui.glass.MeloXSymbol
-import com.lladlam.melox.ui.glass.MeloXSymbolIcon
+import com.lladlam.melox.ui.controls.MeloXTopBar
+import com.lladlam.melox.ui.controls.MeloXSymbol
+import com.lladlam.melox.ui.controls.MeloXSymbolIcon
 import com.lladlam.melox.ui.settings.MeloXRecognitionPanel
 
 /**
@@ -40,7 +40,7 @@ fun MeloXRecognitionOverlay(onBack: () -> Unit) {
             .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding(),
     ) {
-        MeloXIosTopBar(
+        MeloXTopBar(
             title = "听歌识曲",
             contentPadding = PaddingValues(horizontal = 12.dp),
             navigation = {

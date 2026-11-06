@@ -9,8 +9,8 @@ import android.webkit.WebResourceResponse
 import android.webkit.WebViewClient
 import com.lladlam.melox.BuildConfig
 import com.lladlam.melox.R
-import com.lladlam.melox.ui.glass.MeloXGlassButton
-import com.lladlam.melox.ui.glass.MeloXGlassButtonStyle
+import com.lladlam.melox.ui.controls.MeloXButton
+import com.lladlam.melox.ui.controls.MeloXButtonStyle
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -160,10 +160,10 @@ fun YouTubeLoginScreen(
     Column(Modifier.fillMaxSize()) {
         loginError?.let { message ->
             Text(message, Modifier.fillMaxWidth().padding(16.dp), color = MaterialTheme.colorScheme.error)
-            MeloXGlassButton(
+            MeloXButton(
                 onClick = { webView?.reload() },
                 modifier = Modifier.padding(horizontal = 16.dp),
-                style = MeloXGlassButtonStyle.BorderedProminent,
+                style = MeloXButtonStyle.BorderedProminent,
             ) {
                 Text(stringResource(R.string.youtube_login_retry))
             }

@@ -18,9 +18,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.lladlam.melox.ui.glass.MeloXShapes
-import com.lladlam.melox.ui.glass.MeloXGlassToggle
-import com.lladlam.melox.ui.glass.meloXContentSurface
+import com.lladlam.melox.ui.controls.MeloXShapes
+import com.lladlam.melox.ui.controls.MeloXSwitch
+import com.lladlam.melox.ui.controls.meloXContentSurface
 
 /**
  * Small provider-service controls used inside the canonical MeloX settings shell.
@@ -81,7 +81,7 @@ internal fun ProviderSettingToggle(
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = if (enabled) 0.48f else 0.30f),
             )
         }
-        MeloXGlassToggle(
+        MeloXSwitch(
             checked = checked,
             onCheckedChange = onCheckedChange,
             enabled = enabled,

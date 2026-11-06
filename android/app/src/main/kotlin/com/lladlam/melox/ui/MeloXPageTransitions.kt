@@ -28,7 +28,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.layout
 import com.lladlam.melox.ui.animation.meloXPagePushSpec
-import com.lladlam.melox.ui.glass.finiteOrZero
+import com.lladlam.melox.ui.controls.finiteOrZero
 import com.lladlam.melox.ui.player.MeloSmoothCornerShape
 import com.lladlam.melox.ui.player.rememberMeloXDisplayCornerPx
 import com.lladlam.melox.ui.settings.MeloXSettingsRuntime

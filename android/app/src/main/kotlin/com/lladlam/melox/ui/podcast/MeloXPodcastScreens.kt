@@ -69,14 +69,14 @@ import com.lladlam.melox.core.network.MeloXPodcastProgram
 import com.lladlam.melox.core.network.NeteaseUniversalSearchClient
 import com.lladlam.melox.playback.PlaybackCommands
 import com.lladlam.melox.ui.MeloXBottomContentClearance
-import com.lladlam.melox.ui.glass.MeloXGlassButton
-import com.lladlam.melox.ui.glass.MeloXGlassButtonStyle
-import com.lladlam.melox.ui.glass.MeloXGlassCard
-import com.lladlam.melox.ui.glass.MeloXPinnedListPage
+import com.lladlam.melox.ui.controls.MeloXButton
+import com.lladlam.melox.ui.controls.MeloXButtonStyle
+import com.lladlam.melox.ui.controls.MeloXCard
+import com.lladlam.melox.ui.controls.MeloXPinnedListPage
 import com.lladlam.melox.ui.layout.rememberMeloXStableStatusBarHeight
-import com.lladlam.melox.ui.glass.MeloXShapes
-import com.lladlam.melox.ui.glass.MeloXSymbol
-import com.lladlam.melox.ui.glass.MeloXSymbolIcon
+import com.lladlam.melox.ui.controls.MeloXShapes
+import com.lladlam.melox.ui.controls.MeloXSymbol
+import com.lladlam.melox.ui.controls.MeloXSymbolIcon
 import com.lladlam.melox.ui.animation.meloXCategoryEnter
 import com.lladlam.melox.ui.animation.meloXCategoryExit
 import com.lladlam.melox.ui.animation.MeloXPageBoundsTransform
@@ -436,10 +436,10 @@ private data class PodcastHomePayload(
 
 @Composable
 private fun PodcastCategoryButton(title: String, selected: Boolean, onClick: () -> Unit) {
-    MeloXGlassButton(
+    MeloXButton(
         onClick = onClick,
         modifier = Modifier.height(44.dp),
-        style = if (selected) MeloXGlassButtonStyle.BorderedProminent else MeloXGlassButtonStyle.Bordered,
+        style = if (selected) MeloXButtonStyle.BorderedProminent else MeloXButtonStyle.Bordered,
         shape = MeloXShapes.capsule,
         contentPadding = PaddingValues(horizontal = 15.dp, vertical = 9.dp),
     ) { Text(title, maxLines = 1) }
@@ -489,7 +489,7 @@ private fun PodcastSection(
                         modifier = Modifier.animateItem(),
                     ) {
                         val cardVisibilityScope = this
-                        MeloXGlassCard(
+                        MeloXCard(
                             modifier = Modifier.size(width = 176.dp, height = 244.dp),
                             onClick = { onPodcast(podcast, artworkKey) },
                         ) {
@@ -669,7 +669,7 @@ private fun PodcastDetail(
         bottomPadding = bottomPadding,
         verticalArrangement = Arrangement.spacedBy(10.dp),
         actions = {
-            MeloXGlassButton(
+            MeloXButton(
                 onClick = {
                     if (!NeteaseSessionStore.containsMusicU(NeteaseSessionStore.readCookie(context))) {
                         error = loginSubscribeMessage
@@ -688,13 +688,13 @@ private fun PodcastDetail(
                     }
                 },
                 enabled = !subscribing,
-                style = if (podcast.subscribed) MeloXGlassButtonStyle.BorderedProminent else MeloXGlassButtonStyle.Bordered,
+                style = if (podcast.subscribed) MeloXButtonStyle.BorderedProminent else MeloXButtonStyle.Bordered,
                 contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
             ) { Text(if (podcast.subscribed) subscribedLabel else subscribeLabel, maxLines = 1) }
         },
     ) {
         item(key = "podcast-hero") {
-            MeloXGlassCard(Modifier.fillMaxWidth()) {
+            MeloXCard(Modifier.fillMaxWidth()) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     AsyncImage(
                         model = podcast.artworkUrl,
@@ -731,12 +731,12 @@ private fun PodcastDetail(
         if (loading) item(key = "loading") { PodcastLoadingInline() }
         error?.let { message ->
             item(key = "error") {
-                MeloXGlassCard(Modifier.fillMaxWidth()) {
+                MeloXCard(Modifier.fillMaxWidth()) {
                     Text(message, color = MaterialTheme.colorScheme.error)
-                    MeloXGlassButton(
+                    MeloXButton(
                         onClick = { reloadKey++ },
                         modifier = Modifier.fillMaxWidth(),
-                        style = MeloXGlassButtonStyle.BorderedProminent,
+                        style = MeloXButtonStyle.BorderedProminent,
                     ) { Text("重试") }
                 }
             }
@@ -757,7 +757,7 @@ private fun PodcastDetail(
 
 @Composable
 private fun PodcastProgramRow(program: MeloXPodcastProgram, onClick: () -> Unit) {
-    MeloXGlassCard(Modifier.fillMaxWidth(), onClick = onClick) {
+    MeloXCard(Modifier.fillMaxWidth(), onClick = onClick) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             AsyncImage(
                 model = program.artworkUrl,
@@ -799,7 +799,7 @@ private fun PodcastErrorState(message: String, onRetry: () -> Unit) {
     Box(Modifier.fillMaxSize().padding(24.dp), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Text(message, color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center)
-            MeloXGlassButton(onRetry, style = MeloXGlassButtonStyle.BorderedProminent) { Text("重试") }
+            MeloXButton(onRetry, style = MeloXButtonStyle.BorderedProminent) { Text("重试") }
         }
     }
 }

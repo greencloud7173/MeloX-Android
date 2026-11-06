@@ -137,19 +137,19 @@ import com.lladlam.melox.ui.MeloXInterruptiblePage
 import com.lladlam.melox.ui.animation.meloXSettledMillis
 import com.lladlam.melox.ui.account.MeloXAccountActivity
 import com.lladlam.melox.ui.collection.MeloXCollectionDetailActivity
-import com.lladlam.melox.ui.glass.MeloXActionIcon
-import com.lladlam.melox.ui.glass.MeloXGlassCard
-import com.lladlam.melox.ui.glass.MeloXGlassButton
-import com.lladlam.melox.ui.glass.MeloXGlassButtonStyle
-import com.lladlam.melox.ui.glass.MeloXShapes
-import com.lladlam.melox.ui.glass.MeloXSystemColors
-import com.lladlam.melox.ui.glass.MeloXTypography
-import com.lladlam.melox.ui.glass.meloXContentSurface
-import com.lladlam.melox.ui.glass.meloXGlassSurface
-import com.lladlam.melox.ui.glass.MeloXIosTopBar
-import com.lladlam.melox.ui.glass.MeloXSymbol
-import com.lladlam.melox.ui.glass.MeloXSymbolIcon
-import com.lladlam.melox.ui.glass.MeloXSymbolVariant
+import com.lladlam.melox.ui.controls.MeloXActionIcon
+import com.lladlam.melox.ui.controls.MeloXCard
+import com.lladlam.melox.ui.controls.MeloXButton
+import com.lladlam.melox.ui.controls.MeloXButtonStyle
+import com.lladlam.melox.ui.controls.MeloXShapes
+import com.lladlam.melox.ui.controls.MeloXSystemColors
+import com.lladlam.melox.ui.controls.MeloXTypography
+import com.lladlam.melox.ui.controls.meloXContentSurface
+import com.lladlam.melox.ui.controls.meloXControlSurface
+import com.lladlam.melox.ui.controls.MeloXTopBar
+import com.lladlam.melox.ui.controls.MeloXSymbol
+import com.lladlam.melox.ui.controls.MeloXSymbolIcon
+import com.lladlam.melox.ui.controls.MeloXSymbolVariant
 import com.lladlam.melox.ui.library.MeloXDetailPalette
 import com.lladlam.melox.ui.library.MeloXDetailPaletteProvider
 import com.lladlam.melox.ui.player.MeloXFlowingLightBackdrop
@@ -981,7 +981,7 @@ private fun MeloXHomeLayout(
                 verticalArrangement = Arrangement.spacedBy(22.dp),
             ) {
                 item {
-                    MeloXIosTopBar(
+                    MeloXTopBar(
                         title = stringResource(R.string.tab_home),
                         contentPadding = PaddingValues(horizontal = 20.dp),
                         actions = {
@@ -1062,7 +1062,7 @@ private fun HomeAccountButton(account: HomeAccountUi) {
     Box(
         modifier = Modifier
             .size(42.dp)
-            .meloXGlassSurface(
+            .meloXControlSurface(
                 shape = CircleShape,
                 tint = MeloXSystemColors.Red.copy(alpha = 0.12f),
                 surfaceColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.18f),
@@ -1547,13 +1547,13 @@ private fun ExploreCollapsingHeader(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             items(categories) { item ->
-                MeloXGlassButton(
+                MeloXButton(
                     onClick = { onCategory(item) },
                     modifier = Modifier.height(38.dp),
                     style = if (category == item) {
-                        com.lladlam.melox.ui.glass.MeloXGlassButtonStyle.BorderedProminent
+                        com.lladlam.melox.ui.controls.MeloXButtonStyle.BorderedProminent
                     } else {
-                        com.lladlam.melox.ui.glass.MeloXGlassButtonStyle.Bordered
+                        com.lladlam.melox.ui.controls.MeloXButtonStyle.Bordered
                     },
                     tint = if (category == item) Accent else Color.Unspecified,
                     contentPadding = PaddingValues(horizontal = 14.dp, vertical = 6.dp),

@@ -54,17 +54,17 @@ import com.lladlam.melox.core.network.MeloXCloudSong
 import com.lladlam.melox.core.network.NeteaseUniversalSearchClient
 import com.lladlam.melox.playback.PlaybackCommands
 import com.lladlam.melox.ui.MeloXBottomContentClearance
-import com.lladlam.melox.ui.glass.MeloXGlassButton
-import com.lladlam.melox.ui.glass.MeloXGlassButtonStyle
-import com.lladlam.melox.ui.glass.MeloXGlassDialog
-import com.lladlam.melox.ui.glass.MeloXShapes
-import com.lladlam.melox.ui.glass.MeloXSwipeAction
-import com.lladlam.melox.ui.glass.MeloXSwipeActionRow
-import com.lladlam.melox.ui.glass.MeloXSymbol
-import com.lladlam.melox.ui.glass.MeloXTypography
-import com.lladlam.melox.ui.glass.MeloXIosTopBar
-import com.lladlam.melox.ui.glass.meloXContentSurface
-import com.lladlam.melox.ui.glass.meloXLiquidButton
+import com.lladlam.melox.ui.controls.MeloXButton
+import com.lladlam.melox.ui.controls.MeloXButtonStyle
+import com.lladlam.melox.ui.controls.MeloXDialog
+import com.lladlam.melox.ui.controls.MeloXShapes
+import com.lladlam.melox.ui.controls.MeloXSwipeAction
+import com.lladlam.melox.ui.controls.MeloXSwipeRow
+import com.lladlam.melox.ui.controls.MeloXSymbol
+import com.lladlam.melox.ui.controls.MeloXTypography
+import com.lladlam.melox.ui.controls.MeloXTopBar
+import com.lladlam.melox.ui.controls.meloXContentSurface
+import com.lladlam.melox.ui.controls.meloXButtonSurface
 import com.lladlam.melox.ui.meloXEdgeOverscrollHaptic
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -208,7 +208,7 @@ fun MeloXCloudMusicScreen(
     }
 
     uploadError?.let { message ->
-        MeloXGlassDialog(
+        MeloXDialog(
             visible = true,
             onDismiss = { uploadError = null },
         ) {
@@ -222,16 +222,16 @@ fun MeloXCloudMusicScreen(
                 modifier = Modifier.fillMaxWidth().padding(top = 18.dp),
                 horizontalArrangement = Arrangement.End,
             ) {
-                MeloXGlassButton(
+                MeloXButton(
                     onClick = { uploadError = null },
-                    style = MeloXGlassButtonStyle.Plain,
+                    style = MeloXButtonStyle.Plain,
                 ) { Text(stringResource(R.string.action_done)) }
             }
         }
     }
 
     pendingDelete?.let { target ->
-        MeloXGlassDialog(
+        MeloXDialog(
             visible = true,
             onDismiss = { pendingDelete = null },
         ) {
@@ -245,12 +245,12 @@ fun MeloXCloudMusicScreen(
                 modifier = Modifier.fillMaxWidth().padding(top = 18.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                MeloXGlassButton(
+                MeloXButton(
                     onClick = { pendingDelete = null },
                     modifier = Modifier.weight(1f),
-                    style = MeloXGlassButtonStyle.Plain,
+                    style = MeloXButtonStyle.Plain,
                 ) { Text(stringResource(R.string.action_cancel)) }
-                MeloXGlassButton(
+                MeloXButton(
                     onClick = {
                         pendingDelete = null
                         scope.launch {
@@ -275,7 +275,7 @@ fun MeloXCloudMusicScreen(
                         }
                     },
                     modifier = Modifier.weight(1f),
-                    style = MeloXGlassButtonStyle.Destructive,
+                    style = MeloXButtonStyle.Destructive,
                 ) { Text(stringResource(R.string.provider_delete)) }
             }
         }
@@ -308,7 +308,7 @@ fun MeloXCloudMusicScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(Modifier.weight(1f)) {
-                    MeloXIosTopBar(
+                    MeloXTopBar(
                         title = stringResource(R.string.cloud_title),
                         subtitle = quota,
                         modifier = Modifier.padding(horizontal = 0.dp),
@@ -323,7 +323,7 @@ fun MeloXCloudMusicScreen(
             }
         }
         Box(
-            Modifier.padding(horizontal = 18.dp).fillMaxWidth().meloXLiquidButton(
+            Modifier.padding(horizontal = 18.dp).fillMaxWidth().meloXButtonSurface(
                 shape = RoundedCornerShape(22.dp),
                 surfaceColor = MaterialTheme.colorScheme.onBackground.copy(alpha = .055f),
             ).padding(horizontal = 14.dp, vertical = 11.dp),
@@ -432,7 +432,7 @@ fun MeloXCloudMusicScreen(
                         }
                     }
                     items(displayed, key = { it.id }) { item ->
-                        MeloXSwipeActionRow(
+                        MeloXSwipeRow(
                             startActions = emptyList(),
                             endActions = listOf(
                                 MeloXSwipeAction(
@@ -461,9 +461,9 @@ fun MeloXCloudMusicScreen(
                                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = .5f),
                                 )
                                 if (!isSearching) {
-                                    MeloXGlassButton(
+                                    MeloXButton(
                                         onClick = { uploadLauncher.launch("audio/*") },
-                                        style = MeloXGlassButtonStyle.Plain,
+                                        style = MeloXButtonStyle.Plain,
                                     ) { Text(stringResource(R.string.cloud_upload)) }
                                 }
                             }

@@ -1,4 +1,4 @@
-package com.lladlam.melox.ui.glass
+package com.lladlam.melox.ui.controls
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue

@@ -47,11 +47,11 @@ import com.lladlam.melox.ui.MeloXPageHost
 import com.lladlam.melox.ui.finishMeloXPage
 import com.lladlam.melox.ui.prepareMeloXPageWindow
 import com.lladlam.melox.ui.startMeloXPage
-import com.lladlam.melox.ui.glass.MeloXGlassButton
-import com.lladlam.melox.ui.glass.MeloXGlassButtonStyle
-import com.lladlam.melox.ui.glass.MeloXGlassCard
-import com.lladlam.melox.ui.glass.MeloXPinnedListPage
-import com.lladlam.melox.ui.glass.MeloXShapes
+import com.lladlam.melox.ui.controls.MeloXButton
+import com.lladlam.melox.ui.controls.MeloXButtonStyle
+import com.lladlam.melox.ui.controls.MeloXCard
+import com.lladlam.melox.ui.controls.MeloXPinnedListPage
+import com.lladlam.melox.ui.controls.MeloXShapes
 import com.lladlam.melox.ui.theme.MeloXTheme
 
 class MeloXSongWikiActivity : ComponentActivity() {
@@ -149,7 +149,7 @@ private fun MeloXSongWikiScreen(song: SearchSong, onBack: () -> Unit) {
         bottomPadding = MeloXBottomContentClearance,
     ) {
         item(key = "song") {
-            MeloXGlassCard(Modifier.fillMaxWidth()) {
+            MeloXCard(Modifier.fillMaxWidth()) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     AsyncImage(
                         model = song.artworkUrl,
@@ -173,18 +173,18 @@ private fun MeloXSongWikiScreen(song: SearchSong, onBack: () -> Unit) {
                 Box(Modifier.fillMaxWidth().padding(64.dp), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
             }
             error != null -> item(key = "error") {
-                MeloXGlassCard(Modifier.fillMaxWidth()) {
+                MeloXCard(Modifier.fillMaxWidth()) {
                     Text(error.orEmpty(), color = MaterialTheme.colorScheme.error)
-                    MeloXGlassButton(
+                    MeloXButton(
                         onClick = { refreshKey++ },
                         modifier = Modifier.fillMaxWidth(),
-                        style = MeloXGlassButtonStyle.BorderedProminent,
+                        style = MeloXButtonStyle.BorderedProminent,
                         shape = MeloXShapes.capsule,
                     ) { Text("重试") }
                 }
             }
             sections.isEmpty() -> item(key = "empty") {
-                MeloXGlassCard(Modifier.fillMaxWidth()) {
+                MeloXCard(Modifier.fillMaxWidth()) {
                     Text("暂时没有这首歌曲的百科内容", fontWeight = FontWeight.SemiBold)
                     Text("网易云尚未返回音乐记忆、标签或相关推荐。", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
@@ -193,7 +193,7 @@ private fun MeloXSongWikiScreen(song: SearchSong, onBack: () -> Unit) {
                 item(key = "section-$index-${section.title}") {
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Text(section.title, fontSize = 22.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 4.dp))
-                        MeloXGlassCard(Modifier.fillMaxWidth()) {
+                        MeloXCard(Modifier.fillMaxWidth()) {
                             section.lines.forEachIndexed { lineIndex, line ->
                                 Text(
                                     line,

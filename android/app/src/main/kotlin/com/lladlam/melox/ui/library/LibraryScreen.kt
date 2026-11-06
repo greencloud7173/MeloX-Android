@@ -165,20 +165,20 @@ import com.lladlam.melox.core.music.provider.DownloadCapability
 import com.lladlam.melox.core.provider.youtubemusic.YouTubeSessionStore
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.key
-import com.lladlam.melox.ui.glass.meloXLiquidBottomBar
-import com.lladlam.melox.ui.glass.MeloXActionIcon
-import com.lladlam.melox.ui.glass.MeloXSwipeAction
-import com.lladlam.melox.ui.glass.MeloXSwipeActionRow
-import com.lladlam.melox.ui.glass.MeloXSymbol
-import com.lladlam.melox.ui.glass.MeloXShapes
-import com.lladlam.melox.ui.glass.MeloXTypography
-import com.lladlam.melox.ui.glass.meloXContentSurface
-import com.lladlam.melox.ui.glass.MeloXIosTopBar
-import com.lladlam.melox.ui.glass.MeloXGlassButton
-import com.lladlam.melox.ui.glass.MeloXGlassButtonStyle
-import com.lladlam.melox.ui.glass.meloXLiquidButton
-import com.lladlam.melox.ui.glass.meloXLiquidTabSelection
-import com.lladlam.melox.ui.glass.meloXIconDrawingScale
+import com.lladlam.melox.ui.controls.meloXBottomBarSurface
+import com.lladlam.melox.ui.controls.MeloXActionIcon
+import com.lladlam.melox.ui.controls.MeloXSwipeAction
+import com.lladlam.melox.ui.controls.MeloXSwipeRow
+import com.lladlam.melox.ui.controls.MeloXSymbol
+import com.lladlam.melox.ui.controls.MeloXShapes
+import com.lladlam.melox.ui.controls.MeloXTypography
+import com.lladlam.melox.ui.controls.meloXContentSurface
+import com.lladlam.melox.ui.controls.MeloXTopBar
+import com.lladlam.melox.ui.controls.MeloXButton
+import com.lladlam.melox.ui.controls.MeloXButtonStyle
+import com.lladlam.melox.ui.controls.meloXButtonSurface
+import com.lladlam.melox.ui.controls.meloXTabIndicator
+import com.lladlam.melox.ui.controls.meloXIconDrawingScale
 import com.lladlam.melox.ui.player.MeloXFlowingLightBackdrop
 import com.lladlam.melox.ui.player.MeloXSongActionsOverlay
 import com.lladlam.melox.ui.sharing.MeloXNeteaseResourceShareActivity
@@ -227,7 +227,7 @@ private fun MeloXLibrarySearchField(
     Box(
         modifier
             .fillMaxWidth()
-            .meloXLiquidButton(
+            .meloXButtonSurface(
                 shape = RoundedCornerShape(20.dp),
                 surfaceColor = MaterialTheme.colorScheme.onBackground.copy(alpha = .055f),
             )
@@ -596,7 +596,7 @@ fun LibraryScreen(
                         .padding(top = rememberMeloXStableStatusBarHeight())
                         .padding(horizontal = if (window.supportsTwoPane) window.gutter else 0.dp),
                 ) {
-                    MeloXIosTopBar(
+                    MeloXTopBar(
                         title = stringResource(R.string.tab_library),
                     )
 
@@ -1434,7 +1434,7 @@ private fun MeloXLibraryLoginUnavailable(
             .padding(top = rememberMeloXStableStatusBarHeight())
             .padding(horizontal = 20.dp),
     ) {
-        MeloXIosTopBar(
+        MeloXTopBar(
             title = stringResource(R.string.tab_library),
             contentPadding = PaddingValues(horizontal = 0.dp),
         )
@@ -1457,10 +1457,10 @@ private fun MeloXLibraryLoginUnavailable(
                     textAlign = TextAlign.Center,
                 )
                 if (onLogin != null) {
-                    MeloXGlassButton(
+                    MeloXButton(
                         onClick = onLogin,
                         modifier = Modifier.padding(top = 18.dp),
-                        style = MeloXGlassButtonStyle.BorderedProminent,
+                        style = MeloXButtonStyle.BorderedProminent,
                         shape = RoundedCornerShape(18.dp),
                         contentPadding = PaddingValues(horizontal = 18.dp, vertical = 10.dp),
                     ) {
@@ -1519,7 +1519,7 @@ private fun MeloXLibrarySegmentedPicker(
         modifier = modifier
             .fillMaxWidth()
             .height(30.dp)
-            .meloXLiquidBottomBar(
+            .meloXBottomBarSurface(
                 shape = panelShape,
                 tint = panelTint,
                 surfaceColor = panelSurface,
@@ -1532,7 +1532,7 @@ private fun MeloXLibrarySegmentedPicker(
                 .fillMaxSize()
                 .alpha(0f)
                 .layerBackdrop(panelBackdrop)
-                .meloXLiquidBottomBar(
+                .meloXBottomBarSurface(
                     shape = panelShape,
                     tint = panelTint,
                     surfaceColor = panelSurface,
@@ -1562,7 +1562,7 @@ private fun MeloXLibrarySegmentedPicker(
                     )
                 }
                 .padding(horizontal = 1.dp, vertical = 1.dp)
-                .meloXLiquidTabSelection(
+                .meloXTabIndicator(
                     shape = lensShape,
                     selected = true,
                     tint = selectionTint,
@@ -1894,7 +1894,7 @@ private fun MeloXLibraryPlaylistsPage(
     // ★ 收藏的歌单无法删除（2026-10-06 用户报障）：原先本列表行的删除/取消订阅入口
     //   **完全缺失**（只有 clickable 进详情页），而详情页的「更多」浮层里才有取消订阅
     //   ⇒ 用户在收藏列表里根本无从删起。现在给每行加左滑删除，与歌曲行的滑动删除
-    //   同一套交互（MeloXSwipeActionRow + Trash），由调用方真正调 API 并刷新列表。
+    //   同一套交互（MeloXSwipeRow + Trash），由调用方真正调 API 并刷新列表。
     onRemovePlaylist: (NeteasePlaylistSummary) -> Unit = {},
     // ★ 系统歌单「我喜欢的音乐」的 id：网易云不允许删除它，该行不给左滑删除入口。
     likedPlaylistId: Long? = null,
@@ -1950,7 +1950,7 @@ private fun MeloXLibraryPlaylistsPage(
             //   系统歌单「我喜欢的音乐」不给入口 —— 网易云不允许删除/取关它，
             //   给了也是点了没反应（2026-10-07）。
             val removable = !playlist.isMeloXLocal && playlist.id != likedPlaylistId
-            MeloXSwipeActionRow(
+            MeloXSwipeRow(
                 startActions = emptyList(),
                 endActions = if (removable) {
                     listOf(
@@ -3282,7 +3282,7 @@ private fun MeloXPlaylistToolbar(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        MeloXGlassCircleButton(
+        MeloXCircleButton(
             foreground = foreground,
             size = 44.dp,
             onClick = onBack,
@@ -3294,7 +3294,7 @@ private fun MeloXPlaylistToolbar(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            MeloXGlassCircleButton(
+            MeloXCircleButton(
                 foreground = foreground,
                 size = 44.dp,
                 onClick = onShare,
@@ -3302,7 +3302,7 @@ private fun MeloXPlaylistToolbar(
                 MeloXShareGlyph(Modifier.size(22.dp), Color(0xFFFF3147))
             }
             if (showMore) {
-                MeloXGlassCircleButton(
+                MeloXCircleButton(
                     foreground = foreground,
                     size = 44.dp,
                     onClick = onMore,
@@ -3478,7 +3478,7 @@ private fun MeloXStandardPlaylistHero(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(14.dp),
             ) {
-                MeloXGlassCircleButton(
+                MeloXCircleButton(
                     foreground = foreground,
                     size = 54.dp,
                     enabled = tracks.isNotEmpty(),
@@ -3491,7 +3491,7 @@ private fun MeloXStandardPlaylistHero(
                     modifier = Modifier
                         .width(140.dp)
                         .height(50.dp)
-                        .meloXLiquidButton(
+                        .meloXButtonSurface(
                             shape = RoundedCornerShape(25.dp),
                             enabled = tracks.isNotEmpty(),
                             tint = if (foreground == Color.White) Color.White else Color.Black,
@@ -3524,7 +3524,7 @@ private fun MeloXStandardPlaylistHero(
                 }
 
                 if (showSaveAction) {
-                    MeloXGlassCircleButton(
+                    MeloXCircleButton(
                         foreground = foreground,
                         size = 54.dp,
                         onClick = onToggleSaved,
@@ -3570,7 +3570,7 @@ private fun MeloXPlaylistTrackRow(
     onPlayLast: () -> Unit,
     endAction: MeloXSwipeAction?,
 ) {
-    MeloXSwipeActionRow(
+    MeloXSwipeRow(
         startActions = listOf(
             MeloXSwipeAction(stringResource(R.string.player_play_next), MeloXSymbol.Next, Color(0xFF8E5AF7), onPlayNext),
             MeloXSwipeAction(stringResource(R.string.artist_play_later), MeloXSymbol.Queue, Color(0xFFFF9F0A), onPlayLast),
@@ -3645,7 +3645,7 @@ private fun MeloXPlaylistTrackRow(
 }
 
 @Composable
-private fun MeloXGlassCircleButton(
+private fun MeloXCircleButton(
     foreground: Color,
     size: Dp,
     enabled: Boolean = true,
@@ -3655,7 +3655,7 @@ private fun MeloXGlassCircleButton(
     Box(
         modifier = Modifier
             .size(size)
-            .meloXLiquidButton(
+            .meloXButtonSurface(
                 shape = CircleShape,
                 enabled = enabled,
                 surfaceColor = glassColor(foreground).copy(alpha = 0.48f),

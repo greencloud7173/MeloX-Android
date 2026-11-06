@@ -70,11 +70,11 @@ import com.lladlam.melox.core.network.MeloXPrivateMessage
 import com.lladlam.melox.core.network.MeloXPrivateMessageResource
 import com.lladlam.melox.core.network.NeteaseMusicOperationsClient
 import com.lladlam.melox.core.network.NeteaseSearchClient
-import com.lladlam.melox.ui.glass.MeloXSymbol
-import com.lladlam.melox.ui.glass.MeloXSymbolIcon
-import com.lladlam.melox.ui.glass.MeloXIosGroupedList
-import com.lladlam.melox.ui.glass.MeloXIosListRow
-import com.lladlam.melox.ui.glass.meloXLiquidButton
+import com.lladlam.melox.ui.controls.MeloXSymbol
+import com.lladlam.melox.ui.controls.MeloXSymbolIcon
+import com.lladlam.melox.ui.controls.MeloXGroupedList
+import com.lladlam.melox.ui.controls.MeloXListRow
+import com.lladlam.melox.ui.controls.meloXButtonSurface
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -158,7 +158,7 @@ private fun MessagesConversationList(
                 Box(
                     Modifier
                         .size(44.dp)
-                        .meloXLiquidButton(
+                        .meloXButtonSurface(
                             shape = CircleShape,
                             surfaceColor = MaterialTheme.colorScheme.surface.copy(alpha = .10f),
                         )
@@ -207,7 +207,7 @@ private fun MessagesConversationList(
                         Box(
                             Modifier
                                 .height(44.dp)
-                                .meloXLiquidButton(
+                                .meloXButtonSurface(
                                     shape = Capsule(),
                                     surfaceColor = MaterialTheme.colorScheme.surface.copy(alpha = .10f),
                                 )
@@ -225,7 +225,7 @@ private fun MessagesConversationList(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
                     item(key = "private-conversation-group") {
-                        MeloXIosGroupedList {
+                        MeloXGroupedList {
                             contacts.forEachIndexed { index, contact ->
                                 MessagesConversationItem(
                                     contact = contact,
@@ -249,7 +249,7 @@ private fun MessageGlassIconButton(
     Box(
         modifier = Modifier
             .size(44.dp)
-            .meloXLiquidButton(
+            .meloXButtonSurface(
                 shape = CircleShape,
                 surfaceColor = MaterialTheme.colorScheme.surface.copy(alpha = .10f),
             )
@@ -325,7 +325,7 @@ private fun MessageContactsScreen(
             Modifier
                 .fillMaxWidth()
                 .height(48.dp)
-                .meloXLiquidButton(
+                .meloXButtonSurface(
                     shape = Capsule(),
                     surfaceColor = MaterialTheme.colorScheme.surface.copy(alpha = .10f),
                 )
@@ -360,9 +360,9 @@ private fun MessageContactsScreen(
             filtered.isEmpty() -> Text(stringResource(R.string.message_no_contacts), color = MaterialTheme.colorScheme.onSurface.copy(alpha = .5f))
             else -> LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 24.dp)) {
                 item(key = "message-contact-group") {
-                    MeloXIosGroupedList {
+                    MeloXGroupedList {
                         filtered.forEachIndexed { index, contact ->
-                            MeloXIosListRow(
+                            MeloXListRow(
                                 title = contact.name,
                                 subtitle = contact.signature.takeIf(String::isNotBlank),
                                 leading = {
@@ -389,7 +389,7 @@ private fun MessagesConversationItem(
     showTopSeparator: Boolean,
     onClick: () -> Unit,
 ) {
-    MeloXIosListRow(
+    MeloXListRow(
         title = contact.name,
         subtitle = contact.latestMessage ?: contact.signature.ifBlank { stringResource(R.string.message_none) },
         leading = {
@@ -499,7 +499,7 @@ private fun MessagesDetailScreen(
             Box(
                 modifier = Modifier
                     .size(44.dp)
-                    .meloXLiquidButton(
+                    .meloXButtonSurface(
                         shape = CircleShape,
                         surfaceColor = MaterialTheme.colorScheme.surface.copy(alpha = .10f),
                     )
@@ -573,7 +573,7 @@ private fun MessagesDetailScreen(
                 Modifier
                     .weight(1f)
                     .height(48.dp)
-                    .meloXLiquidButton(
+                    .meloXButtonSurface(
                         shape = Capsule(),
                         surfaceColor = MaterialTheme.colorScheme.surface.copy(alpha = .10f),
                     )
@@ -606,7 +606,7 @@ private fun MessagesDetailScreen(
             Box(
                 modifier = Modifier
                     .size(48.dp)
-                    .meloXLiquidButton(
+                    .meloXButtonSurface(
                         shape = CircleShape,
                         enabled = !busy && draft.isNotBlank(),
                         surfaceColor = MaterialTheme.colorScheme.surface.copy(alpha = .10f),

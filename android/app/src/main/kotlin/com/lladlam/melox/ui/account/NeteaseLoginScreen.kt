@@ -47,9 +47,9 @@ import com.lladlam.melox.core.account.NeteaseSessionStore
 import com.lladlam.melox.core.music.provider.PlaybackAccountSlot
 import com.lladlam.melox.core.network.NeteasePhoneAuthClient
 import com.lladlam.melox.core.remoteconfig.MeloXRemoteConfigPolicy
-import com.lladlam.melox.ui.glass.meloXLiquidButton
-import com.lladlam.melox.ui.glass.MeloXGlassIconButton
-import com.lladlam.melox.ui.glass.MeloXSymbol
+import com.lladlam.melox.ui.controls.meloXButtonSurface
+import com.lladlam.melox.ui.controls.MeloXIconButton
+import com.lladlam.melox.ui.controls.MeloXSymbol
 import com.lladlam.melox.ui.animation.meloXPagePushSpec
 import com.lladlam.melox.ui.legal.MeloXLegalLinks
 import kotlinx.coroutines.delay
@@ -196,8 +196,8 @@ fun NeteaseLoginScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            // 返回键与全站统一：液态玻璃圆钮（MeloXGlassIconButton，44dp）。
-            MeloXGlassIconButton(
+            // 返回键与全站统一：液态玻璃圆钮（MeloXIconButton，44dp）。
+            MeloXIconButton(
                 symbol = MeloXSymbol.ChevronLeft,
                 onClick = onDismiss,
             )

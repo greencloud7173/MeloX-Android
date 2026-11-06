@@ -60,9 +60,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lladlam.melox.R
-import com.lladlam.melox.ui.glass.MeloXGlassIconButton
-import com.lladlam.melox.ui.glass.MeloXSymbol
-import com.lladlam.melox.ui.glass.MeloXSymbolIcon
+import com.lladlam.melox.ui.controls.MeloXIconButton
+import com.lladlam.melox.ui.controls.MeloXSymbol
+import com.lladlam.melox.ui.controls.MeloXSymbolIcon
 import com.lladlam.melox.ui.legal.MeloXLegalLinks
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -392,9 +392,9 @@ fun MeloXPhoneCodeLoginScreen(
             )
         }
 
-        // 关闭键与全站统一：液态玻璃圆钮（MeloXGlassIconButton，44dp），
+        // 关闭键与全站统一：液态玻璃圆钮（MeloXIconButton，44dp），
         // 不再自己画一个 36dp 的灰圆 —— 那是全 App 唯一一处不一样的返回键。
-        MeloXGlassIconButton(
+        MeloXIconButton(
             symbol = MeloXSymbol.ChevronLeft,
             onClick = onClose,
             modifier = Modifier

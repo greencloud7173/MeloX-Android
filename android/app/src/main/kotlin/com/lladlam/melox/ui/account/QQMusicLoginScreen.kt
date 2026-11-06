@@ -76,11 +76,11 @@ import com.lladlam.melox.core.provider.qqmusic.QQMusicQrLoginMethod
 import com.lladlam.melox.core.provider.qqmusic.QQMusicQrLoginSession
 import com.lladlam.melox.core.provider.qqmusic.QQMusicQrLoginState
 import com.lladlam.melox.core.provider.qqmusic.QQMusicSessionStore
-import com.lladlam.melox.ui.glass.MeloXShapes
-import com.lladlam.melox.ui.glass.MeloXSymbol
-import com.lladlam.melox.ui.glass.MeloXSymbolIcon
-import com.lladlam.melox.ui.glass.MeloXIosTopBar
-import com.lladlam.melox.ui.glass.meloXLiquidButton
+import com.lladlam.melox.ui.controls.MeloXShapes
+import com.lladlam.melox.ui.controls.MeloXSymbol
+import com.lladlam.melox.ui.controls.MeloXSymbolIcon
+import com.lladlam.melox.ui.controls.MeloXTopBar
+import com.lladlam.melox.ui.controls.meloXButtonSurface
 import com.lladlam.melox.ui.legal.MeloXLegalLinks
 import com.lladlam.melox.ui.theme.isMeloXDarkTheme
 import java.io.File
@@ -208,7 +208,7 @@ fun QQMusicLoginScreen(
             .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding(),
     ) {
-        MeloXIosTopBar(
+        MeloXTopBar(
             title = stringResource(R.string.account_login_qq),
             contentPadding = PaddingValues(horizontal = 10.dp),
             navigation = {
@@ -394,7 +394,7 @@ private fun QQMusicLoginMethodSelector(
         modifier = modifier
             .fillMaxWidth()
             .height(56.dp)
-            .meloXLiquidButton(
+            .meloXButtonSurface(
                 shape = RoundedCornerShape(24.dp),
                 surfaceColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.08f),
                 lensRadius = 12.dp,
@@ -419,7 +419,7 @@ private fun QQMusicLoginMethodSelector(
                 .width(segmentWidth)
                 .fillMaxHeight()
                 .graphicsLayer { translationX = indicatorOffset.toPx() }
-                .meloXLiquidButton(
+                .meloXButtonSurface(
                     shape = RoundedCornerShape(20.dp),
                     tint = indicatorColor,
                     surfaceColor = indicatorColor.copy(alpha = 0.10f),
@@ -479,7 +479,7 @@ internal fun QrActionButton(
             // 高度固定 50dp 而不是 heightIn(min) —— 胶囊的圆角半径由实际高度决定，
             // 高度随内容浮动会让同一排按钮圆角不一致。
             .height(50.dp)
-            .meloXLiquidButton(
+            .meloXButtonSurface(
                 shape = MeloXShapes.capsule,
                 enabled = enabled,
                 tint = accent,

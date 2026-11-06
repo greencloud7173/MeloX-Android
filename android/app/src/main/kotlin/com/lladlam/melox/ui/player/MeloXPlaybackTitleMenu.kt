@@ -55,10 +55,10 @@ import com.lladlam.melox.core.network.NeteaseUniversalSearchClient
 import com.lladlam.melox.playback.MeloXPlaybackModeRuntime
 import com.lladlam.melox.playback.PlaybackTrackIdentity
 import com.lladlam.melox.ui.collection.MeloXCollectionDetailActivity
-import com.lladlam.melox.ui.glass.MeloXGlassCard
-import com.lladlam.melox.ui.glass.MeloXGlassMaterial
-import com.lladlam.melox.ui.glass.MeloXSymbol
-import com.lladlam.melox.ui.glass.MeloXSymbolIcon
+import com.lladlam.melox.ui.controls.MeloXCard
+import com.lladlam.melox.ui.controls.MeloXSurfaceTone
+import com.lladlam.melox.ui.controls.MeloXSymbol
+import com.lladlam.melox.ui.controls.MeloXSymbolIcon
 import kotlinx.coroutines.launch
 
 private class MeloXTitleMenuPositionProvider(
@@ -192,7 +192,7 @@ internal fun MeloXPlaybackTitleMenu(
                     dismissOnClickOutside = true,
                 ),
             ) {
-                MeloXGlassCard(
+                MeloXCard(
                     modifier = Modifier
                         .width(300.dp)
                         .graphicsLayer {
@@ -201,7 +201,7 @@ internal fun MeloXPlaybackTitleMenu(
                             scaleY = .94f + .06f * menuAlpha
                         },
                     shape = RoundedCornerShape(28.dp),
-                    material = MeloXGlassMaterial.Clear,
+                    material = MeloXSurfaceTone.Clear,
                     surfaceColor = Color.Black.copy(alpha = .22f),
                 ) {
                     TitleMenuRow(

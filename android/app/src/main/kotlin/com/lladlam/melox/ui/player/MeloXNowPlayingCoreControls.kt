@@ -67,14 +67,14 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.asAndroidPath
 import androidx.compose.ui.graphics.asComposePath
 import androidx.compose.ui.graphics.drawscope.Stroke
-import com.lladlam.melox.ui.glass.meloXScenePageDisc
+import com.lladlam.melox.ui.controls.meloXSceneDisc
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import com.lladlam.melox.ui.glass.MeloSfTypefaceCache
+import com.lladlam.melox.ui.controls.MeloSfTypefaceCache
 import com.lladlam.melox.R
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -94,11 +94,11 @@ import com.lladlam.melox.core.music.model.MusicSource
 import com.lladlam.melox.playback.PlaybackTrackIdentity
 import com.lladlam.melox.playback.CrossProviderPlaybackRuntime
 import com.lladlam.melox.playback.ProviderPlaybackQualityRuntime
-import com.lladlam.melox.ui.glass.meloXLiquidButton
-import com.lladlam.melox.ui.glass.MeloXPlaybackModeGlyph
-import com.lladlam.melox.ui.glass.MeloXSymbol
-import com.lladlam.melox.ui.glass.MeloXSymbolIcon
-import com.lladlam.melox.ui.glass.meloXIconDrawingScale
+import com.lladlam.melox.ui.controls.meloXButtonSurface
+import com.lladlam.melox.ui.controls.MeloXPlaybackModeGlyph
+import com.lladlam.melox.ui.controls.MeloXSymbol
+import com.lladlam.melox.ui.controls.MeloXSymbolIcon
+import com.lladlam.melox.ui.controls.meloXIconDrawingScale
 import com.lladlam.melox.platform.MeloXVolumeKeyBridge
 import com.lladlam.melox.ui.settings.MeloXSettingsRuntime
 import com.lladlam.melox.ui.settings.MeloXVolumeControlMode
@@ -381,7 +381,7 @@ private fun SceneQualityChip(
                     scaleY = scale
                 }
                 .height(48.dp)
-                .meloXLiquidButton(
+                .meloXButtonSurface(
                     shape = RoundedCornerShape(7.dp),
                     surfaceColor = Color.White.copy(alpha = 0.10f),
                     lensRadius = 6.dp,
@@ -1290,7 +1290,7 @@ internal fun ScenePageSelector(
  * 当前歌单播放形式的徽标图形：随机 = 交叉箭头；循环 = 带箭头的开环；
  * 单曲循环 = 同一环 + 右上角的「1」。
  *
- * 字形来源统一在 [com.lladlam.melox.ui.glass.MeloXPlaybackModeGlyph]（1:1 复刻
+ * 字形来源统一在 [com.lladlam.melox.ui.controls.MeloXPlaybackModeGlyph]（1:1 复刻
  * SF Symbols 真实轮廓，实现见 `ui/glass/MeloXSymbol.kt`）—— 与队列面板顶部模式开关
  * 里的「列表循环 / 单曲循环」图标共用同一份几何（用户 2026-10-15 要求两处「同款」）。
  */
@@ -1442,7 +1442,7 @@ private fun ScenePageButton(
             Box(
                 Modifier
                     .size(discSize)
-                    .meloXScenePageDisc(
+                    .meloXSceneDisc(
                         surfaceColor = Color.White.copy(alpha = 0.85f),
                         holePath = when (kind) {
                             SceneGlyphKind.Lyrics -> lyricsHolePath
@@ -1774,9 +1774,9 @@ private fun SceneCupertinoGlyph(
             modifier = modifier,
             color = color,
             variant = if (kind == SceneGlyphKind.Play || kind == SceneGlyphKind.Pause) {
-                com.lladlam.melox.ui.glass.MeloXSymbolVariant.Fill
+                com.lladlam.melox.ui.controls.MeloXSymbolVariant.Fill
             } else {
-                com.lladlam.melox.ui.glass.MeloXSymbolVariant.Regular
+                com.lladlam.melox.ui.controls.MeloXSymbolVariant.Regular
             },
             iconSize = when (kind) {
                 SceneGlyphKind.Play, SceneGlyphKind.Pause -> 48.sp

@@ -76,12 +76,12 @@ import com.lladlam.melox.core.network.MeloXSearchKind
 import com.lladlam.melox.core.provider.bilibili.BilibiliLyricOffsetStore
 import com.lladlam.melox.core.provider.local.LocalRecognitionCoordinator
 import com.lladlam.melox.core.download.MeloXProviderDownloadStore
-import com.lladlam.melox.ui.glass.MeloXActionIcon
+import com.lladlam.melox.ui.controls.MeloXActionIcon
 import com.lladlam.melox.ui.animation.meloXPanelEnter
 import com.lladlam.melox.ui.animation.meloXPanelExit
-import com.lladlam.melox.ui.glass.MeloXIosGroupedList
-import com.lladlam.melox.ui.glass.MeloXIosListRow
-import com.lladlam.melox.ui.glass.MeloXLiquidSlider
+import com.lladlam.melox.ui.controls.MeloXGroupedList
+import com.lladlam.melox.ui.controls.MeloXListRow
+import com.lladlam.melox.ui.controls.MeloXSlider
 import com.lladlam.melox.ui.search.MeloXSearchLaunchBus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -226,7 +226,7 @@ internal fun MeloXProviderSongActionsOverlay(
                             },
                         )
 
-                        MeloXIosGroupedList(surfaceColor = MaterialTheme.colorScheme.surfaceContainerHigh) {
+                        MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surfaceContainerHigh) {
                         when (target) {
                             ProviderSongActionPage.Main -> {
                                 // ★ 平板双栏专属：⋯ 里补一条进「天际歌词」的通道（2026-10-07）。
@@ -482,7 +482,7 @@ internal fun MeloXProviderSongActionsOverlay(
                                         fontSize = 12.sp,
                                     )
                                 }
-                                MeloXLiquidSlider(
+                                MeloXSlider(
                                     value = displayedOffset.toFloat(),
                                     onTransientValueChange = { raw ->
                                         displayedOffset = raw.toInt()
@@ -634,7 +634,7 @@ private fun ProviderActionItem(
     onClick: () -> Unit,
 ) {
     val foreground = MaterialTheme.colorScheme.onSurface
-    MeloXIosListRow(
+    MeloXListRow(
         title = title,
         leading = {
             MeloXActionIcon(

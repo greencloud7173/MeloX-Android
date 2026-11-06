@@ -1,4 +1,4 @@
-﻿package com.lladlam.melox.ui.player
+package com.lladlam.melox.ui.player
 
 import androidx.activity.compose.BackHandler
 import android.os.Build
@@ -86,7 +86,7 @@ import coil3.size.Precision
 import com.kyant.backdrop.backdrops.LayerBackdrop
 import com.kyant.backdrop.backdrops.layerBackdrop
 import com.kyant.backdrop.backdrops.rememberLayerBackdrop
-import com.lladlam.melox.ui.glass.LocalMeloXBackdrop
+import com.lladlam.melox.ui.controls.LocalMeloXBackdrop
 import com.lladlam.melox.ui.settings.MeloXSettingsRuntime
 import com.lladlam.melox.ui.settings.MeloXPlayerBackgroundMode
 import com.lladlam.melox.ui.settings.MeloXPlayerShell

@@ -14,7 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.lladlam.melox.R
 import com.lladlam.melox.core.provider.youtubemusic.YouTubeSessionStore
-import com.lladlam.melox.ui.glass.*
+import com.lladlam.melox.ui.controls.*
 import com.metrolist.innertube.models.YouTubeChannel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
@@ -35,8 +35,8 @@ internal fun YouTubeAccountControls(onRelogin: () -> Unit) {
         YouTubeSessionStore.revalidate(context)
     }
     if (!session.isLoggedIn) return
-    MeloXIosGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
-        MeloXIosListRow(
+    MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
+        MeloXListRow(
             title = stringResource(R.string.youtube_channel),
             subtitle = session.accountName,
             onClick = if (busy) null else ({
@@ -55,14 +55,14 @@ internal fun YouTubeAccountControls(onRelogin: () -> Unit) {
             }),
             showTopSeparator = false,
         )
-        MeloXIosListRow(
+        MeloXListRow(
             title = stringResource(R.string.youtube_refresh_login),
             subtitle = stringResource(if (expired) R.string.youtube_session_expired else R.string.youtube_refresh_login_hint),
             onClick = onRelogin,
         )
     }
     if (showChannels) {
-        MeloXGlassDialog(visible = true, onDismiss = { if (!busy) showChannels = false }) {
+        MeloXDialog(visible = true, onDismiss = { if (!busy) showChannels = false }) {
             Text(stringResource(R.string.youtube_channel), style = MaterialTheme.typography.titleLarge)
             Spacer(Modifier.height(12.dp))
             Column(Modifier.height(320.dp).verticalScroll(rememberScrollState())) {
@@ -72,7 +72,7 @@ internal fun YouTubeAccountControls(onRelogin: () -> Unit) {
                 channels.forEach { channel ->
                     val selected = if (session.pageId.isNotBlank()) channel.pageId == session.pageId
                         else channel.selected
-                    MeloXIosListRow(
+                    MeloXListRow(
                         title = channel.name,
                         subtitle = channel.handle,
                         detail = if (selected) "✓" else null,
@@ -92,7 +92,7 @@ internal fun YouTubeAccountControls(onRelogin: () -> Unit) {
                     )
                 }
             }
-            MeloXGlassButton(onClick = { if (!busy) showChannels = false }) {
+            MeloXButton(onClick = { if (!busy) showChannels = false }) {
                 Text(stringResource(R.string.action_done))
             }
         }

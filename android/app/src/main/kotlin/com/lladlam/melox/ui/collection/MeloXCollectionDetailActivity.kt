@@ -39,8 +39,8 @@ import com.lladlam.melox.playback.PlaybackCommands
 import com.lladlam.melox.ui.MeloXBottomContentClearance
 import com.lladlam.melox.ui.prepareMeloXPageWindow
 import com.lladlam.melox.ui.startMeloXPage
-import com.lladlam.melox.ui.glass.MeloXActionIcon
-import com.lladlam.melox.ui.glass.meloXLiquidButton
+import com.lladlam.melox.ui.controls.MeloXActionIcon
+import com.lladlam.melox.ui.controls.meloXButtonSurface
 import com.lladlam.melox.ui.library.MeloXBatchDownloadSheet
 import com.lladlam.melox.ui.library.MeloXUnifiedAlbumDetailScreen
 import com.lladlam.melox.ui.library.MeloXUnifiedPlaylistDetailScreen
@@ -120,7 +120,7 @@ internal fun MeloXCollectionDetailPage(intent: Intent, onBack: () -> Unit) {
         kind == MeloXSearchKind.Podcasts -> MeloXPodcastScreen(initialPodcastId = id, onExit = onBack, bottomPadding = 32.dp)
     }
 }
-@Composable private fun Header(title: String, onBack: () -> Unit) = Row(Modifier.fillMaxWidth().height(58.dp), verticalAlignment = Alignment.CenterVertically) { Box(Modifier.size(44.dp).meloXLiquidButton(shape = CircleShape).clickable(onClick = onBack), contentAlignment = Alignment.Center) { MeloXActionIcon("‹", Modifier.size(20.dp), MaterialTheme.colorScheme.onSurface) }; Spacer(Modifier.width(12.dp)); Text(title, fontSize = 24.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis) }
+@Composable private fun Header(title: String, onBack: () -> Unit) = Row(Modifier.fillMaxWidth().height(58.dp), verticalAlignment = Alignment.CenterVertically) { Box(Modifier.size(44.dp).meloXButtonSurface(shape = CircleShape).clickable(onClick = onBack), contentAlignment = Alignment.Center) { MeloXActionIcon("‹", Modifier.size(20.dp), MaterialTheme.colorScheme.onSurface) }; Spacer(Modifier.width(12.dp)); Text(title, fontSize = 24.sp, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis) }
 @Composable
 private fun AlbumScreen(id: Long, onBack: () -> Unit) {
     val context = LocalContext.current
@@ -187,7 +187,7 @@ private fun AlbumScreen(id: Long, onBack: () -> Unit) {
                 query,
                 { query = it },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth().meloXLiquidButton(shape = RoundedCornerShape(22.dp)).padding(horizontal = 14.dp, vertical = 11.dp),
+                modifier = Modifier.fillMaxWidth().meloXButtonSurface(shape = RoundedCornerShape(22.dp)).padding(horizontal = 14.dp, vertical = 11.dp),
                 textStyle = androidx.compose.ui.text.TextStyle(color = MaterialTheme.colorScheme.onSurface, fontSize = 16.sp),
                 decorationBox = { inner -> if (query.isBlank()) Text(stringResource(R.string.artist_search_in_album), color = MaterialTheme.colorScheme.onSurface.copy(alpha = .4f)); inner() },
             )
@@ -243,4 +243,4 @@ private fun AlbumScreen(id: Long, onBack: () -> Unit) {
 }
 @Composable private fun PodcastScreen(id: Long, onBack: () -> Unit) { val context = LocalContext.current; val app = context.applicationContext; val client = remember(app) { NeteaseUniversalSearchClient(cookieProvider = { NeteaseSessionStore.readCookie(app) }) }; val scope = rememberCoroutineScope(); var podcast by remember(id) { mutableStateOf<MeloXPodcast?>(null) }; var programs by remember(id) { mutableStateOf<List<MeloXPodcastProgram>>(emptyList()) }; var loading by remember(id) { mutableStateOf(true) }; var error by remember(id) { mutableStateOf<String?>(null) }; var subscribed by remember(id) { mutableStateOf(false) }; val podcastFallback = stringResource(R.string.artist_podcast); val playLabel = stringResource(R.string.artist_play); val subscribedLabel = stringResource(R.string.artist_subscribed); val subscribeLabel = stringResource(R.string.artist_subscribe); LaunchedEffect(id) { runCatching { client.podcastDetail(id) to client.podcastPrograms(id, limit = 100).values }.onSuccess { (p, list) -> podcast = p; subscribed = p?.subscribed == true; programs = list }.onFailure { error = it.message ?: context.getString(R.string.artist_podcast_failed) }; loading = false }; BackHandler(onBack = onBack); val playable = programs.mapNotNull(MeloXPodcastProgram::playbackSong); LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(20.dp, 8.dp, 20.dp, MeloXBottomContentClearance)) { item { Header(podcast?.name ?: podcastFallback, onBack) }; podcast?.let { p -> item { Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) { AsyncImage(p.artworkUrl, null, contentScale = ContentScale.Crop, modifier = Modifier.size(190.dp).clip(RoundedCornerShape(18.dp))); Text(p.name, Modifier.padding(top = 12.dp), fontSize = 23.sp, fontWeight = FontWeight.Bold); Row { Action(playLabel) { playable.firstOrNull()?.let { PlaybackCommands.playQueue(context, playable, it.id) } }; Action(if (subscribed) subscribedLabel else subscribeLabel) { scope.launch { runCatching { client.setPodcastSubscribed(id, !subscribed) }.onSuccess { subscribed = !subscribed }.onFailure { error = it.message } } } }; p.description?.let { Text(it, Modifier.padding(top = 10.dp)) } } } }; if (loading) item { CircularProgressIndicator() }; error?.let { item { Text(it, color = MaterialTheme.colorScheme.error) } }; items(programs, key = { "program-${it.id}" }) { pr -> pr.playbackSong?.let { song -> Track(song, { PlaybackCommands.playQueue(context, playable, song.id) }) } ?: Text(pr.name) } } }
 @Composable private fun Track(song: SearchSong, onPlay: () -> Unit, onDownload: (() -> Unit)? = null) = Row(Modifier.fillMaxWidth().clickable(onClick = onPlay).padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) { AsyncImage(song.artworkUrl, null, contentScale = ContentScale.Crop, modifier = Modifier.size(48.dp).clip(RoundedCornerShape(8.dp))); Column(Modifier.weight(1f).padding(start = 10.dp)) { Text(song.name, maxLines = 1); Text(song.artists, fontSize = 12.sp) }; onDownload?.let { MeloXActionIcon("↓", Modifier.size(20.dp).clickable(onClick = it).padding(2.dp), MaterialTheme.colorScheme.primary) } }
-@Composable private fun Action(title: String, onClick: () -> Unit) = Box(Modifier.padding(6.dp).meloXLiquidButton(shape = RoundedCornerShape(20.dp)).clickable(onClick = onClick).padding(horizontal = 12.dp, vertical = 8.dp), contentAlignment = Alignment.Center) { Text(title, fontWeight = FontWeight.SemiBold, fontSize = 13.sp) }
+@Composable private fun Action(title: String, onClick: () -> Unit) = Box(Modifier.padding(6.dp).meloXButtonSurface(shape = RoundedCornerShape(20.dp)).clickable(onClick = onClick).padding(horizontal = 12.dp, vertical = 8.dp), contentAlignment = Alignment.Center) { Text(title, fontWeight = FontWeight.SemiBold, fontSize = 13.sp) }

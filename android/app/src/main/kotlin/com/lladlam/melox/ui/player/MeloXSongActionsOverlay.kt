@@ -84,11 +84,11 @@ import com.lladlam.melox.core.network.NeteaseSearchClient
 import com.lladlam.melox.core.network.NeteaseSocialExtrasClient
 import com.lladlam.melox.playback.MeloXListenTogetherCoordinator
 import com.lladlam.melox.playback.PlaybackCommands
-import com.lladlam.melox.ui.glass.MeloXActionIcon
-import com.lladlam.melox.ui.glass.MeloXIosGroupedList
-import com.lladlam.melox.ui.glass.MeloXIosListRow
-import com.lladlam.melox.ui.glass.MeloXSymbol
-import com.lladlam.melox.ui.glass.MeloXSymbolIcon
+import com.lladlam.melox.ui.controls.MeloXActionIcon
+import com.lladlam.melox.ui.controls.MeloXGroupedList
+import com.lladlam.melox.ui.controls.MeloXListRow
+import com.lladlam.melox.ui.controls.MeloXSymbol
+import com.lladlam.melox.ui.controls.MeloXSymbolIcon
 import com.lladlam.melox.ui.animation.meloXPanelEnter
 import com.lladlam.melox.ui.animation.meloXPanelExit
 import kotlinx.coroutines.Dispatchers
@@ -412,9 +412,9 @@ fun MeloXSongActionsOverlay(
                                 if (song.artists.isNotBlank() && onNavigateSearch != null) {
                                     ActionItem(stringResource(R.string.player_go_artist, song.artists), "♬") { onDismiss(); onNavigateSearch(song.artists.substringBefore(" / "), MeloXSearchKind.Artists) }
                                 }
-                                MeloXIosGroupedList(surfaceColor = MaterialTheme.colorScheme.surfaceContainerHigh) {
+                                MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surfaceContainerHigh) {
                                     actions.forEachIndexed { index, action ->
-                                        MeloXIosListRow(
+                                        MeloXListRow(
                                             title = action.title,
                                             leading = { MeloXSymbolIcon(action.symbol, Modifier.size(22.dp), MaterialTheme.colorScheme.onSurface, iconSize = 21.sp) },
                                             showTopSeparator = index > 0,

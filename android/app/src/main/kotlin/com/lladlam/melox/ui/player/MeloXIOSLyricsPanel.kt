@@ -283,7 +283,7 @@ internal val MeloXLandscapeLyricsEdgeBlurMax = 6.dp
  * 竖屏歌词「底部渐隐带」高度（唯一调参入口，配 `edgeFadeBottomTerminal` 一起用）。
  *
  * 背景：竖屏歌词面板是**铺满**到 Column 底部的（只有 `padding(top = 88.dp)`、**没有底部
- * 让位**），底下那一截被底部控件条盖住。控件条只有 `meloXBackdropBlur`（`surfaceColor`
+ * 让位**），底下那一截被底部控件条盖住。控件条只有 `meloXPanelSurface`（`surfaceColor`
  * 仅 `Black 8%` + 24dp 模糊）—— 对**白色高亮歌词**遮挡不足，会"幽灵般"透出来。真机
  * 截图实证：`0:00  [标准]  -0:00` 那一带能看到下层 `(4665,777)` 的虚影、三控件下方还有
  * 一整行。用户描述为「本该被下半操作区遮挡的歌词出现了」。
@@ -2914,7 +2914,7 @@ private fun sourceEdgeProximityBlur(
  * @param bottomFadePx 底部渐隐带高度（自**归零点**往上量）。
  * @param bottomTerminalPx 底部**归零点**距视口底的距离（0 = 归零点即视口底，旧行为）。
  *   该点以下恒透明。竖屏用它把"完全淡出"提前到**底部控件条的顶沿**：控件条本身是
- *   `meloXBackdropBlur`（仅 8% 黑 + 模糊），白色高亮歌词会从中渗出（真机截图实证
+ *   `meloXPanelSurface`（仅 8% 黑 + 模糊），白色高亮歌词会从中渗出（真机截图实证
  *   「0:00 进度条那一带能看见 `(4665,777)` 的虚影」）⇒ 不能靠它"挡"，必须让歌词在
  *   该区间本来就透明。纵向渐隐是**线性**的：若把归零点留在视口底，控件条恰好落在
  *   渐隐带**起点**（alpha = 1），无论带宽多大都挡不住 —— 所以必须能上移归零点。

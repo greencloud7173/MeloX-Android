@@ -44,10 +44,10 @@ import com.lladlam.melox.core.library.NeteaseLibraryClient
 import com.lladlam.melox.core.library.NeteasePlaylistSummary
 import com.lladlam.melox.core.network.NeteaseMusicOperationsClient
 import com.lladlam.melox.core.network.NeteaseSearchClient
-import com.lladlam.melox.ui.glass.MeloXIosGroupedList
-import com.lladlam.melox.ui.glass.MeloXIosListRow
-import com.lladlam.melox.ui.glass.MeloXSymbol
-import com.lladlam.melox.ui.glass.MeloXSymbolIcon
+import com.lladlam.melox.ui.controls.MeloXGroupedList
+import com.lladlam.melox.ui.controls.MeloXListRow
+import com.lladlam.melox.ui.controls.MeloXSymbol
+import com.lladlam.melox.ui.controls.MeloXSymbolIcon
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.launch
@@ -116,7 +116,7 @@ internal fun MeloXPlaylistActionsOverlay(
             Text(stringResource(R.string.playlist_actions), color = MaterialTheme.colorScheme.onSurface.copy(alpha = .58f), fontSize = 13.sp)
             Text(playlist.name, color = MaterialTheme.colorScheme.onSurface, fontSize = 20.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 3.dp, bottom = 10.dp))
             message?.let { Text(it, color = MaterialTheme.colorScheme.error, fontSize = 12.sp, modifier = Modifier.padding(bottom = 6.dp)) }
-            MeloXIosGroupedList(surfaceColor = MaterialTheme.colorScheme.surfaceContainerHigh) {
+            MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surfaceContainerHigh) {
                 PlaylistActionRow(stringResource(R.string.playlist_share), MeloXSymbol.Share, false) {
                     if (onShare != null) onShare() else sharePlaylistFromDetail(context, playlist)
                     onDismiss()
@@ -170,7 +170,7 @@ internal fun MeloXPlaylistActionsOverlay(
 
 @Composable
 private fun PlaylistActionRow(title: String, symbol: MeloXSymbol, separator: Boolean, onClick: () -> Unit) {
-    MeloXIosListRow(
+    MeloXListRow(
         title = title,
         leading = { MeloXSymbolIcon(symbol, Modifier.size(22.dp), MaterialTheme.colorScheme.onSurface, iconSize = 21.sp) },
         showTopSeparator = separator,
@@ -243,7 +243,7 @@ internal fun MeloXProviderPlaylistSyncSheet(
                 )
             }
             Spacer(Modifier.height(12.dp))
-            MeloXIosGroupedList(surfaceColor = MaterialTheme.colorScheme.surfaceContainerHigh) {
+            MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surfaceContainerHigh) {
                 if (canRename) {
                     PlaylistActionRow(stringResource(R.string.player_rename_playlist), MeloXSymbol.Check, false) {
                         if (!busy && name.isNotBlank()) onRename(name.trim())

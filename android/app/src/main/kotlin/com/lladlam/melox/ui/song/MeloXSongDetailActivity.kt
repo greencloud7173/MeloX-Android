@@ -44,10 +44,10 @@ import com.lladlam.melox.playback.PlaybackCommands
 import com.lladlam.melox.ui.MeloXBottomContentClearance
 import com.lladlam.melox.ui.MeloXPageHost
 import com.lladlam.melox.ui.finishMeloXPage
-import com.lladlam.melox.ui.glass.MeloXGlassButton
-import com.lladlam.melox.ui.glass.MeloXGlassButtonStyle
-import com.lladlam.melox.ui.glass.MeloXGlassCard
-import com.lladlam.melox.ui.glass.MeloXPinnedListPage
+import com.lladlam.melox.ui.controls.MeloXButton
+import com.lladlam.melox.ui.controls.MeloXButtonStyle
+import com.lladlam.melox.ui.controls.MeloXCard
+import com.lladlam.melox.ui.controls.MeloXPinnedListPage
 import com.lladlam.melox.ui.prepareMeloXPageWindow
 import com.lladlam.melox.ui.startMeloXPage
 import com.lladlam.melox.ui.theme.MeloXTheme
@@ -153,7 +153,7 @@ internal fun MeloXSongDetailScreen(song: SearchSong, onBack: () -> Unit) {
         bottomPadding = MeloXBottomContentClearance,
     ) {
         item(key = "header") {
-            MeloXGlassCard(Modifier.fillMaxWidth()) {
+            MeloXCard(Modifier.fillMaxWidth()) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     AsyncImage(
                         model = song.artworkUrl,
@@ -198,21 +198,21 @@ internal fun MeloXSongDetailScreen(song: SearchSong, onBack: () -> Unit) {
                 Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                MeloXGlassButton(
+                MeloXButton(
                     onClick = {
                         PlaybackCommands.playAll(context, listOf(song))
                     },
                     modifier = Modifier.weight(1f),
-                    style = MeloXGlassButtonStyle.BorderedProminent,
+                    style = MeloXButtonStyle.BorderedProminent,
                 ) { Text(stringResource(R.string.song_detail_play)) }
-                MeloXGlassButton(
+                MeloXButton(
                     onClick = {
-                        if (busy) return@MeloXGlassButton
+                        if (busy) return@MeloXButton
                         busy = true
                         if (unifiedFavoritesEnabled) {
                             liked = MeloXUnifiedFavorites.toggle(app, MeloXUnifiedFavorites.fromNetease(song))
                             busy = false
-                            return@MeloXGlassButton
+                            return@MeloXButton
                         }
                         scope.launch {
                             val target = liked != true
@@ -223,7 +223,7 @@ internal fun MeloXSongDetailScreen(song: SearchSong, onBack: () -> Unit) {
                         }
                     },
                     modifier = Modifier.weight(1f),
-                    style = MeloXGlassButtonStyle.Plain,
+                    style = MeloXButtonStyle.Plain,
                 ) {
                     Text(
                         if (liked == true) stringResource(R.string.song_detail_liked) else stringResource(R.string.song_detail_like),
@@ -232,7 +232,7 @@ internal fun MeloXSongDetailScreen(song: SearchSong, onBack: () -> Unit) {
             }
         }
         item(key = "information") {
-            MeloXGlassCard(Modifier.fillMaxWidth()) {
+            MeloXCard(Modifier.fillMaxWidth()) {
                 Text(
                     stringResource(R.string.song_detail_information),
                     fontWeight = FontWeight.SemiBold,
@@ -253,10 +253,10 @@ internal fun MeloXSongDetailScreen(song: SearchSong, onBack: () -> Unit) {
         }
         if (neteaseWikiSongId(song) != null) {
             item(key = "wiki") {
-                MeloXGlassButton(
+                MeloXButton(
                     onClick = { MeloXSongWikiActivity.launch(context, song) },
                     modifier = Modifier.fillMaxWidth(),
-                    style = MeloXGlassButtonStyle.Plain,
+                    style = MeloXButtonStyle.Plain,
                 ) { Text(stringResource(R.string.song_detail_wiki)) }
             }
         }

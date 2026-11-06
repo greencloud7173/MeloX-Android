@@ -45,12 +45,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.lladlam.melox.R
-import com.lladlam.melox.ui.glass.MeloXGlassButton
-import com.lladlam.melox.ui.glass.MeloXGlassButtonStyle
-import com.lladlam.melox.ui.glass.MeloXGlassDialog
-import com.lladlam.melox.ui.glass.MeloXShapes
-import com.lladlam.melox.ui.glass.MeloXSymbol
-import com.lladlam.melox.ui.glass.MeloXSymbolIcon
+import com.lladlam.melox.ui.controls.MeloXButton
+import com.lladlam.melox.ui.controls.MeloXButtonStyle
+import com.lladlam.melox.ui.controls.MeloXDialog
+import com.lladlam.melox.ui.controls.MeloXShapes
+import com.lladlam.melox.ui.controls.MeloXSymbol
+import com.lladlam.melox.ui.controls.MeloXSymbolIcon
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 private fun localOutputTypes(): Set<Int> = buildSet {
@@ -187,7 +187,7 @@ internal fun MeloXModernAudioOutputDialog(
         onDismiss = onDismiss,
     )
 
-    MeloXGlassDialog(
+    MeloXDialog(
         visible = visible && showOutputOptions,
         onDismiss = { showOutputOptions = false },
     ) {
@@ -296,10 +296,10 @@ internal fun MeloXModernAudioOutputDialog(
             )
         }
         Spacer(Modifier.height(10.dp))
-        MeloXGlassButton(
+        MeloXButton(
             onClick = { showOutputOptions = false },
             modifier = Modifier.fillMaxWidth(),
-            style = MeloXGlassButtonStyle.Bordered,
+            style = MeloXButtonStyle.Bordered,
             shape = MeloXShapes.capsule,
         ) {
             Text(stringResource(R.string.lan_nearby), fontSize = 13.sp)
@@ -310,7 +310,7 @@ internal fun MeloXModernAudioOutputDialog(
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            MeloXGlassButton(
+            MeloXButton(
                 onClick = {
                     if (!showSystemAudioOutputSwitcher(context)) {
                         error = context.getString(R.string.player_output_unavailable)
@@ -319,15 +319,15 @@ internal fun MeloXModernAudioOutputDialog(
                     }
                 },
                 modifier = Modifier.weight(1f),
-                style = MeloXGlassButtonStyle.Bordered,
+                style = MeloXButtonStyle.Bordered,
                 shape = MeloXShapes.capsule,
             ) {
                 Text(stringResource(R.string.player_output_open_system), fontSize = 13.sp)
             }
-            MeloXGlassButton(
+            MeloXButton(
                 onClick = { showOutputOptions = false },
                 modifier = Modifier.width(92.dp),
-                style = MeloXGlassButtonStyle.BorderedProminent,
+                style = MeloXButtonStyle.BorderedProminent,
                 shape = MeloXShapes.capsule,
             ) {
                 Text(stringResource(R.string.action_done), fontSize = 13.sp)

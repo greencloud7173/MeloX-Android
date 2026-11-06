@@ -5,6 +5,12 @@
 ## 未发布
 
 - 界面控件全部迁移到 Compose：悬浮歌词浮窗由 `LinearLayout`/`TextView` 改为 `ComposeView`（同一套圆角、描边、字号与拖动跟手逻辑），应用内提示由 `Toast` 改为主题层统一渲染的 Compose 胶囊提示。仅前端实现变化，歌词加载、播放器连接、设置读写等逻辑未改动。
+- **移除自研 iOS 风格控件层**：删除 `ui/glass`（约 4,400 行自绘 Liquid Glass 组件、背景折射、色调采样），控件一律改用 Material3 实现——
+  `MeloXGlassButton`→`MeloXButton`、`MeloXGlassTextField`→`MeloXTextField`、`MeloXGlassToggle`→`MeloXSwitch`、
+  `MeloXGlassSegmentedControl`→`MeloXSegmentedControl`、`MeloXLiquidSlider`→`MeloXSlider`、`MeloXSettingsDropdown`→`MeloXDropdown`、
+  `MeloXIosTopBar`→`MeloXTopBar`、`MeloXIosListRow`→`MeloXListRow`、`MeloXGlassDialog`→`MeloXDialog`、`MeloXGlassSheet`→`MeloXSheet`、
+  `MeloXSwipeActionRow`→`MeloXSwipeRow` 等；玻璃/液态页面修饰符改为纯 Compose 的实心 `Surface`。
+  列表滑动操作由「滑动露出」改为长按弹出 Material 菜单。图标矢量集（`MeloXSymbol`）与设计令牌（`MeloXTypography`/`MeloXShapes`/`MeloXSystemColors`）保留，现位于 `ui/controls`。
 
 ## 0.7.2 — 2026-11-06
 

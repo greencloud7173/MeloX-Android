@@ -22,9 +22,9 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.lladlam.melox.core.provider.qishui.QishuiApiClient
 import com.lladlam.melox.core.provider.qishui.QishuiSessionStore
-import com.lladlam.melox.ui.glass.MeloXGlassButton
-import com.lladlam.melox.ui.glass.MeloXGlassButtonStyle
-import com.lladlam.melox.ui.glass.MeloXPinnedListPage
+import com.lladlam.melox.ui.controls.MeloXButton
+import com.lladlam.melox.ui.controls.MeloXButtonStyle
+import com.lladlam.melox.ui.controls.MeloXPinnedListPage
 import com.lladlam.melox.ui.legal.MeloXLegalLinks
 import com.lladlam.melox.ui.MeloXBottomContentClearance
 import androidx.compose.ui.res.stringResource
@@ -114,7 +114,7 @@ fun QishuiLoginScreen(onDismiss: () -> Unit, onLoggedIn: () -> Unit) {
                 Text(error ?: status, color = MaterialTheme.colorScheme.onSurface.copy(alpha = .72f))
                 Text(stringResource(R.string.qishui_qr_hint),
                     style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurface.copy(alpha = .52f))
-                MeloXGlassButton(onClick = { refresh++ }, style = MeloXGlassButtonStyle.BorderedProminent) { Text(stringResource(R.string.qishui_refresh_qr)) }
+                MeloXButton(onClick = { refresh++ }, style = MeloXButtonStyle.BorderedProminent) { Text(stringResource(R.string.qishui_refresh_qr)) }
                 MeloXLegalLinks()
             }
         }

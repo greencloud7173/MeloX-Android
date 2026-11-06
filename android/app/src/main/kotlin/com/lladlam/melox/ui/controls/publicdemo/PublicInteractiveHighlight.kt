@@ -1,4 +1,4 @@
-package com.lladlam.melox.ui.glass.publicdemo
+package com.lladlam.melox.ui.controls.publicdemo
 
 /*
  * Based on the InteractiveHighlight demo shipped with

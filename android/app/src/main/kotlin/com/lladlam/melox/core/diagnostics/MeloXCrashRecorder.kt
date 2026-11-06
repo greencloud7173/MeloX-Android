@@ -32,7 +32,7 @@ import java.util.Locale
  *    设备 + 版本信息，落盘到 `filesDir/crash/crash-<时间戳>.txt`。
  * 3. 记录**崩溃瞬间玻璃是否在渲染**（`glassRenderingActive`）——
  *    这是区分「玻璃路径崩」与「其他路径崩」最关键的一位信息。
- *    该标记由 `meloXGlassBackdrop()` 打点，**只用于记录，不参与任何门控/降级**。
+ *    该标记由 `meloXBackdrop()` 打点，**只用于记录，不参与任何门控/降级**。
  * 4. 接入 `MeloXLogExporter`，所以用户走应用内「导出日志」就能把它带出来。
  *
  * ⚠ 本记录器**不做任何降级**：玻璃是否继续渲染与它完全无关。
@@ -56,7 +56,7 @@ object MeloXCrashRecorder {
     var glassRenderingActive: Boolean = false
         private set
 
-    /** 由 `meloXGlassBackdrop()` 打点。极轻，无锁、无 IO。 */
+    /** 由 `meloXBackdrop()` 打点。极轻，无锁、无 IO。 */
     fun markGlassRendering() {
         glassRenderingActive = true
     }

@@ -48,15 +48,15 @@ import com.lladlam.melox.lan.MeloXLanOutputMode
 import com.lladlam.melox.lan.MeloXLanPermissions
 import com.lladlam.melox.lan.MeloXLanRuntime
 import com.lladlam.melox.lan.MeloXLanSession
-import com.lladlam.melox.ui.glass.MeloXGlassButton
-import com.lladlam.melox.ui.glass.MeloXGlassButtonStyle
-import com.lladlam.melox.ui.glass.MeloXGlassDialog
-import com.lladlam.melox.ui.glass.MeloXGlassTextField
-import com.lladlam.melox.ui.glass.MeloXShapes
-import com.lladlam.melox.ui.glass.MeloXSymbol
-import com.lladlam.melox.ui.glass.MeloXSymbolIcon
-import com.lladlam.melox.ui.glass.MeloXSystemColors
-import com.lladlam.melox.ui.glass.meloXLiquidButton
+import com.lladlam.melox.ui.controls.MeloXButton
+import com.lladlam.melox.ui.controls.MeloXButtonStyle
+import com.lladlam.melox.ui.controls.MeloXDialog
+import com.lladlam.melox.ui.controls.MeloXTextField
+import com.lladlam.melox.ui.controls.MeloXShapes
+import com.lladlam.melox.ui.controls.MeloXSymbol
+import com.lladlam.melox.ui.controls.MeloXSymbolIcon
+import com.lladlam.melox.ui.controls.MeloXSystemColors
+import com.lladlam.melox.ui.controls.meloXButtonSurface
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -189,7 +189,7 @@ internal fun MeloXLanOutputPanel(
                     val foreground = if (active) Color.Black else Color.White
                     Row(
                         Modifier.fillMaxWidth().padding(bottom = 8.dp).clip(RoundedCornerShape(22.dp))
-                            .meloXLiquidButton(shape = RoundedCornerShape(22.dp),
+                            .meloXButtonSurface(shape = RoundedCornerShape(22.dp),
                                 surfaceColor = if (active) Color(0xFFFFFDEB) else Color.Black.copy(alpha = .40f))
                             .semantics { selected = active }
                             .clickable(enabled = MiPlaySession.ready && !MiPlaySession.busy && !MeloXLanSession.busy && !DlnaSession.busy, role = Role.Button) {
@@ -253,7 +253,7 @@ internal fun MeloXLanOutputPanel(
                 val foreground = if (active) Color.Black else Color.White
                 Row(
                     Modifier.fillMaxWidth().clip(RoundedCornerShape(22.dp))
-                        .meloXLiquidButton(
+                        .meloXButtonSurface(
                             shape = RoundedCornerShape(22.dp),
                             surfaceColor = if (active) Color(0xFFFFFDEB) else Color.Black.copy(alpha = .40f),
                         )
@@ -289,7 +289,7 @@ internal fun MeloXLanOutputPanel(
                 val foreground = if (active) Color.Black else Color.White
                 Row(
                     Modifier.fillMaxWidth().padding(bottom = 8.dp).clip(RoundedCornerShape(22.dp))
-                        .meloXLiquidButton(shape = RoundedCornerShape(22.dp),
+                        .meloXButtonSurface(shape = RoundedCornerShape(22.dp),
                             surfaceColor = if (active) Color(0xFFFFFDEB) else Color.Black.copy(alpha = .40f))
                         .semantics { selected = active }
                         .clickable(enabled = !DlnaSession.busy && !MeloXLanSession.busy && !MiPlaySession.busy, role = Role.Button) {
@@ -328,10 +328,10 @@ internal fun MeloXLanOutputPanel(
         },
     )
 
-    MeloXGlassDialog(visible = visible && pinTarget != null, onDismiss = { pinTarget = null; pin = "" }) {
+    MeloXDialog(visible = visible && pinTarget != null, onDismiss = { pinTarget = null; pin = "" }) {
         Text(stringResource(R.string.lan_pin_title), fontWeight = FontWeight.Bold)
         Text(stringResource(R.string.lan_pin_hint, pinTarget?.name.orEmpty()), fontSize = 12.sp, modifier = Modifier.padding(vertical = 8.dp))
-        MeloXGlassTextField(
+        MeloXTextField(
             value = pin,
             onValueChange = { pin = it.filter(Char::isDigit).take(4) },
             placeholder = { Text(stringResource(R.string.lan_pin_hint_short)) },
@@ -347,7 +347,7 @@ internal fun MeloXLanOutputPanel(
 
 @Composable
 private fun LanOutputAction(label: String, enabled: Boolean, modifier: Modifier, textColor: Color = Color.Unspecified, onClick: () -> Unit) {
-    MeloXGlassButton(onClick = onClick, enabled = enabled, modifier = modifier, style = MeloXGlassButtonStyle.Bordered, shape = MeloXShapes.capsule) {
+    MeloXButton(onClick = onClick, enabled = enabled, modifier = modifier, style = MeloXButtonStyle.Bordered, shape = MeloXShapes.capsule) {
         Text(label, color = textColor, fontSize = 12.sp, maxLines = 1)
     }
 }

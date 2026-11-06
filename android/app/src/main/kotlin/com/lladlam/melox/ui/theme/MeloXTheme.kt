@@ -30,7 +30,7 @@ import com.lladlam.melox.core.remoteconfig.MeloXHotStyles
 import com.lladlam.melox.ui.feedback.MeloXTransientMessageOverlay
 import com.lladlam.melox.ui.settings.MeloXSettingsRuntime
 import com.lladlam.melox.ui.settings.MeloXThemeMode
-import com.lladlam.melox.ui.glass.MeloXTypography as GlassTypography
+import com.lladlam.melox.ui.controls.MeloXTypography as ControlsTypography
 import com.lladlam.melox.ui.theme.MeloXLanTingProFontFamily
 import androidx.core.view.WindowCompat
 
@@ -75,12 +75,12 @@ private val MeloXTypography = Typography().let { base ->
         labelLarge = base.labelLarge.copy(fontFamily = family),
         labelMedium = base.labelMedium.copy(fontFamily = family),
         labelSmall = base.labelSmall.copy(fontFamily = family),
-        headlineLarge = GlassTypography.largeTitle,
-        headlineMedium = GlassTypography.title2,
-        headlineSmall = GlassTypography.headline,
-        bodyLarge = GlassTypography.body,
-        bodyMedium = GlassTypography.subheadline,
-        bodySmall = GlassTypography.caption,
+        headlineLarge = ControlsTypography.largeTitle,
+        headlineMedium = ControlsTypography.title2,
+        headlineSmall = ControlsTypography.headline,
+        bodyLarge = ControlsTypography.body,
+        bodyMedium = ControlsTypography.subheadline,
+        bodySmall = ControlsTypography.caption,
     )
 }
 

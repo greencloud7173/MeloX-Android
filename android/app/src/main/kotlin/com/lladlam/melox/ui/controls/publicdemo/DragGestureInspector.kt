@@ -1,9 +1,9 @@
-package com.lladlam.melox.ui.glass.liquidsliderdemo
+package com.lladlam.melox.ui.controls.publicdemo
 
 /*
- * Direct port of AndroidLiquidGlass Catalog's DragGestureInspector.kt.
- * Copyright the AndroidLiquidGlass contributors, licensed under Apache-2.0.
- * https://github.com/Kyant0/AndroidLiquidGlass/blob/main/app/src/commonMain/kotlin/com/kyant/backdrop/catalog/utils/DragGestureInspector.kt
+ * Port of AndroidLiquidGlass' DragGestureInspector (Apache-2.0).
+ * Kept as a local copy so the public-demo module does not depend on the
+ * private catalog module that originally housed it.
  */
 
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -26,7 +26,6 @@ suspend fun PointerInputScope.inspectDragGestures(
 ) {
     awaitEachGesture {
         val initialDown = awaitFirstDown(false, PointerEventPass.Initial)
-
         val down = awaitFirstDown(false)
         val drag = initialDown
 

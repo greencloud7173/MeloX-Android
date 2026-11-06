@@ -146,7 +146,7 @@ private fun PluginCatalogContent(
                     is MusicRankingSummary -> value.artworkUrl
                     else -> null
                 }
-                com.lladlam.melox.ui.glass.MeloXIosListRow(title = title, onClick = { collection = value }, leading = {
+                com.lladlam.melox.ui.controls.MeloXListRow(title = title, onClick = { collection = value }, leading = {
                     if (artwork != null) coil3.compose.AsyncImage(model = artwork, contentDescription = null, modifier = Modifier.size(44.dp))
                 })
             }

@@ -49,9 +49,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import androidx.media3.common.Player
-import com.lladlam.melox.ui.glass.meloXBackdropBlur
-import com.lladlam.melox.ui.glass.MeloXSymbol
-import com.lladlam.melox.ui.glass.MeloXSymbolIcon
+import com.lladlam.melox.ui.controls.meloXPanelSurface
+import com.lladlam.melox.ui.controls.MeloXSymbol
+import com.lladlam.melox.ui.controls.MeloXSymbolIcon
 import com.lladlam.melox.ui.meloXHaptic
 
 @Composable
@@ -128,7 +128,7 @@ private fun QueueSongHeaderSurface(entry: MeloXQueueEntry) {
             .fillMaxWidth()
             .padding(bottom = 8.dp)
             .clip(shape)
-            .meloXBackdropBlur(
+            .meloXPanelSurface(
                 shape = shape,
                 blurRadius = 20.dp,
                 surfaceColor = Color.Black.copy(alpha = .10f),
@@ -153,7 +153,7 @@ private fun QueueModeControlsSurface(state: MeloXPlaybackUiState, interactive: B
             .fillMaxWidth()
             .padding(bottom = 4.dp)
             .clip(shape)
-            .meloXBackdropBlur(
+            .meloXPanelSurface(
                 shape = shape,
                 blurRadius = 20.dp,
                 surfaceColor = Color.Black.copy(alpha = .095f),

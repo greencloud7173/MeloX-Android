@@ -33,9 +33,9 @@ import com.lladlam.melox.playback.PlaybackTrackIdentity
 import com.lladlam.melox.playback.CrossProviderPlaybackRuntime
 import com.lladlam.melox.playback.ProviderPlaybackQualityRuntime
 import com.lladlam.melox.core.music.provider.PlaybackAccountStore
-import com.lladlam.melox.ui.glass.MeloXGlassButton
-import com.lladlam.melox.ui.glass.MeloXGlassButtonStyle
-import com.lladlam.melox.ui.glass.MeloXGlassDialog
+import com.lladlam.melox.ui.controls.MeloXButton
+import com.lladlam.melox.ui.controls.MeloXButtonStyle
+import com.lladlam.melox.ui.controls.MeloXDialog
 import kotlinx.coroutines.delay
 
 /** Reports the active audio quality; changing the preference belongs to Settings. */
@@ -122,7 +122,7 @@ internal fun MeloXQualitySelectionOverlay(
         downloaded = downloadedQuality != null,
     )
 
-    MeloXGlassDialog(
+    MeloXDialog(
         visible = visible,
         onDismiss = onDismiss,
     ) {
@@ -149,7 +149,7 @@ internal fun MeloXQualitySelectionOverlay(
             modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            MeloXGlassButton(
+            MeloXButton(
                 onClick = {
                     onDismiss()
                     onOpenPlaybackSettings()
@@ -158,12 +158,12 @@ internal fun MeloXQualitySelectionOverlay(
                 // Plain renders a fully transparent pill, which read as a broken /
                 // washed-out button next to the filled confirm. Keep the secondary
                 // button on the normal glass surface instead.
-                style = MeloXGlassButtonStyle.Bordered,
+                style = MeloXButtonStyle.Bordered,
             ) { Text(stringResource(R.string.player_quality_settings)) }
-            MeloXGlassButton(
+            MeloXButton(
                 onClick = onDismiss,
                 modifier = Modifier.weight(1f),
-                style = MeloXGlassButtonStyle.BorderedProminent,
+                style = MeloXButtonStyle.BorderedProminent,
             ) { Text(stringResource(R.string.player_quality_confirm)) }
         }
     }

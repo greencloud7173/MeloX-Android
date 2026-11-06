@@ -149,27 +149,27 @@ import com.lladlam.melox.ui.MeloXBottomContentClearance
 import com.lladlam.melox.ui.MeloXPinkCat
 import com.lladlam.melox.ui.hotStringResource
 import com.lladlam.melox.ui.hotText
-import com.lladlam.melox.ui.glass.MeloXActionIcon
-import com.lladlam.melox.ui.glass.MeloXGlassTextField
-import com.lladlam.melox.ui.glass.MeloXGlassDialog
-import com.lladlam.melox.ui.glass.MeloXGlassButton
-import com.lladlam.melox.ui.glass.MeloXGlassButtonStyle
-import com.lladlam.melox.ui.glass.MeloXGlassToggle
-import com.lladlam.melox.ui.glass.MeloXLiquidSlider
-import com.lladlam.melox.ui.glass.MeloXSettingsDropdown
-import com.lladlam.melox.ui.glass.MeloXShapes
-import com.lladlam.melox.ui.glass.MeloXTypography
-import com.lladlam.melox.ui.glass.MeloXIosGroupedList
-import com.lladlam.melox.ui.glass.MeloXIosListRow
-import com.lladlam.melox.ui.glass.MeloXIosTopBar
-import com.lladlam.melox.ui.glass.MeloXPinnedListPage
+import com.lladlam.melox.ui.controls.MeloXActionIcon
+import com.lladlam.melox.ui.controls.MeloXTextField
+import com.lladlam.melox.ui.controls.MeloXDialog
+import com.lladlam.melox.ui.controls.MeloXButton
+import com.lladlam.melox.ui.controls.MeloXButtonStyle
+import com.lladlam.melox.ui.controls.MeloXSwitch
+import com.lladlam.melox.ui.controls.MeloXSlider
+import com.lladlam.melox.ui.controls.MeloXDropdown
+import com.lladlam.melox.ui.controls.MeloXShapes
+import com.lladlam.melox.ui.controls.MeloXTypography
+import com.lladlam.melox.ui.controls.MeloXGroupedList
+import com.lladlam.melox.ui.controls.MeloXListRow
+import com.lladlam.melox.ui.controls.MeloXTopBar
+import com.lladlam.melox.ui.controls.MeloXPinnedListPage
 import com.lladlam.melox.ui.layout.rememberMeloXStableStatusBarHeight
-import com.lladlam.melox.ui.glass.MeloXSymbol
-import com.lladlam.melox.ui.glass.MeloXSymbolIcon
-import com.lladlam.melox.ui.glass.MeloXSymbolVariant
-import com.lladlam.melox.ui.glass.MeloXSystemColors
-import com.lladlam.melox.ui.glass.meloXContentSurface
-import com.lladlam.melox.ui.glass.meloXLiquidButton
+import com.lladlam.melox.ui.controls.MeloXSymbol
+import com.lladlam.melox.ui.controls.MeloXSymbolIcon
+import com.lladlam.melox.ui.controls.MeloXSymbolVariant
+import com.lladlam.melox.ui.controls.MeloXSystemColors
+import com.lladlam.melox.ui.controls.meloXContentSurface
+import com.lladlam.melox.ui.controls.meloXButtonSurface
 import com.lladlam.melox.ui.legal.MELOX_LEGAL_VERSION
 import com.lladlam.melox.ui.legal.MeloXLegalDocument
 import com.lladlam.melox.ui.legal.MeloXLegalDocumentDialog
@@ -326,7 +326,7 @@ fun SettingsScreen(
             .padding(horizontal = 20.dp)
             .padding(top = 18.dp + statusBarTop, bottom = MeloXBottomContentClearance),
     ) {
-        MeloXIosTopBar(
+        MeloXTopBar(
             title = stringResource(R.string.tab_settings),
             modifier = Modifier.padding(horizontal = 0.dp),
             contentPadding = PaddingValues(horizontal = 0.dp),
@@ -389,7 +389,7 @@ fun SettingsScreen(
 
 @Composable
 private fun SettingsSearchField(value: String, onValueChange: (String) -> Unit) {
-    MeloXGlassTextField(
+    MeloXTextField(
         value = value,
         onValueChange = onValueChange,
         modifier = Modifier.fillMaxWidth(),
@@ -416,18 +416,18 @@ private fun SettingsAccountCard(
     onOpenAccount: (() -> Unit)?,
     onOpenServices: (() -> Unit)?,
 ) {
-    val accent = com.lladlam.melox.ui.glass.MeloXSystemColors.Red
+    val accent = com.lladlam.melox.ui.controls.MeloXSystemColors.Red
     Text(
         stringResource(R.string.accessibility_account),
         modifier = Modifier.padding(start = 8.dp, bottom = 8.dp),
         fontSize = 13.sp,
         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.48f),
     )
-    MeloXIosGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
+    MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
         when {
             session.isLoggedIn && session.profile != null -> {
                 val profile = session.profile!!
-                MeloXIosListRow(
+                MeloXListRow(
                     title = profile.nickname,
                     leading = { AsyncImage(model = profile.avatarUrl, contentDescription = null, modifier = Modifier.size(30.dp).clip(CircleShape)) },
                     detail = stringResource(R.string.provider_logged_in),
@@ -436,13 +436,13 @@ private fun SettingsAccountCard(
                     showTopSeparator = false,
                 )
             }
-            session.isLoggedIn && session.isRefreshing -> MeloXIosListRow(
+            session.isLoggedIn && session.isRefreshing -> MeloXListRow(
                 title = stringResource(R.string.settings_account_loading),
                 leading = { CircularProgressIndicator(Modifier.size(24.dp), strokeWidth = 2.dp, color = accent) },
                 onClick = onOpenServices,
                 showTopSeparator = false,
             )
-            else -> MeloXIosListRow(
+            else -> MeloXListRow(
                 title = stringResource(R.string.app_login_netease),
                 leading = { MeloXSymbolIcon(MeloXSymbol.Person, Modifier.size(30.dp), accent, MeloXSymbolVariant.Fill) },
                 chevronTint = accent,
@@ -451,7 +451,7 @@ private fun SettingsAccountCard(
             )
         }
         if (onOpenServices != null) {
-            MeloXIosListRow(
+            MeloXListRow(
                 title = stringResource(R.string.tab_services),
                 leading = { MeloXSymbolIcon(MeloXSymbol.MusicNote, Modifier.size(30.dp), accent) },
                 chevronTint = accent,
@@ -464,10 +464,10 @@ private fun SettingsAccountCard(
 
 @Composable
 private fun SettingsSectionCard(section: SettingsSection, onOpen: (SettingsRoute) -> Unit) {
-    val accent = com.lladlam.melox.ui.glass.MeloXSystemColors.Red
-    MeloXIosGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
+    val accent = com.lladlam.melox.ui.controls.MeloXSystemColors.Red
+    MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
         section.items.forEach { item ->
-            MeloXIosListRow(
+            MeloXListRow(
                 title = item.route.title,
                 leading = {
                     Box(Modifier.size(28.dp), contentAlignment = Alignment.Center) {
@@ -556,8 +556,8 @@ private fun LegalSettings(context: android.content.Context) {
         }
     }
     Spacer(Modifier.height(10.dp))
-    MeloXIosGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
-        MeloXIosListRow(
+    MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
+        MeloXListRow(
             title = stringResource(R.string.legal_privacy),
             leading = {
                 MeloXSymbolIcon(
@@ -569,7 +569,7 @@ private fun LegalSettings(context: android.content.Context) {
             onClick = { selectedDocument = MeloXLegalDocument.PrivacyPolicy },
             showTopSeparator = false,
         )
-        MeloXIosListRow(
+        MeloXListRow(
             title = stringResource(R.string.settings_legal_disclaimer),
             leading = {
                 MeloXSymbolIcon(
@@ -581,7 +581,7 @@ private fun LegalSettings(context: android.content.Context) {
             onClick = { selectedDocument = MeloXLegalDocument.Disclaimer },
             showTopSeparator = true,
         )
-        MeloXIosListRow(
+        MeloXListRow(
             title = stringResource(R.string.legal_cloud),
             leading = {
                 MeloXSymbolIcon(
@@ -593,7 +593,7 @@ private fun LegalSettings(context: android.content.Context) {
             onClick = { selectedDocument = MeloXLegalDocument.CloudControlPrivacy },
             showTopSeparator = true,
         )
-        MeloXIosListRow(
+        MeloXListRow(
             title = stringResource(R.string.settings_legal_third_party),
             leading = {
                 MeloXSymbolIcon(
@@ -711,7 +711,7 @@ private fun PrivacySettings(context: android.content.Context) {
         if (algorithmEnabled && consent) LocalRecommendationEngine.startFullAnalysis(context)
     }
     if (showPolicy) {
-        MeloXGlassDialog(visible = true, onDismiss = { if (secondsLeft == 0) showPolicy = false }) {
+        MeloXDialog(visible = true, onDismiss = { if (secondsLeft == 0) showPolicy = false }) {
             Text(stringResource(R.string.settings_privacy_policy_title), style = MaterialTheme.typography.titleMedium)
             Text(stringResource(R.string.settings_privacy_policy_body), modifier = Modifier.padding(top = 10.dp), fontSize = 13.sp, lineHeight = 19.sp)
             Spacer(Modifier.height(16.dp))
@@ -726,7 +726,7 @@ private fun PrivacySettings(context: android.content.Context) {
         }
     }
     if (showClearPersonalization) {
-        MeloXGlassDialog(visible = true, onDismiss = { showClearPersonalization = false }) {
+        MeloXDialog(visible = true, onDismiss = { showClearPersonalization = false }) {
             Text(stringResource(R.string.settings_privacy_clear_title), style = MaterialTheme.typography.titleMedium)
             Text(stringResource(R.string.settings_privacy_clear_body), modifier = Modifier.padding(top = 10.dp), fontSize = 13.sp, lineHeight = 19.sp)
             Row(Modifier.fillMaxWidth().padding(top = 18.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -764,7 +764,7 @@ private fun SystemPlaybackSettings(context: android.content.Context) {
             MeloXSettingsPreferences.setBoolean(context, "system_lyrics_enabled", it)
         }
         val protocol = remember { HyperOsFocusBridge.protocol(context) }
-        MeloXSettingsDropdown(
+        MeloXDropdown(
             title = stringResource(R.string.settings_system_title_format),
             selected = MeloXSettingsRuntime.systemLyricTitleMode,
             items = listOf(
@@ -827,7 +827,7 @@ private fun SystemPlaybackSettings(context: android.content.Context) {
                 ),
             )
         }
-        MeloXSettingsDropdown(
+        MeloXDropdown(
             title = stringResource(R.string.settings_notification_left_action),
             selected = leftAction,
             items = notificationActions,
@@ -837,7 +837,7 @@ private fun SystemPlaybackSettings(context: android.content.Context) {
             },
             grouped = true,
         )
-        MeloXSettingsDropdown(
+        MeloXDropdown(
             title = stringResource(R.string.settings_notification_right_action),
             selected = rightAction,
             items = notificationActions,
@@ -920,7 +920,7 @@ private fun LanSettings(context: android.content.Context) {
                 port = MeloXLanRuntime.port(context)
             }
         }
-        MeloXIosListRow(
+        MeloXListRow(
             title = stringResource(R.string.settings_lan_port),
             subtitle = port.toString(),
             onClick = {
@@ -929,7 +929,7 @@ private fun LanSettings(context: android.content.Context) {
             },
             showTopSeparator = true,
         )
-        MeloXIosListRow(
+        MeloXListRow(
             title = stringResource(R.string.settings_lan_pin),
             subtitle = pin,
             trailing = {
@@ -945,7 +945,7 @@ private fun LanSettings(context: android.content.Context) {
             showTopSeparator = true,
         )
         if (trusted.isEmpty()) {
-            MeloXIosListRow(
+            MeloXListRow(
                 title = stringResource(R.string.settings_lan_trusted),
                 subtitle = stringResource(R.string.settings_lan_no_trusted),
                 showTopSeparator = true,
@@ -954,7 +954,7 @@ private fun LanSettings(context: android.content.Context) {
             trusted.forEach { device ->
                 val id = device.optString("deviceId")
                 val name = device.optString("name").ifBlank { device.optString("platform") }
-                MeloXIosListRow(
+                MeloXListRow(
                     title = name.ifBlank { stringResource(R.string.settings_lan_trusted) },
                     subtitle = device.optString("platform"),
                     trailing = {
@@ -976,7 +976,7 @@ private fun LanSettings(context: android.content.Context) {
             trusted.none { it.optString("deviceId") == peer.optString("deviceId") }
         }
         if (recentToAdd.isNotEmpty()) {
-            MeloXIosListRow(
+            MeloXListRow(
                 title = stringResource(R.string.settings_lan_recent),
                 subtitle = null,
                 showTopSeparator = true,
@@ -985,7 +985,7 @@ private fun LanSettings(context: android.content.Context) {
                 val id = peer.optString("deviceId")
                 val name = peer.optString("name").ifBlank { peer.optString("platform") }
                 val platform = peer.optString("platform")
-                MeloXIosListRow(
+                MeloXListRow(
                     title = name.ifBlank { stringResource(R.string.settings_lan_recent) },
                     subtitle = platform,
                     trailing = {
@@ -1006,7 +1006,7 @@ private fun LanSettings(context: android.content.Context) {
         }
     }
     if (showPortDialog) {
-        MeloXGlassDialog(visible = true, onDismiss = { showPortDialog = false }) {
+        MeloXDialog(visible = true, onDismiss = { showPortDialog = false }) {
             Text(stringResource(R.string.settings_lan_port), style = MaterialTheme.typography.titleLarge)
             Text(
                 stringResource(R.string.settings_lan_port_note),
@@ -1015,7 +1015,7 @@ private fun LanSettings(context: android.content.Context) {
                 modifier = Modifier.padding(top = 4.dp),
             )
             Spacer(Modifier.height(10.dp))
-            MeloXGlassTextField(
+            MeloXTextField(
                 value = portText,
                 onValueChange = { value -> portText = value.filter(Char::isDigit).take(5) },
                 placeholder = { Text("47831") },
@@ -1106,7 +1106,7 @@ private fun ExperimentalSettings(context: android.content.Context, source: Music
     }
 
     if (showClearBilibiliAssociationsConfirmation) {
-        MeloXGlassDialog(visible = true, onDismiss = { showClearBilibiliAssociationsConfirmation = false }) {
+        MeloXDialog(visible = true, onDismiss = { showClearBilibiliAssociationsConfirmation = false }) {
             Text(stringResource(R.string.settings_bilibili_clear_title), style = MaterialTheme.typography.titleLarge)
             Text(stringResource(R.string.settings_bilibili_clear_body), Modifier.padding(top = 8.dp))
             Row(Modifier.fillMaxWidth().padding(top = 18.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -1154,20 +1154,20 @@ private fun ExperimentalSettings(context: android.content.Context, source: Music
         val qqLoggedIn = remember(refreshRevision) { QQMusicSessionStore.read(context, playback = true).isLoggedIn }
 
         SettingsGlassGroup {
-            MeloXIosListRow(
+            MeloXListRow(
                 title = stringResource(R.string.account_netease),
                 subtitle = if (NeteaseSessionStore.containsMusicU(neteaseCookie)) stringResource(R.string.provider_logged_in) else stringResource(R.string.provider_not_signed_in),
                 leading = { MeloXSymbolIcon(MeloXSymbol.MusicNote, Modifier.size(24.dp), MaterialTheme.colorScheme.primary) },
                 onClick = { neteaseLoginLauncher.launch(MeloXNeteaseLoginActivity.createIntent(context, PlaybackAccountSlot.Playback)) },
                 showTopSeparator = false,
             )
-            MeloXIosListRow(
+            MeloXListRow(
                 title = stringResource(R.string.settings_qq_music),
                 subtitle = if (qqLoggedIn) stringResource(R.string.provider_logged_in) else stringResource(R.string.provider_not_signed_in),
                 leading = { MeloXSymbolIcon(MeloXSymbol.MusicNote, Modifier.size(24.dp), MaterialTheme.colorScheme.primary) },
                 onClick = { showQQLogin = true },
             )
-            MeloXIosListRow(
+            MeloXListRow(
                 title = stringResource(R.string.settings_apple_music),
                 subtitle = stringResource(R.string.settings_apple_second_account),
                 leading = { MeloXSymbolIcon(MeloXSymbol.MusicNote, Modifier.size(24.dp), MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)) },
@@ -1176,7 +1176,7 @@ private fun ExperimentalSettings(context: android.content.Context, source: Music
         }
         Spacer(Modifier.height(10.dp))
         SettingsDangerButton(stringResource(R.string.settings_clear_second_accounts)) { showClearPlaybackConfirmation = true }
-        MeloXGlassDialog(
+        MeloXDialog(
             visible = showClearPlaybackConfirmation,
             onDismiss = { showClearPlaybackConfirmation = false },
         ) {
@@ -1223,7 +1223,7 @@ private fun ExperimentalSettings(context: android.content.Context, source: Music
     SettingsDangerButton(stringResource(R.string.settings_clear_lyric_bindings)) {
         showClearLyricBindingsConfirmation = true
     }
-    MeloXGlassDialog(
+    MeloXDialog(
         visible = showClearLyricBindingsConfirmation,
         onDismiss = { showClearLyricBindingsConfirmation = false },
     ) {
@@ -1259,7 +1259,7 @@ private fun NotificationTemplateField(
 ) {
     var value by remember(key) { mutableStateOf(MeloXSettingsPreferences.string(context, key, default)) }
     Text(title, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = .48f), modifier = Modifier.padding(top = 8.dp, bottom = 6.dp))
-    MeloXGlassTextField(
+    MeloXTextField(
         value = value,
         onValueChange = {
             value = it.take(80)
@@ -1321,7 +1321,7 @@ private fun FloatingLyricsSettings(context: android.content.Context) {
                 )
             }
         }
-        MeloXSettingsDropdown(
+        MeloXDropdown(
             title = stringResource(R.string.settings_floating_secondary),
             selected = MeloXSettingsRuntime.floatingSecondaryMode,
             items = listOf(
@@ -1351,14 +1351,14 @@ private fun PlaybackSettings(context: android.content.Context) {
     var quality by remember { mutableStateOf(MusicQualityPreferences.read(context)) }
     var volumeMode by remember { mutableStateOf(MeloXSettingsRuntime.volumeControlMode) }
     SettingsGlassGroup {
-        MeloXSettingsDropdown(
+        MeloXDropdown(
             title = stringResource(R.string.settings_playback_quality),
             selected = quality,
             items = MusicQuality.entries.map { it to it.title },
             onSelected = { quality = it; PlaybackCommands.changeQuality(context, it) },
             grouped = true,
         )
-        MeloXSettingsDropdown(
+        MeloXDropdown(
             title = stringResource(R.string.settings_volume_slider),
             selected = volumeMode,
             items = listOf(
@@ -1538,7 +1538,7 @@ private fun AutoMixSettings(context: android.content.Context) {
         }
         Spacer(Modifier.height(10.dp))
         SettingsGlassGroup {
-            MeloXSettingsDropdown(
+            MeloXDropdown(
             title = stringResource(R.string.settings_automix_mode),
             selected = settings.mode,
             items = listOf(MeloXAutoMixMode.Smart to stringResource(R.string.settings_automix_smart), MeloXAutoMixMode.Fixed to stringResource(R.string.settings_automix_fixed)),
@@ -1557,7 +1557,7 @@ private fun AutoMixSettings(context: android.content.Context) {
                 60 to "前 60 首",
                 100 to "前 100 首",
             )
-            MeloXSettingsDropdown(
+            MeloXDropdown(
                 title = "队列分析上限",
                 selected = limitOptions.minByOrNull {
                     kotlin.math.abs(settings.smartQueueAnalysisLimit - it.first)
@@ -1570,14 +1570,14 @@ private fun AutoMixSettings(context: android.content.Context) {
                 MeloXPlaybackModePreferences.setAutoMixBoolean(context, "automix_analyze_streaming", it)
                 refresh()
             }
-            MeloXSettingsDropdown(
+            MeloXDropdown(
                 title = stringResource(R.string.settings_smart_transition_length),
                 selected = settings.transitionBars,
                 items = listOf(4, 8, 16).map { it to "$it 小节" },
                 onSelected = { MeloXPlaybackModePreferences.setAutoMixInt(context, "automix_transition_bars", it); refresh() },
                 grouped = true,
             )
-            MeloXSettingsDropdown(
+            MeloXDropdown(
                 title = stringResource(R.string.settings_tail_cut),
                 selected = settings.tailCutBars,
                 items = listOf(0 to stringResource(R.string.settings_tail_keep), 2 to "提前 2 小节", 4 to "提前 4 小节", 8 to "提前 8 小节"),
@@ -1585,7 +1585,7 @@ private fun AutoMixSettings(context: android.content.Context) {
                 grouped = true,
             )
             val confidenceOptions = listOf(.30f, .42f, .55f, .70f)
-            MeloXSettingsDropdown(
+            MeloXDropdown(
                 title = stringResource(R.string.settings_min_confidence),
                 selected = confidenceOptions.minByOrNull { kotlin.math.abs(settings.minimumConfidence - it) } ?: .42f,
                 items = confidenceOptions.map { it to "${(it * 100).toInt()}%" },
@@ -1594,7 +1594,7 @@ private fun AutoMixSettings(context: android.content.Context) {
             )
         }
         val durationOptions = listOf(3_000L, 6_000L, 8_000L, 12_000L, 16_000L, 20_000L)
-        MeloXSettingsDropdown(
+        MeloXDropdown(
             title = stringResource(R.string.settings_crossfade_duration),
             selected = durationOptions.minByOrNull { kotlin.math.abs(settings.fixedDurationMs - it) } ?: 6_000L,
             items = durationOptions.map { it to "${it / 1_000} 秒" },
@@ -1602,14 +1602,14 @@ private fun AutoMixSettings(context: android.content.Context) {
             grouped = true,
         )
         val preloadOptions = listOf(30_000L, 60_000L, 90_000L, 120_000L, 180_000L)
-        MeloXSettingsDropdown(
+        MeloXDropdown(
             title = stringResource(R.string.settings_preload_lead),
             selected = preloadOptions.minByOrNull { kotlin.math.abs(settings.preloadLeadMs - it) } ?: 60_000L,
             items = preloadOptions.map { it to "${it / 1_000} 秒" },
             onSelected = { MeloXPlaybackModePreferences.setAutoMixLong(context, "automix_preload_lead_ms", it); refresh() },
             grouped = true,
         )
-        MeloXSettingsDropdown(
+        MeloXDropdown(
             title = stringResource(R.string.settings_fade_curve),
             selected = settings.fadeCurve,
             items = listOf(
@@ -1620,7 +1620,7 @@ private fun AutoMixSettings(context: android.content.Context) {
             onSelected = { MeloXPlaybackModePreferences.setAutoMixString(context, "automix_fade_curve", it.name); refresh() },
             grouped = true,
         )
-        MeloXSettingsDropdown(
+        MeloXDropdown(
             title = stringResource(R.string.settings_analysis_fallback),
             selected = settings.fallback,
             items = listOf(
@@ -1637,7 +1637,7 @@ private fun AutoMixSettings(context: android.content.Context) {
         }
         if (settings.tempoMatching) {
             val adjustmentOptions = listOf(.02f, .05f, .08f, .10f)
-            MeloXSettingsDropdown(
+            MeloXDropdown(
                 title = stringResource(R.string.settings_max_tempo_adjustment),
                 selected = adjustmentOptions.minByOrNull { kotlin.math.abs(settings.maxTempoAdjustment - it) } ?: .05f,
                 items = adjustmentOptions.map { it to "${(it * 100).toInt()}%" },
@@ -1648,7 +1648,7 @@ private fun AutoMixSettings(context: android.content.Context) {
     }
     }
     if (showSmartQueueIntro) {
-        MeloXGlassDialog(visible = true, onDismiss = { showSmartQueueIntro = false }) {
+        MeloXDialog(visible = true, onDismiss = { showSmartQueueIntro = false }) {
             Text(stringResource(R.string.settings_smart_queue), style = MaterialTheme.typography.titleLarge)
             Spacer(Modifier.height(12.dp))
             Text(stringResource(R.string.settings_smart_queue_intro))
@@ -1678,7 +1678,7 @@ private fun AnalysisCacheSettings(context: android.content.Context) {
         SettingsActionButton(stringResource(R.string.settings_clear_analysis_cache)) { showClearConfirmation = true }
     }
     if (showClearConfirmation) {
-        MeloXGlassDialog(visible = true, onDismiss = { showClearConfirmation = false }) {
+        MeloXDialog(visible = true, onDismiss = { showClearConfirmation = false }) {
             Text(stringResource(R.string.settings_clear_analysis_cache_confirm))
             Row(Modifier.fillMaxWidth().padding(top = 18.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 SettingsActionButton(stringResource(R.string.action_cancel), Modifier.weight(1f)) { showClearConfirmation = false }
@@ -1760,7 +1760,7 @@ private fun PlayerAppearanceSettings(context: android.content.Context) {
     )
     Spacer(Modifier.height(10.dp))
     SettingsGlassGroup {
-        MeloXSettingsDropdown(
+        MeloXDropdown(
             title = stringResource(R.string.settings_player_background),
             selected = MeloXSettingsRuntime.playerBackgroundMode,
             items = listOf(
@@ -1785,7 +1785,7 @@ private fun PlayerAppearanceSettings(context: android.content.Context) {
         )
         if (MeloXSettingsRuntime.playerBackgroundMode == MeloXPlayerBackgroundMode.CustomImage) {
             val customBackgroundPath = MeloXSettingsRuntime.customBackgroundPath
-            MeloXIosListRow(
+            MeloXListRow(
                 title = stringResource(
                     if (customBackgroundPath == null) {
                         R.string.settings_custom_background_pick
@@ -1821,7 +1821,7 @@ private fun PlayerAppearanceSettings(context: android.content.Context) {
                 onClick = pickCustomBackgroundImage,
             )
             if (customBackgroundPath != null) {
-                MeloXIosListRow(
+                MeloXListRow(
                     title = stringResource(R.string.settings_custom_background_remove),
                     onClick = {
                         MeloXCustomBackgroundStore.delete(context, customBackgroundPath)
@@ -1879,7 +1879,7 @@ private fun PlayerAppearanceSettings(context: android.content.Context) {
     SettingsGlassGroup {
         SettingsToggleRow(context, stringResource(R.string.settings_reduce_motion), "reduce_motion", false, stringResource(R.string.settings_reduce_motion_note), grouped = true)
         SettingsToggleRow(context, stringResource(R.string.settings_artwork_motion), "player_artwork_motion", true, grouped = true)
-        MeloXSettingsDropdown(
+        MeloXDropdown(
             title = stringResource(R.string.settings_screen_awake_scope),
             selected = MeloXSettingsRuntime.screenAwakeMode,
             items = listOf(
@@ -1949,7 +1949,7 @@ private fun LyricsSettings(context: android.content.Context) {
     }
     // Group 1: 歌词样式-歌词渲染质量-逐字歌词-普通LRC-点击跳转-长按分享-间奏倒计时-自动跟随-手动滚动恢复-减弱动画
     SettingsGlassGroup {
-        MeloXSettingsDropdown(
+        MeloXDropdown(
             title = stringResource(R.string.settings_lyrics_style),
             selected = lyricsStyle,
             items = listOf(
@@ -1958,7 +1958,7 @@ private fun LyricsSettings(context: android.content.Context) {
             onSelected = { lyricsStyle = it; MeloXSettingsPreferences.setString(context, "lyrics_style", it.name) },
             grouped = true,
         )
-        MeloXSettingsDropdown(
+        MeloXDropdown(
             title = stringResource(R.string.settings_lyrics_rendering),
             selected = MeloXSettingsRuntime.lyricRenderingQuality,
             items = listOf(
@@ -1970,7 +1970,7 @@ private fun LyricsSettings(context: android.content.Context) {
             grouped = true,
         )
         var lyricLanguage by remember { mutableStateOf(MeloXSettingsRuntime.lyricLanguage) }
-        MeloXSettingsDropdown(
+        MeloXDropdown(
             title = stringResource(R.string.settings_lyrics_language),
             selected = lyricLanguage,
             items = listOf(
@@ -2173,7 +2173,7 @@ private fun LyricsStringChoiceSetting(
     val groupRowIndex = LocalSettingsGroupRowIndex.current
     val showSep = remember(grouped) { if (grouped) groupRowIndex.intValue++.let { it > 0 } else false }
     var selected by remember(key) { mutableStateOf(MeloXSettingsPreferences.string(context, key, default)) }
-    MeloXSettingsDropdown(
+    MeloXDropdown(
         title = title,
         selected = selected,
         items = values.map { it to label(it) },
@@ -2232,7 +2232,7 @@ private fun LyricsChoiceSetting(
     // ⚠ 不用 remember 缓存：`selectedProvider` 可能每次读取都做一次迁移+写回
     //   （那正是我们要的：进设置页即完成迁移，显示立刻是新值）。
     var selected by remember(key) { mutableStateOf(selectedProvider()) }
-    MeloXSettingsDropdown(
+    MeloXDropdown(
         title = title,
         selected = selected,
         items = values.map { it to label(it) },
@@ -2260,7 +2260,7 @@ private fun LyricsFloatChoiceSetting(
     val effectiveShowTopSeparator = remember(grouped) { if (grouped) groupRowIndex.intValue++.let { it > 0 } else false }
     var selected by remember(key) { mutableStateOf(MeloXSettingsPreferences.float(context, key, default)) }
     val selectedValue = values.minByOrNull { kotlin.math.abs(selected - it) } ?: default
-    MeloXSettingsDropdown(
+    MeloXDropdown(
         title = title,
         selected = selectedValue,
         items = values.map { it to label(it) },
@@ -2288,7 +2288,7 @@ private fun SettingsFloatSlider(
     var draggingValue by remember { mutableStateOf<Float?>(null) }
     val shownValue = draggingValue ?: value
     Row(
-        // Match MeloXIosListRow's 16dp gutter so the label lines up with the
+        // Match MeloXListRow's 16dp gutter so the label lines up with the
         // neighbouring setting titles.
         modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -2296,7 +2296,7 @@ private fun SettingsFloatSlider(
         Text(title, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = .48f))
         Text(label(shownValue), fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = .58f))
     }
-    MeloXLiquidSlider(
+    MeloXSlider(
         value = value,
         onValueChange = onValueChange,
         onTransientValueChange = { draggingValue = it },
@@ -2497,7 +2497,7 @@ private fun ContentSettings(context: android.content.Context) {
         if (unifiedFavoritesEnabled) MeloXUnifiedFavorites.tracks(app).size else 0
     }
     SettingsGlassGroup {
-        MeloXSettingsDropdown(
+        MeloXDropdown(
             title = stringResource(R.string.settings_content_area),
             selected = area,
             items = listOf("全部" to "全部", "华语" to "华语", "欧美" to "欧美", "日本" to "日本", "韩国" to "韩国"),
@@ -2556,7 +2556,7 @@ private fun ContentSettings(context: android.content.Context) {
         )
     }
     if (showCrossProviderFallbackNotice) {
-        MeloXGlassDialog(
+        MeloXDialog(
             visible = true,
             onDismiss = { showCrossProviderFallbackNotice = false },
         ) {
@@ -2601,7 +2601,7 @@ private fun ContentSettings(context: android.content.Context) {
         }
     }
     if (showUnifiedFavoritesSetup) {
-        MeloXGlassDialog(
+        MeloXDialog(
             visible = true,
             onDismiss = { if (!unifiedFavoritesBusy) showUnifiedFavoritesSetup = false },
         ) {
@@ -2722,7 +2722,7 @@ private fun ListenTogetherSettings(context: android.content.Context) {
             }
         }
         Spacer(Modifier.height(10.dp))
-        MeloXGlassTextField(
+        MeloXTextField(
             value = invitation,
             onValueChange = { invitation = it },
             placeholder = { Text(stringResource(R.string.settings_listen_paste), color = MaterialTheme.colorScheme.onSurface.copy(alpha = .4f)) },
@@ -2746,10 +2746,10 @@ private fun ListenTogetherSettings(context: android.content.Context) {
         }
     } else {
         SettingsGlassGroup {
-            MeloXIosListRow(stringResource(R.string.settings_listen_room), detail = room.id, showTopSeparator = false)
-            MeloXIosListRow(stringResource(R.string.settings_listen_members), detail = "${room.users.size.coerceAtLeast(1)} 人")
-            room.users.forEach { user -> MeloXIosListRow(user.name) }
-            MeloXIosListRow(
+            MeloXListRow(stringResource(R.string.settings_listen_room), detail = room.id, showTopSeparator = false)
+            MeloXListRow(stringResource(R.string.settings_listen_members), detail = "${room.users.size.coerceAtLeast(1)} 人")
+            room.users.forEach { user -> MeloXListRow(user.name) }
+            MeloXListRow(
                 stringResource(R.string.settings_listen_connection),
                 detail = when (state.phase) {
                     MeloXListenTogetherCoordinator.Phase.Connected -> stringResource(R.string.settings_listen_synced)
@@ -2757,12 +2757,12 @@ private fun ListenTogetherSettings(context: android.content.Context) {
                     MeloXListenTogetherCoordinator.Phase.Idle -> stringResource(R.string.settings_listen_resuming)
                 },
             )
-            MeloXIosListRow(
+            MeloXListRow(
                 title = stringResource(R.string.settings_listen_solo),
                 subtitle = stringResource(R.string.settings_listen_solo_note),
                 leading = { MeloXSymbolIcon(MeloXSymbol.Person, Modifier.size(24.dp), MeloXSystemColors.Red) },
                 trailing = {
-                    MeloXGlassToggle(
+                    MeloXSwitch(
                         checked = state.solo,
                         onCheckedChange = { MeloXListenTogetherCoordinator.setSolo(app, it) },
                     )
@@ -2977,7 +2977,7 @@ private fun StorageSettings(context: android.content.Context) {
             "playback_cache" -> stringResource(R.string.settings_storage_confirm_playback_title) to stringResource(R.string.settings_storage_confirm_playback_body)
             else -> stringResource(R.string.settings_storage_confirm_temp_title) to stringResource(R.string.settings_storage_confirm_temp_body)
         }
-        MeloXGlassDialog(visible = true, onDismiss = { confirmation = null }) {
+        MeloXDialog(visible = true, onDismiss = { confirmation = null }) {
             Text(title, fontSize = 20.sp, fontWeight = FontWeight.Bold)
             Text(message, Modifier.padding(top = 8.dp), color = MaterialTheme.colorScheme.onSurface.copy(alpha = .62f))
             Row(Modifier.fillMaxWidth().padding(top = 18.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -3017,7 +3017,7 @@ private data class MeloXStorageUsage(
 
 @Composable
 private fun StorageUsageRow(symbol: MeloXSymbol, title: String, bytes: Long, showSeparator: Boolean) {
-    MeloXIosListRow(
+    MeloXListRow(
         title = title,
         detail = formatBytes(bytes),
         leading = { MeloXSymbolIcon(symbol, Modifier.size(22.dp), MeloXSystemColors.Red) },
@@ -3027,7 +3027,7 @@ private fun StorageUsageRow(symbol: MeloXSymbol, title: String, bytes: Long, sho
 
 @Composable
 private fun StorageActionRow(symbol: MeloXSymbol, title: String, showSeparator: Boolean, onClick: () -> Unit) {
-    MeloXIosListRow(
+    MeloXListRow(
         title = title,
         leading = { MeloXSymbolIcon(symbol, Modifier.size(22.dp), MeloXSystemColors.Red) },
         onClick = onClick,
@@ -3111,7 +3111,7 @@ private fun TabLayoutSettings(context: android.content.Context) {
     Spacer(Modifier.height(10.dp))
     var libraryPage by remember { mutableStateOf(MeloXSettingsRuntime.defaultLibraryPage) }
     SettingsGlassGroup {
-        MeloXSettingsDropdown(
+        MeloXDropdown(
             title = stringResource(R.string.settings_tabs_default_library),
             selected = libraryPage,
             items = listOf("Songs" to stringResource(R.string.settings_tabs_songs), "Playlists" to stringResource(R.string.settings_tabs_playlist_page), "Podcasts" to "播客", "Cloud" to "云盘", "History" to stringResource(R.string.settings_feature_history), "Downloads" to "下载")
@@ -3139,7 +3139,7 @@ private fun GeneralSettings(context: android.content.Context) {
         if (Build.VERSION.SDK_INT >= 33) {
             val localeManager = context.getSystemService(android.app.LocaleManager::class.java)
             val selectedLanguage = localeManager.applicationLocales.toLanguageTags()
-            MeloXSettingsDropdown(
+            MeloXDropdown(
                 title = stringResource(R.string.settings_general_language),
                 selected = selectedLanguage,
                 items = listOf(
@@ -3154,14 +3154,14 @@ private fun GeneralSettings(context: android.content.Context) {
                 grouped = true,
             )
         } else {
-            MeloXIosListRow(
+            MeloXListRow(
                 title = stringResource(R.string.settings_general_language),
                 subtitle = stringResource(R.string.settings_general_language_legacy),
                 onClick = { context.startActivity(Intent(AndroidSettings.ACTION_LOCALE_SETTINGS)) },
                 showTopSeparator = false,
             )
         }
-        MeloXSettingsDropdown(
+        MeloXDropdown(
             title = stringResource(R.string.settings_general_theme),
             selected = theme,
             items = listOf(
@@ -3189,14 +3189,14 @@ private fun GeneralSettings(context: android.content.Context) {
                 MeloXSplitChromePosition.TopLeft to stringResource(R.string.settings_position_top_left),
                 MeloXSplitChromePosition.TopRight to stringResource(R.string.settings_position_top_right),
             )
-            MeloXSettingsDropdown(
+            MeloXDropdown(
                 title = stringResource(R.string.settings_split_navigation_position),
                 selected = MeloXSettingsRuntime.splitNavigationPosition,
                 items = positions,
                 onSelected = { MeloXSettingsPreferences.setString(context, "general_split_navigation_position", it.name) },
                 grouped = true,
             )
-            MeloXSettingsDropdown(
+            MeloXDropdown(
                 title = stringResource(R.string.settings_split_mini_player_position),
                 selected = MeloXSettingsRuntime.splitMiniPlayerPosition,
                 items = positions,
@@ -3205,7 +3205,7 @@ private fun GeneralSettings(context: android.content.Context) {
             )
         }
         var defaultTab by remember { mutableStateOf(MeloXSettingsRuntime.defaultTab) }
-        MeloXSettingsDropdown(
+        MeloXDropdown(
             title = stringResource(R.string.settings_general_launch),
             selected = defaultTab,
             items = listOf(
@@ -3220,7 +3220,7 @@ private fun GeneralSettings(context: android.content.Context) {
         SettingsToggleRow(context, stringResource(R.string.settings_general_remember_tab), "general_remember_tab", true, grouped = true)
         SettingsToggleRow(context, stringResource(R.string.settings_artwork_tap_lyrics), "general_artwork_tap_lyrics", false, grouped = true)
         SettingsToggleRow(context, stringResource(R.string.settings_artwork_swipe_tracks), "general_artwork_swipe_tracks", false, grouped = true)
-        MeloXSettingsDropdown(
+        MeloXDropdown(
             title = stringResource(R.string.settings_general_swipe),
             selected = swipeFullAction,
             items = listOf(
@@ -3235,7 +3235,7 @@ private fun GeneralSettings(context: android.content.Context) {
         )
         SettingsToggleRow(context, stringResource(R.string.settings_general_clipboard), "general_clipboard_links", true, stringResource(R.string.settings_general_clipboard_note), grouped = true)
         SettingsToggleRow(context, stringResource(R.string.settings_general_haptics), "general_haptic_feedback", true, grouped = true)
-        MeloXSettingsDropdown(
+        MeloXDropdown(
             title = stringResource(R.string.settings_general_system_font),
             selected = MeloXSettingsRuntime.systemFontScope,
             items = listOf(
@@ -3593,15 +3593,15 @@ private fun AboutSettings(context: android.content.Context) {
         }
     }
     if (showCatEgg) {
-        MeloXGlassDialog(visible = true, onDismiss = { showCatEgg = false }) {
+        MeloXDialog(visible = true, onDismiss = { showCatEgg = false }) {
             Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
                 MeloXPinkCat()
                 Text(hotText("about.cat_title", stringResource(R.string.settings_about_cat_title)), style = MaterialTheme.typography.titleLarge)
                 Text(hotText("about.cat_body", stringResource(R.string.settings_about_cat_body)), modifier = Modifier.padding(top = 7.dp), color = MaterialTheme.colorScheme.onSurface.copy(alpha = .62f))
-                MeloXGlassButton(
+                MeloXButton(
                     onClick = { showCatEgg = false },
                     modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
-                    style = MeloXGlassButtonStyle.BorderedProminent,
+                    style = MeloXButtonStyle.BorderedProminent,
                 ) { Text(stringResource(R.string.settings_about_cat_accept)) }
             }
         }
@@ -3609,7 +3609,7 @@ private fun AboutSettings(context: android.content.Context) {
     Spacer(Modifier.height(14.dp))
     SettingsToggleRow(context, stringResource(R.string.settings_about_auto_update), "update_auto_check", true, stringResource(R.string.settings_about_auto_update_note))
     Spacer(Modifier.height(10.dp))
-    MeloXSettingsDropdown(
+    MeloXDropdown(
         title = stringResource(R.string.settings_about_github_source),
         selected = downloadSource,
         items = listOf(
@@ -3851,7 +3851,7 @@ private fun AboutSettings(context: android.content.Context) {
 
     if (showLogExportInfo) {
         val deviceInfo: MeloXLogDeviceInfo = MeloXLogExporter.collectDeviceInfo(context)
-        MeloXGlassDialog(
+        MeloXDialog(
             visible = true,
             onDismiss = { showLogExportInfo = false },
         ) {
@@ -3895,7 +3895,7 @@ private fun AboutSettings(context: android.content.Context) {
     }
     if (showReleaseNotes) {
         val notes = remember { MeloXReleaseNotesCatalog.current() }
-        MeloXGlassDialog(visible = true, onDismiss = { showReleaseNotes = false }) {
+        MeloXDialog(visible = true, onDismiss = { showReleaseNotes = false }) {
             Text(stringResource(R.string.settings_release_notes_title), style = MaterialTheme.typography.titleLarge)
             Text(
                 stringResource(R.string.settings_release_notes_version, notes.version),
@@ -3925,7 +3925,7 @@ private fun AboutSettings(context: android.content.Context) {
         }
     }
     if (showLogViewer) {
-        MeloXGlassDialog(visible = true, onDismiss = { showLogViewer = false }) {
+        MeloXDialog(visible = true, onDismiss = { showLogViewer = false }) {
             Text(stringResource(R.string.settings_about_logs_title), style = MaterialTheme.typography.titleLarge)
             if (logViewerLoading) {
                 Row(Modifier.fillMaxWidth().padding(top = 18.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -4044,10 +4044,10 @@ private fun SettingsToggleRow(
         }
     }
     @Composable fun row() {
-        MeloXIosListRow(
+        MeloXListRow(
             title = title,
             trailing = {
-                MeloXGlassToggle(checked = value, onCheckedChange = {
+                MeloXSwitch(checked = value, onCheckedChange = {
                     value = it
                     MeloXSettingsPreferences.setBoolean(context, key, it)
                 })
@@ -4072,9 +4072,9 @@ private fun SettingsExternalToggleRow(
     val groupRowIndex = LocalSettingsGroupRowIndex.current
     val effectiveShowTopSeparator = remember(grouped) { if (grouped) groupRowIndex.intValue++.let { it > 0 } else false }
     val row = @Composable {
-        MeloXIosListRow(
+        MeloXListRow(
             title = title,
-            trailing = { MeloXGlassToggle(checked = value, onCheckedChange = onValueChange) },
+            trailing = { MeloXSwitch(checked = value, onCheckedChange = onValueChange) },
             showTopSeparator = effectiveShowTopSeparator,
         )
     }
@@ -4102,7 +4102,7 @@ private fun SettingsGlassGroup(content: @Composable ColumnScope.() -> Unit) {
     val rowIndex = remember { mutableIntStateOf(0) }
     rowIndex.intValue = 0
     CompositionLocalProvider(LocalSettingsGroupRowIndex provides rowIndex) {
-        MeloXIosGroupedList(surfaceColor = MaterialTheme.colorScheme.surface, content = content)
+        MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surface, content = content)
     }
 }
 
@@ -4120,7 +4120,7 @@ private fun SettingsInfoCard(value: String) {
 @Composable
 private fun SettingsActionButton(title: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Box(
-        modifier.fillMaxWidth().height(50.dp).meloXLiquidButton(
+        modifier.fillMaxWidth().height(50.dp).meloXButtonSurface(
             shape = RoundedCornerShape(25.dp),
             surfaceColor = MaterialTheme.colorScheme.onBackground.copy(alpha = .06f),
         ).clickable(onClick = onClick),
@@ -4131,7 +4131,7 @@ private fun SettingsActionButton(title: String, modifier: Modifier = Modifier, o
 @Composable
 private fun SettingsRoundButton(text: String, onClick: () -> Unit) {
     Box(
-        Modifier.size(44.dp).meloXLiquidButton(shape = CircleShape).clickable(onClick = onClick),
+        Modifier.size(44.dp).meloXButtonSurface(shape = CircleShape).clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) { MeloXActionIcon(text, Modifier.size(20.dp), MaterialTheme.colorScheme.onSurface) }
 }
@@ -4149,7 +4149,7 @@ private fun SettingsResetCard() {
 @Composable
 private fun SettingsDangerButton(title: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Box(
-        modifier.fillMaxWidth().height(54.dp).meloXLiquidButton(
+        modifier.fillMaxWidth().height(54.dp).meloXButtonSurface(
             shape = RoundedCornerShape(27.dp),
             tint = MaterialTheme.colorScheme.error.copy(alpha = .25f),
             surfaceColor = MaterialTheme.colorScheme.error.copy(alpha = .20f),

@@ -43,7 +43,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil3.compose.AsyncImage
 import com.lladlam.melox.core.lyrics.LyricLine
-import com.lladlam.melox.ui.glass.meloXLiquidButton
+import com.lladlam.melox.ui.controls.meloXButtonSurface
 import kotlinx.coroutines.launch
 
 @Composable
@@ -143,7 +143,7 @@ internal fun MeloXLyricShareDialog(
 @Composable
 private fun ShareButton(text: String, modifier: Modifier, enabled: Boolean, onClick: () -> Unit) {
     Box(
-        modifier.height(50.dp).meloXLiquidButton(
+        modifier.height(50.dp).meloXButtonSurface(
             shape = RoundedCornerShape(25.dp),
             enabled = enabled,
             surfaceColor = MaterialTheme.colorScheme.primary.copy(alpha = .12f),

@@ -36,7 +36,7 @@ class MeloXMeiScreenMigrationTest {
 
         assertTrue(manifest.contains(".ui.song.MeloXSongWikiActivity"))
         assertTrue(actions.contains("MeloXSongWikiActivity.launch(context, song)"))
-        assertTrue(account.contains("MeloXGlassSegmentedControl"))
+        assertTrue(account.contains("MeloXSegmentedControl"))
         assertTrue(account.contains("AccountHero"))
         assertTrue(artist.contains("ArtistHero"))
         assertTrue(artist.contains("LazyRow"))

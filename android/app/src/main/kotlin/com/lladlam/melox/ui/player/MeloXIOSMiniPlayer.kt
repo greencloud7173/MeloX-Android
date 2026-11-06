@@ -1,4 +1,4 @@
-﻿package com.lladlam.melox.ui.player
+package com.lladlam.melox.ui.player
 
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.EnterExitState
@@ -77,14 +77,14 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.kyant.shapes.Capsule
-import com.lladlam.melox.ui.glass.bottomGlassSurfaceColor
-import com.lladlam.melox.ui.glass.bottomLiquidGlassTint
-import com.lladlam.melox.ui.glass.meloXLiquidBottomBar
-import com.lladlam.melox.ui.glass.meloXLiquidContentTransform
-import com.lladlam.melox.ui.glass.MeloXSymbol
-import com.lladlam.melox.ui.glass.MeloXSymbolIcon
-import com.lladlam.melox.ui.glass.MeloXSymbolVariant
-import com.lladlam.melox.ui.glass.rememberMeloXLiquidInteraction
+import com.lladlam.melox.ui.controls.bottomGlassSurfaceColor
+import com.lladlam.melox.ui.controls.bottomLiquidGlassTint
+import com.lladlam.melox.ui.controls.meloXBottomBarSurface
+import com.lladlam.melox.ui.controls.meloXContentTransform
+import com.lladlam.melox.ui.controls.MeloXSymbol
+import com.lladlam.melox.ui.controls.MeloXSymbolIcon
+import com.lladlam.melox.ui.controls.MeloXSymbolVariant
+import com.lladlam.melox.ui.controls.rememberMeloXControlInteraction
 import com.lladlam.melox.playback.MeloXAudioReactiveRuntime
 import com.lladlam.melox.playback.MeloXAudioReactiveSample
 import com.lladlam.melox.ui.settings.MeloXSettingsRuntime
@@ -117,7 +117,7 @@ fun MeloXIOSMiniPlayer(
     val density = LocalDensity.current
     val swipeWidth = with(density) { LocalConfiguration.current.screenWidthDp.dp.toPx() }
     val contentOffset = remember { Animatable(0f) }
-    val liquidInteraction = rememberMeloXLiquidInteraction()
+    val liquidInteraction = rememberMeloXControlInteraction()
     var accumulatedDrag by remember { mutableFloatStateOf(0f) }
     var pendingDirection by remember { mutableIntStateOf(0) }
     var pendingOutgoingMediaId by remember { mutableStateOf<String?>(null) }
@@ -258,7 +258,7 @@ fun MeloXIOSMiniPlayer(
                     //   要浮在目标端（播放页，默认 `0f`）**之上**。
                     //
                     //   为什么：`sharedShellModifier` 这个 sharedBounds 节点**把迷你栏的
-                    //   液态玻璃一起包在里面**（见下方 `meloXLiquidBottomBar` 处注释：
+                    //   液态玻璃一起包在里面**（见下方 `meloXBottomBarSurface` 处注释：
                     //   "Keep the glass surface out of the shared-bounds node itself"
                     //   —— 指的是不参与 **bounds 几何**，但**仍在节点内、仍走 overlay 渲染**）。
                     //   ⇒ 转场期间迷你栏这一份被渲进共享元素 overlay（`zIndex` 100f 档，
@@ -478,10 +478,10 @@ fun MeloXIOSMiniPlayer(
                 modifier = Modifier
                     .fillMaxSize()
                     .graphicsLayer { alpha = miniSurfaceAlpha }
-                    // 与底栏 nav 胶囊用同一套材质（meloXLiquidBottomBar + 同一
+                    // 与底栏 nav 胶囊用同一套材质（meloXBottomBarSurface + 同一
                     // tint/surfaceColor），保证深/浅色下观感一致；按压反馈通过
-                    // pressProgress 传入，内容层仍走 meloXLiquidContentTransform。
-                    .meloXLiquidBottomBar(
+                    // pressProgress 传入，内容层仍走 meloXContentTransform。
+                    .meloXBottomBarSurface(
                         shape = Capsule(),
                         tint = bottomLiquidGlassTint(),
                         surfaceColor = bottomGlassSurfaceColor(),
@@ -499,7 +499,7 @@ fun MeloXIOSMiniPlayer(
                 .fillMaxWidth()
                 .height(miniHeight)
                 .padding(vertical = 3.dp)
-                .meloXLiquidContentTransform(liquidInteraction),
+                .meloXContentTransform(liquidInteraction),
             contentAlignment = Alignment.Center,
         ) {
             // ★ morph 期间取消 `.clip(Capsule())`：`Capsule` 半径 = 行高/2，而 morph

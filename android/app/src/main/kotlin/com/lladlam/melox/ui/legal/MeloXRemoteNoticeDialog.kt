@@ -14,10 +14,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lladlam.melox.core.remoteconfig.MeloXRemoteNotice
-import com.lladlam.melox.ui.glass.MeloXGlassButton
-import com.lladlam.melox.ui.glass.MeloXGlassButtonStyle
-import com.lladlam.melox.ui.glass.MeloXGlassDialog
-import com.lladlam.melox.ui.glass.MeloXSystemColors
+import com.lladlam.melox.ui.controls.MeloXButton
+import com.lladlam.melox.ui.controls.MeloXButtonStyle
+import com.lladlam.melox.ui.controls.MeloXDialog
+import com.lladlam.melox.ui.controls.MeloXSystemColors
 
 @Composable
 fun MeloXRemoteNoticeDialog(
@@ -29,7 +29,7 @@ fun MeloXRemoteNoticeDialog(
         "warning" -> "兼容性提醒" to Color(0xFFFF9F0A)
         else -> "音乐源通知" to MeloXSystemColors.Blue
     }
-    MeloXGlassDialog(visible = true, onDismiss = onAcknowledge) {
+    MeloXDialog(visible = true, onDismiss = onAcknowledge) {
         Text(
             text = level,
             modifier = Modifier
@@ -52,10 +52,10 @@ fun MeloXRemoteNoticeDialog(
             lineHeight = 21.sp,
         )
         Column(Modifier.fillMaxWidth().padding(top = 18.dp)) {
-            MeloXGlassButton(
+            MeloXButton(
                 onClick = onAcknowledge,
                 modifier = Modifier.fillMaxWidth(),
-                style = MeloXGlassButtonStyle.BorderedProminent,
+                style = MeloXButtonStyle.BorderedProminent,
             ) { Text("我知道了") }
         }
     }

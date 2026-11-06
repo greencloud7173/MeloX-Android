@@ -48,7 +48,7 @@ import com.lladlam.melox.core.provider.kugou.KugouQrLoginSession
 import com.lladlam.melox.core.provider.kugou.KugouQrLoginState
 import com.lladlam.melox.core.provider.kugou.KugouSessionStore
 import com.lladlam.melox.core.music.provider.PlaybackAccountSlot
-import com.lladlam.melox.ui.glass.meloXLiquidButton
+import com.lladlam.melox.ui.controls.meloXButtonSurface
 import com.lladlam.melox.ui.legal.MeloXLegalLinks
 import kotlinx.coroutines.delay
 
@@ -161,7 +161,7 @@ fun KugouLoginScreen(
             Text(
                 text = stringResource(R.string.action_cancel),
                 modifier = Modifier
-                    .meloXLiquidButton(
+                    .meloXButtonSurface(
                         shape = RoundedCornerShape(18.dp),
                         tint = Color(0xFFFF3147),
                         surfaceColor = Color(0xFFFF3147).copy(alpha = 0.08f),
@@ -235,7 +235,7 @@ fun KugouLoginScreen(
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier
-                            .meloXLiquidButton(
+                            .meloXButtonSurface(
                                 shape = RoundedCornerShape(20.dp),
                                 surfaceColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.08f),
                             )

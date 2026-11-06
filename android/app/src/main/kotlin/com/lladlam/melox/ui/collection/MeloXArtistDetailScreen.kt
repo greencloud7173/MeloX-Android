@@ -76,14 +76,14 @@ import com.lladlam.melox.core.network.NeteaseCollectionDetailsClient
 import com.lladlam.melox.core.network.NeteaseMusicOperationsClient
 import com.lladlam.melox.playback.PlaybackCommands
 import com.lladlam.melox.ui.MeloXBottomContentClearance
-import com.lladlam.melox.ui.glass.meloXLiquidButton
-import com.lladlam.melox.ui.glass.MeloXActionIcon
-import com.lladlam.melox.ui.glass.MeloXGlassButton
-import com.lladlam.melox.ui.glass.MeloXGlassButtonStyle
-import com.lladlam.melox.ui.glass.MeloXGlassIconButton
-import com.lladlam.melox.ui.glass.MeloXShapes
-import com.lladlam.melox.ui.glass.MeloXSymbol
-import com.lladlam.melox.ui.glass.MeloXSymbolIcon
+import com.lladlam.melox.ui.controls.meloXButtonSurface
+import com.lladlam.melox.ui.controls.MeloXActionIcon
+import com.lladlam.melox.ui.controls.MeloXButton
+import com.lladlam.melox.ui.controls.MeloXButtonStyle
+import com.lladlam.melox.ui.controls.MeloXIconButton
+import com.lladlam.melox.ui.controls.MeloXShapes
+import com.lladlam.melox.ui.controls.MeloXSymbol
+import com.lladlam.melox.ui.controls.MeloXSymbolIcon
 import com.lladlam.melox.ui.player.MeloXSongActionsOverlay
 import com.lladlam.melox.ui.search.MeloXSearchLaunchBus
 import kotlinx.coroutines.launch
@@ -324,10 +324,10 @@ internal fun MeloXArtistDetailScreen(id: Long, onBack: () -> Unit) {
                 .padding(horizontal = 20.dp, vertical = 9.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Box(Modifier.size(44.dp).meloXLiquidButton(shape = CircleShape).clickable(onClick = onBack, interactionSource = remember { MutableInteractionSource() }, indication = null), contentAlignment = Alignment.Center) {
+            Box(Modifier.size(44.dp).meloXButtonSurface(shape = CircleShape).clickable(onClick = onBack, interactionSource = remember { MutableInteractionSource() }, indication = null), contentAlignment = Alignment.Center) {
                 MeloXActionIcon("‹", Modifier.size(20.dp), MaterialTheme.colorScheme.onSurface)
             }
-            Box(Modifier.size(44.dp).meloXLiquidButton(shape = CircleShape).clickable(onClick = { showInfoSheet = true }, interactionSource = remember { MutableInteractionSource() }, indication = null), contentAlignment = Alignment.Center) {
+            Box(Modifier.size(44.dp).meloXButtonSurface(shape = CircleShape).clickable(onClick = { showInfoSheet = true }, interactionSource = remember { MutableInteractionSource() }, indication = null), contentAlignment = Alignment.Center) {
                 MeloXActionIcon("•••", Modifier.size(20.dp), MaterialTheme.colorScheme.onSurface)
             }
         }
@@ -367,7 +367,7 @@ internal fun MeloXArtistDetailScreen(id: Long, onBack: () -> Unit) {
                     Modifier.fillMaxWidth().height(58.dp).padding(horizontal = 16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    MeloXGlassIconButton(MeloXSymbol.ChevronLeft, onClick = {
+                    MeloXIconButton(MeloXSymbol.ChevronLeft, onClick = {
                         scope.launch {
                             if (expandedSectionBackProgress.value < 1f) {
                                 expandedSectionBackProgress.animateTo(1f, tween(160))
@@ -535,11 +535,11 @@ private fun ArtistInfoSheet(
             Spacer(Modifier.height(24.dp))
 
             followed?.let {
-                MeloXGlassButton(
+                MeloXButton(
                     onClick = onFollow,
                     modifier = Modifier.fillMaxWidth(),
                     enabled = !followBusy,
-                    style = if (it) MeloXGlassButtonStyle.BorderedProminent else MeloXGlassButtonStyle.Bordered,
+                    style = if (it) MeloXButtonStyle.BorderedProminent else MeloXButtonStyle.Bordered,
                     shape = MeloXShapes.capsule,
                 ) { Text(if (it) "已关注" else "关注", fontWeight = FontWeight.SemiBold) }
                 Spacer(Modifier.height(24.dp))

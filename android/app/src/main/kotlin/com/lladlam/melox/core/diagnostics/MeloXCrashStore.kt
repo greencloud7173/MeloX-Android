@@ -44,7 +44,7 @@ object MeloXCrashStore {
     var glassRenderingActive: Boolean = false
         private set
 
-    /** 由 `meloXGlassBackdrop()` 打点。极轻，无锁、无 IO。 */
+    /** 由 `meloXBackdrop()` 打点。极轻，无锁、无 IO。 */
     fun markGlassRendering() {
         glassRenderingActive = true
     }

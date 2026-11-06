@@ -80,10 +80,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import com.lladlam.melox.ui.glass.meloXBackdropBlur
-import com.lladlam.melox.ui.glass.MeloXSymbol
-import com.lladlam.melox.ui.glass.MeloXSymbolIcon
-import com.lladlam.melox.ui.glass.meloXIconDrawingScale
+import com.lladlam.melox.ui.controls.meloXPanelSurface
+import com.lladlam.melox.ui.controls.MeloXSymbol
+import com.lladlam.melox.ui.controls.MeloXSymbolIcon
+import com.lladlam.melox.ui.controls.meloXIconDrawingScale
 import com.lladlam.melox.ui.settings.MeloXSettingsRuntime
 import com.lladlam.melox.ui.animation.meloXContentEnter
 import com.lladlam.melox.ui.animation.meloXContentExit
@@ -355,7 +355,7 @@ internal fun MeloXIOSNowPlayingScene(
                         active = lyricsActive,
                         // ★ 底部渐隐（同横屏的 Apple container edge fade，取代"靠遮挡"）。
                         //   竖屏歌词面板铺满到 Column 底、**没有底部让位**，那一截由底部控件条
-                        //   盖住；但控件条只有 `meloXBackdropBlur`（`Black 8%` + 24dp 模糊），
+                        //   盖住；但控件条只有 `meloXPanelSurface`（`Black 8%` + 24dp 模糊），
                         //   白色高亮歌词会透出（真机截图：进度条一带能看到下层 `(4665,777)`
                         //   虚影、三控件下方还有整行）——即用户报的「本该被下半操作区遮挡的
                         //   歌词出现了」，转屏后遮挡层重建的那几帧尤其明显。
@@ -424,7 +424,7 @@ internal fun MeloXIOSNowPlayingScene(
                         if (queueVisible) {
                             Modifier
                                 .clip(songHeaderShape)
-                                .meloXBackdropBlur(
+                                .meloXPanelSurface(
                                     shape = songHeaderShape,
                                     blurRadius = 20.dp,
                                     surfaceColor = Color.Black.copy(alpha = .10f),
@@ -495,7 +495,7 @@ internal fun MeloXIOSNowPlayingScene(
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .meloXBackdropBlur(
+                            .meloXPanelSurface(
                                 shape = RectangleShape,
                                 blurRadius = 24.dp,
                             )

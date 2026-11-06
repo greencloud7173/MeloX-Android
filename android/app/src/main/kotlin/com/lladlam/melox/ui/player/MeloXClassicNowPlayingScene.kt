@@ -32,8 +32,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.lladlam.melox.ui.glass.MeloXGlassIconButton
-import com.lladlam.melox.ui.glass.MeloXSymbol
+import com.lladlam.melox.ui.controls.MeloXIconButton
+import com.lladlam.melox.ui.controls.MeloXSymbol
 import com.lladlam.melox.ui.layout.MeloXWindowWidthClass
 import com.lladlam.melox.ui.layout.rememberMeloXWindowInfo
 import com.lladlam.melox.ui.settings.MeloXSettingsRuntime
@@ -66,9 +66,9 @@ internal fun MeloXClassicNowPlayingScene(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                MeloXGlassIconButton(MeloXSymbol.Xmark, onDismiss, contentDescription = "收起播放器")
+                MeloXIconButton(MeloXSymbol.Xmark, onDismiss, contentDescription = "收起播放器")
                 Text("正在播放", color = MaterialTheme.colorScheme.onSurface.copy(alpha = .58f), fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
-                MeloXGlassIconButton(MeloXSymbol.Ellipsis, onShowActions, contentDescription = "播放操作")
+                MeloXIconButton(MeloXSymbol.Ellipsis, onShowActions, contentDescription = "播放操作")
             }
             if (page == MeloXNowPlayingPage.Artwork && wide) {
                 Row(

@@ -30,10 +30,10 @@ import com.lladlam.melox.core.provider.spotify.SpotifyClientConfig
 import com.lladlam.melox.core.provider.spotify.SpotifyOAuth
 import com.lladlam.melox.core.provider.spotify.SpotifySessionStore
 import com.lladlam.melox.core.remoteconfig.MeloXRemoteConfigPolicy
-import com.lladlam.melox.ui.glass.MeloXGlassButton
-import com.lladlam.melox.ui.glass.MeloXGlassButtonStyle
-import com.lladlam.melox.ui.glass.MeloXGlassTextField
-import com.lladlam.melox.ui.glass.MeloXSystemColors
+import com.lladlam.melox.ui.controls.MeloXButton
+import com.lladlam.melox.ui.controls.MeloXButtonStyle
+import com.lladlam.melox.ui.controls.MeloXTextField
+import com.lladlam.melox.ui.controls.MeloXSystemColors
 import com.lladlam.melox.ui.legal.MeloXLegalLinks
 import kotlinx.coroutines.launch
 
@@ -48,7 +48,7 @@ fun SpotifyLoginScreen(onDismiss: () -> Unit, onLoggedIn: () -> Unit) {
                 .statusBarsPadding().padding(horizontal = 20.dp, vertical = 14.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
-            MeloXGlassButton(onClick = onDismiss, style = MeloXGlassButtonStyle.Plain) { Text(stringResource(R.string.action_close)) }
+            MeloXButton(onClick = onDismiss, style = MeloXButtonStyle.Plain) { Text(stringResource(R.string.action_close)) }
             Text(stringResource(R.string.account_spotify_unavailable), fontSize = 20.sp, fontWeight = FontWeight.Bold)
             Text(
                 stringResource(R.string.account_spotify_disabled),
@@ -73,7 +73,7 @@ fun SpotifyLoginScreen(onDismiss: () -> Unit, onLoggedIn: () -> Unit) {
         verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            MeloXGlassButton(onClick = onDismiss, style = MeloXGlassButtonStyle.Plain) {
+            MeloXButton(onClick = onDismiss, style = MeloXButtonStyle.Plain) {
                 Text(stringResource(R.string.action_cancel), color = MeloXSystemColors.Red)
             }
             Text(stringResource(R.string.account_login_spotify), fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
@@ -92,7 +92,7 @@ fun SpotifyLoginScreen(onDismiss: () -> Unit, onLoggedIn: () -> Unit) {
                 fontSize = 13.sp,
                 lineHeight = 19.sp,
             )
-            MeloXGlassTextField(
+            MeloXTextField(
                 value = clientIdInput,
                 onValueChange = { clientIdInput = it },
                 modifier = Modifier.fillMaxWidth(),
@@ -100,22 +100,22 @@ fun SpotifyLoginScreen(onDismiss: () -> Unit, onLoggedIn: () -> Unit) {
                 singleLine = true,
             )
             if (clientIdInput.isNotBlank()) {
-                MeloXGlassButton(
+                MeloXButton(
                     onClick = {
                         SpotifyClientConfig.write(context, clientIdInput)
                         configured = true
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    style = MeloXGlassButtonStyle.Plain,
+                    style = MeloXButtonStyle.Plain,
                 ) { Text(stringResource(R.string.account_save_client_id)) }
             }
         }
         error?.let { Text(it, color = MaterialTheme.colorScheme.error, fontSize = 13.sp) }
         // 上游 0.6.2（22ebcb3）：改走 loopback 授权，本地起一个回环端口接回调，
         // 不再依赖 SpotifyCallbackActivity。
-        MeloXGlassButton(
+        MeloXButton(
             onClick = {
-                if (authorizing) return@MeloXGlassButton
+                if (authorizing) return@MeloXButton
                 authorizing = true
                 error = null
                 scope.launch {
@@ -133,7 +133,7 @@ fun SpotifyLoginScreen(onDismiss: () -> Unit, onLoggedIn: () -> Unit) {
             },
             modifier = Modifier.fillMaxWidth(),
             enabled = configured && !authorizing,
-            style = MeloXGlassButtonStyle.BorderedProminent,
+            style = MeloXButtonStyle.BorderedProminent,
         ) { Text(stringResource(if (authorizing) R.string.account_spotify_waiting else R.string.account_spotify_browser)) }
         Spacer(Modifier.weight(1f))
         MeloXLegalLinks(tint = androidx.compose.ui.graphics.Color(0xFF1DB954))

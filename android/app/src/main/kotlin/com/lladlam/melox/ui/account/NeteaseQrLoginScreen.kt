@@ -79,12 +79,12 @@ import com.lladlam.melox.R
 import com.lladlam.melox.core.account.NeteaseSessionStore
 import com.lladlam.melox.core.music.provider.PlaybackAccountSlot
 import com.lladlam.melox.core.network.NeteaseQrDiag
-import com.lladlam.melox.ui.glass.MeloXGlassIconButton
-import com.lladlam.melox.ui.glass.MeloXSymbol
-import com.lladlam.melox.ui.glass.MeloXSymbolIcon
-import com.lladlam.melox.ui.glass.MeloXShapes
-import com.lladlam.melox.ui.glass.MeloXTypography
-import com.lladlam.melox.ui.glass.MeloXIosTopBar
+import com.lladlam.melox.ui.controls.MeloXIconButton
+import com.lladlam.melox.ui.controls.MeloXSymbol
+import com.lladlam.melox.ui.controls.MeloXSymbolIcon
+import com.lladlam.melox.ui.controls.MeloXShapes
+import com.lladlam.melox.ui.controls.MeloXTypography
+import com.lladlam.melox.ui.controls.MeloXTopBar
 import com.lladlam.melox.ui.legal.MeloXLegalLinks
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -489,7 +489,7 @@ fun NeteaseQrLoginScreen(
                 .background(MaterialTheme.colorScheme.background)
                 .statusBarsPadding(),
         ) {
-            MeloXIosTopBar(
+            MeloXTopBar(
                 title = stringResource(R.string.account_netease_qr_title),
                 contentPadding = PaddingValues(horizontal = 10.dp),
                 // 34sp 的大标题在这页太抢戏（标题本身也偏长会挤到返回键），
@@ -498,7 +498,7 @@ fun NeteaseQrLoginScreen(
                 navigation = {
                     // 与全站返回键统一：液态玻璃圆钮（艺人详情 / 置顶页同款），
                     // 不再自己排 44dp 靶 + 28dp 图标。
-                    MeloXGlassIconButton(
+                    MeloXIconButton(
                         symbol = MeloXSymbol.ChevronLeft,
                         onClick = onDismiss,
                         contentDescription = stringResource(R.string.player_back),

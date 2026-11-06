@@ -55,12 +55,12 @@ import com.lladlam.melox.ui.MeloXBottomContentClearance
 import com.lladlam.melox.ui.finishMeloXPage
 import com.lladlam.melox.ui.prepareMeloXPageWindow
 import com.lladlam.melox.ui.startMeloXPage
-import com.lladlam.melox.ui.glass.MeloXGlassButton
-import com.lladlam.melox.ui.glass.MeloXGlassButtonStyle
-import com.lladlam.melox.ui.glass.MeloXGlassCard
-import com.lladlam.melox.ui.glass.MeloXGlassSegmentedControl
-import com.lladlam.melox.ui.glass.MeloXPinnedListPage
-import com.lladlam.melox.ui.glass.MeloXShapes
+import com.lladlam.melox.ui.controls.MeloXButton
+import com.lladlam.melox.ui.controls.MeloXButtonStyle
+import com.lladlam.melox.ui.controls.MeloXCard
+import com.lladlam.melox.ui.controls.MeloXSegmentedControl
+import com.lladlam.melox.ui.controls.MeloXPinnedListPage
+import com.lladlam.melox.ui.controls.MeloXShapes
 import com.lladlam.melox.ui.library.MeloXUnifiedPlaylistDetailScreen
 import com.lladlam.melox.ui.theme.MeloXTheme
 import com.lladlam.melox.ui.MeloXPageHost
@@ -169,12 +169,12 @@ internal fun AccountHomeScreen(userId: Long, onBack: () -> Unit) {
 
         error?.let { message ->
             item(key = "error") {
-                MeloXGlassCard(Modifier.fillMaxWidth()) {
+                MeloXCard(Modifier.fillMaxWidth()) {
                     Text(message, color = MaterialTheme.colorScheme.error)
-                    MeloXGlassButton(
+                    MeloXButton(
                         onClick = { scope.launch { refresh() } },
                         modifier = Modifier.fillMaxWidth(),
-                        style = MeloXGlassButtonStyle.BorderedProminent,
+                        style = MeloXButtonStyle.BorderedProminent,
                         shape = MeloXShapes.capsule,
                     ) { Text(stringResource(R.string.account_retry)) }
                 }
@@ -186,7 +186,7 @@ internal fun AccountHomeScreen(userId: Long, onBack: () -> Unit) {
                 Text(stringResource(R.string.account_listening_rank), fontSize = 23.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 10.dp, start = 4.dp))
             }
             item(key = "rank-period") {
-                MeloXGlassSegmentedControl(
+                MeloXSegmentedControl(
                     items = listOf(stringResource(R.string.player_rank_week), stringResource(R.string.player_rank_all_time)),
                     selectedIndex = if (period == MeloXUserPlayRecordPeriod.Week) 0 else 1,
                     onSelected = { index ->
@@ -220,7 +220,7 @@ internal fun AccountHomeScreen(userId: Long, onBack: () -> Unit) {
 
 @Composable
 private fun AccountHero(profile: MeloXAccountDetail, playlistCount: Int) {
-    MeloXGlassCard(Modifier.fillMaxWidth()) {
+    MeloXCard(Modifier.fillMaxWidth()) {
         Column(
             Modifier.fillMaxWidth().padding(vertical = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -257,7 +257,7 @@ private fun AccountMetric(value: Int, label: String, modifier: Modifier = Modifi
 
 @Composable
 private fun AccountRankRow(index: Int, record: MeloXUserPlayRecord, onClick: () -> Unit) {
-    MeloXGlassCard(Modifier.fillMaxWidth(), onClick = onClick) {
+    MeloXCard(Modifier.fillMaxWidth(), onClick = onClick) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("${index + 1}", modifier = Modifier.size(30.dp), fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
             AsyncImage(record.song.artworkUrl, null, contentScale = ContentScale.Crop, modifier = Modifier.size(48.dp).clip(RoundedCornerShape(10.dp)))
@@ -272,7 +272,7 @@ private fun AccountRankRow(index: Int, record: MeloXUserPlayRecord, onClick: () 
 
 @Composable
 private fun AccountPlaylistRow(playlist: NeteasePlaylistSummary, onClick: () -> Unit) {
-    MeloXGlassCard(Modifier.fillMaxWidth(), onClick = onClick) {
+    MeloXCard(Modifier.fillMaxWidth(), onClick = onClick) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             AsyncImage(playlist.coverUrl, null, contentScale = ContentScale.Crop, modifier = Modifier.size(54.dp).clip(RoundedCornerShape(11.dp)))
             Column(Modifier.weight(1f).padding(start = 12.dp)) {

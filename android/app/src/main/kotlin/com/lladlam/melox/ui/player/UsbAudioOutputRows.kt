@@ -23,9 +23,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lladlam.melox.R
-import com.lladlam.melox.ui.glass.MeloXSymbol
-import com.lladlam.melox.ui.glass.MeloXSymbolIcon
-import com.lladlam.melox.ui.glass.meloXLiquidButton
+import com.lladlam.melox.ui.controls.MeloXSymbol
+import com.lladlam.melox.ui.controls.MeloXSymbolIcon
+import com.lladlam.melox.ui.controls.meloXButtonSurface
 import com.lladlam.melox.usb.MeloXUsbAudioSession
 import kotlinx.coroutines.launch
 
@@ -41,7 +41,7 @@ internal fun UsbAudioOutputRows(onDismiss: () -> Unit) {
         val active = usb.device?.deviceId == target.deviceId
         val color = if (active) Color.Black else Color.White
         Row(Modifier.fillMaxWidth().padding(bottom = 8.dp).clip(RoundedCornerShape(22.dp))
-            .meloXLiquidButton(shape = RoundedCornerShape(22.dp), surfaceColor = if (active) Color(0xFFFFFDEB) else Color.Black.copy(alpha = .40f))
+            .meloXButtonSurface(shape = RoundedCornerShape(22.dp), surfaceColor = if (active) Color(0xFFFFFDEB) else Color.Black.copy(alpha = .40f))
             .semantics { selected = active }
             .clickable(enabled = !usb.busy && !com.lladlam.melox.dlna.DlnaSession.busy && !com.lladlam.melox.miplay.MiPlaySession.busy && !com.lladlam.melox.lan.MeloXLanSession.busy, role = Role.Button) {
                 scope.launch { if (usb.start(context, target)) onDismiss() }
@@ -55,7 +55,7 @@ internal fun UsbAudioOutputRows(onDismiss: () -> Unit) {
     }
     if (usb.active) Text(stringResource(R.string.usb_exclusive_stop), color = Color.Black,
         modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(18.dp))
-            .meloXLiquidButton(shape = RoundedCornerShape(18.dp), surfaceColor = Color.White.copy(alpha = .8f))
+            .meloXButtonSurface(shape = RoundedCornerShape(18.dp), surfaceColor = Color.White.copy(alpha = .8f))
             .clickable(enabled = !usb.busy) { scope.launch { usb.stop() } }.padding(12.dp))
     usb.error?.let { Text(it, color = Color(0xFFFFB4AB), fontSize = 12.sp, modifier = Modifier.padding(top = 6.dp)) }
 }

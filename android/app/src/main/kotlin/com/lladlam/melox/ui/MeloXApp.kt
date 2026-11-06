@@ -1,4 +1,4 @@
-﻿package com.lladlam.melox.ui
+package com.lladlam.melox.ui
 
 import android.app.Activity
 import android.content.Intent
@@ -112,11 +112,11 @@ import androidx.compose.ui.util.lerp
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.layout.onGloballyPositioned
-import com.lladlam.melox.ui.glass.BottomBarToneTheme
-import com.lladlam.melox.ui.glass.LocalBottomBarTone
-import com.lladlam.melox.ui.glass.bottomBarTone
-import com.lladlam.melox.ui.glass.darkness
-import com.lladlam.melox.ui.glass.rememberBottomBarToneState
+import com.lladlam.melox.ui.controls.BottomBarToneTheme
+import com.lladlam.melox.ui.controls.LocalBottomBarTone
+import com.lladlam.melox.ui.controls.bottomBarTone
+import com.lladlam.melox.ui.controls.darkness
+import com.lladlam.melox.ui.controls.rememberBottomBarToneState
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.compose.ui.zIndex
@@ -145,15 +145,15 @@ import com.lladlam.melox.ui.podcast.MeloXPodcastScreen
 import com.lladlam.melox.ui.cloud.MeloXCloudMusicScreen
 import com.lladlam.melox.ui.discovery.MeloXExploreScreen
 import com.lladlam.melox.ui.discovery.MeloXHomeScreen
-import com.lladlam.melox.ui.glass.LocalMeloXBackdrop
-import com.lladlam.melox.ui.glass.MeloXSymbol
-import com.lladlam.melox.ui.glass.MeloXSymbolIcon
-import com.lladlam.melox.ui.glass.meloXIconDrawingScale
-import com.lladlam.melox.ui.glass.MeloXSymbolVariant
-import com.lladlam.melox.ui.glass.MeloXSystemColors
-import com.lladlam.melox.ui.glass.MeloXGlassDialog
-import com.lladlam.melox.ui.glass.MeloXGlassButton
-import com.lladlam.melox.ui.glass.MeloXGlassButtonStyle
+import com.lladlam.melox.ui.controls.LocalMeloXBackdrop
+import com.lladlam.melox.ui.controls.MeloXSymbol
+import com.lladlam.melox.ui.controls.MeloXSymbolIcon
+import com.lladlam.melox.ui.controls.meloXIconDrawingScale
+import com.lladlam.melox.ui.controls.MeloXSymbolVariant
+import com.lladlam.melox.ui.controls.MeloXSystemColors
+import com.lladlam.melox.ui.controls.MeloXDialog
+import com.lladlam.melox.ui.controls.MeloXButton
+import com.lladlam.melox.ui.controls.MeloXButtonStyle
 import com.lladlam.melox.ui.theme.isMeloXDarkTheme
 import com.lladlam.melox.ui.animation.BottomBarCollapseSpec
 import com.lladlam.melox.ui.animation.BottomBarExpandSpec
@@ -165,17 +165,17 @@ import com.lladlam.melox.ui.animation.MeloXPlayerRecede
 import com.lladlam.melox.ui.animation.meloXPageEnter
 import com.lladlam.melox.ui.animation.meloXPageExit
 import com.lladlam.melox.ui.animation.sprungFrac
-import com.lladlam.melox.ui.glass.BOTTOM_GLASS_SURFACE_ALPHA
-import com.lladlam.melox.ui.glass.bottomGlassFallbackColor
-import com.lladlam.melox.ui.glass.bottomGlassSurfaceColor
-import com.lladlam.melox.ui.glass.bottomLiquidGlassTint
-import com.lladlam.melox.ui.glass.finiteOrZero
-import com.lladlam.melox.ui.glass.meloXLiquidBottomBar
-import com.lladlam.melox.ui.glass.meloXLiquidCaptureLayer
-import com.lladlam.melox.ui.glass.meloXLiquidTabSelection
-import com.lladlam.melox.ui.glass.meloXGlassBackdrop
-import com.lladlam.melox.ui.glass.publicdemo.PublicDampedDragAnimation
-import com.lladlam.melox.ui.glass.publicdemo.PublicInteractiveHighlight
+import com.lladlam.melox.ui.controls.BOTTOM_GLASS_SURFACE_ALPHA
+import com.lladlam.melox.ui.controls.bottomGlassFallbackColor
+import com.lladlam.melox.ui.controls.bottomGlassSurfaceColor
+import com.lladlam.melox.ui.controls.bottomLiquidGlassTint
+import com.lladlam.melox.ui.controls.finiteOrZero
+import com.lladlam.melox.ui.controls.meloXBottomBarSurface
+import com.lladlam.melox.ui.controls.meloXChromeSurface
+import com.lladlam.melox.ui.controls.meloXTabIndicator
+import com.lladlam.melox.ui.controls.meloXBackdrop
+import com.lladlam.melox.ui.controls.publicdemo.PublicDampedDragAnimation
+import com.lladlam.melox.ui.controls.publicdemo.PublicInteractiveHighlight
 import com.lladlam.melox.ui.layout.rememberMeloXWindowInfo
 import com.lladlam.melox.ui.layout.MeloXDetailPageOwner
 import com.lladlam.melox.ui.layout.MeloXDetailPaneState
@@ -1536,7 +1536,7 @@ private fun MeloXAppDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
 ) {
-    MeloXGlassDialog(visible = true, onDismiss = onDismiss) {
+    MeloXDialog(visible = true, onDismiss = onDismiss) {
         Text(title, style = MaterialTheme.typography.titleLarge)
         Text(
             message,
@@ -1556,17 +1556,17 @@ private fun MeloXAppDialog(
                 .padding(top = 18.dp),
             horizontalArrangement = Arrangement.Center,
         ) {
-            MeloXGlassButton(
+            MeloXButton(
                 onClick = onDismiss,
                 modifier = Modifier.widthIn(min = DialogActionButtonMinWidth),
-                style = MeloXGlassButtonStyle.Plain,
+                style = MeloXButtonStyle.Plain,
                 contentPadding = PaddingValues(horizontal = 12.dp, vertical = 10.dp),
             ) { Text(dismissLabel, maxLines = 1, overflow = TextOverflow.Ellipsis) }
             Spacer(Modifier.width(10.dp))
-            MeloXGlassButton(
+            MeloXButton(
                 onClick = onConfirm,
                 modifier = Modifier.widthIn(min = DialogActionButtonMinWidth),
-                style = MeloXGlassButtonStyle.BorderedProminent,
+                style = MeloXButtonStyle.BorderedProminent,
                 contentPadding = PaddingValues(horizontal = 12.dp, vertical = 10.dp),
             ) { Text(confirmLabel, maxLines = 1, overflow = TextOverflow.Ellipsis) }
         }
@@ -1582,7 +1582,7 @@ private fun MeloXUpdateDialog(
 ) {
     // Capped to the safe drawing area: a long release note scrolls inside the
     // panel instead of pushing the buttons off screen.
-    MeloXGlassDialog(visible = true, onDismiss = onLater, maxHeightFraction = 0.92f) {
+    MeloXDialog(visible = true, onDismiss = onLater, maxHeightFraction = 0.92f) {
         Text(
             stringResource(R.string.app_update_found, release.version),
             style = MaterialTheme.typography.titleLarge,
@@ -1615,17 +1615,17 @@ private fun MeloXUpdateDialog(
                 .padding(top = 16.dp),
             horizontalArrangement = Arrangement.Center,
         ) {
-            MeloXGlassButton(
+            MeloXButton(
                 onClick = onLater,
                 modifier = Modifier.widthIn(min = DialogActionButtonMinWidth),
-                style = MeloXGlassButtonStyle.Plain,
+                style = MeloXButtonStyle.Plain,
                 contentPadding = PaddingValues(horizontal = 12.dp, vertical = 10.dp),
             ) { Text(stringResource(R.string.app_update_later), maxLines = 1, overflow = TextOverflow.Ellipsis) }
             Spacer(Modifier.width(10.dp))
-            MeloXGlassButton(
+            MeloXButton(
                 onClick = onConfirm,
                 modifier = Modifier.widthIn(min = DialogActionButtonMinWidth),
-                style = MeloXGlassButtonStyle.BorderedProminent,
+                style = MeloXButtonStyle.BorderedProminent,
                 contentPadding = PaddingValues(horizontal = 12.dp, vertical = 10.dp),
             ) {
                 Text(
@@ -1677,7 +1677,7 @@ private val ChromeCompactSize = 46.dp
 /**
  * ⚠ **2026-09-25 一笔勾销**：本常量（及其自研「实心着色胶囊」Layer 2 方案）已随
  *   一比一复刻 BiliNext `LiquidGlassTabsBar.kt` 全部删除 —— Layer 2 现在是一块
- *   **真玻璃**（`meloXLiquidCaptureLayer`），不再是本项目自创的着色胶囊。
+ *   **真玻璃**（`meloXChromeSurface`），不再是本项目自创的着色胶囊。
  *   保留此墓碑仅为阻止后来者重新发明它。
  */
 
@@ -2090,12 +2090,12 @@ private fun MeloXBottomChrome(
                 //   真机表现为**左侧一个糊成一团的畸形图标**（截图 tmp/mx_col2_bar.png）。
                 //   ⇒ 用既有的 `expandedLayerAlpha`（progress 0.43→0.72 之间淡出）把
                 //     **图标那层**隐去，收缩态改由下面的 compact 层渲染单个圆心标。
-                //   ⚠ 淡出必须只作用在**内容**上，不能连 `meloXLiquidBottomBar` 一起淡 ——
+                //   ⚠ 淡出必须只作用在**内容**上，不能连 `meloXBottomBarSurface` 一起淡 ——
                 //     面板玻璃在收缩全程都得在（否则收缩中胶囊会闪一下消失）。
                 Row(
                     modifier = Modifier
                         .graphicsLayer { translationX = panelOffset }
-                        .meloXLiquidBottomBar(
+                        .meloXBottomBarSurface(
                             shape = navShape,
                             tint = bottomLiquidGlassTint(),
                             surfaceColor = bottomGlassSurfaceColor(),
@@ -2195,7 +2195,7 @@ private fun MeloXBottomChrome(
                             .alpha(0f)
                             .layerBackdrop(tabsBackdrop)
                             .graphicsLayer { translationX = panelOffset }
-                            .meloXLiquidCaptureLayer(
+                            .meloXChromeSurface(
                                 shape = Capsule(),
                                 surfaceColor = bottomGlassSurfaceColor(),
                                 pressProgress = dampedDock.pressProgress,
@@ -2237,11 +2237,11 @@ private fun MeloXBottomChrome(
                 )
                 if (indicatorAlpha > 0.001f && !frostedGlass) {
                     // ⚠ 原先这里建了一个 `rememberCombinedBackdrop(...)` 赋给 `indicatorBackdrop`
-                    //   但**从未被使用**（真正生效的是下面 `meloXLiquidTabSelection` 内部按
+                    //   但**从未被使用**（真正生效的是下面 `meloXTabIndicator` 内部按
                     //   `(LocalMeloXBackdrop, panelBackdrop = tabsBackdrop)` 自己建的那一枚）。
                     //   它白白多占一整张 GPU 图层，且因为挂在 `if (indicatorAlpha > 0.001f && ...)`
                     //   这个条件分支里，水珠每次显隐都会重新分配/释放一次 —— 低端机上等于
-                    //   反复抖动一大块显存。已删除；组合关系由 `meloXLiquidTabSelection` 内部负责。
+                    //   反复抖动一大块显存。已删除；组合关系由 `meloXTabIndicator` 内部负责。
                     Box(
                         modifier = Modifier
                             .graphicsLayer {
@@ -2256,7 +2256,7 @@ private fun MeloXBottomChrome(
                             .padding(horizontal = 10.dp)
                             .then(dockHighlight.gestureModifier)
                             .then(dampedDock.modifier)
-                            .meloXLiquidTabSelection(
+                            .meloXTabIndicator(
                                 shape = Capsule(),
                                 selected = true,
                                 tint = selectionTint,
@@ -2295,10 +2295,10 @@ private fun MeloXBottomChrome(
                     .offset(x = -horizontalMargin, y = 0.dp)
                     .size(searchSize)
                     // 搜索键材质与底栏 nav 胶囊完全同源：同样走
-                    // meloXLiquidBottomBar（vibrancy + blur + lens，且只叠
+                    // meloXBottomBarSurface（vibrancy + blur + lens，且只叠
                     // surfaceColor、不额外加 Screen 白纱与 Hue tint），
                     // 避免观感与左侧底栏对不上。
-                    .meloXLiquidBottomBar(
+                    .meloXBottomBarSurface(
                         shape = Capsule(),
                         tint = bottomLiquidGlassTint(),
                         surfaceColor = bottomGlassSurfaceColor(),
@@ -2342,7 +2342,7 @@ private fun MeloXVerticalNavigation(
     Box(modifier.fillMaxWidth().animateContentSize().padding(horizontal = 4.dp, vertical = 8.dp)) {
         Column(
             Modifier.fillMaxWidth()
-                .meloXLiquidBottomBar(shape = Capsule(), tint = bottomLiquidGlassTint(), surfaceColor = bottomGlassSurfaceColor())
+                .meloXBottomBarSurface(shape = Capsule(), tint = bottomLiquidGlassTint(), surfaceColor = bottomGlassSurfaceColor())
                 .verticalScroll(rememberScrollState())
                 .padding(vertical = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,

@@ -37,8 +37,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.lladlam.melox.R
-import com.lladlam.melox.ui.glass.MeloXGlassButton
-import com.lladlam.melox.ui.glass.MeloXGlassButtonStyle
+import com.lladlam.melox.ui.controls.MeloXButton
+import com.lladlam.melox.ui.controls.MeloXButtonStyle
 import com.lladlam.melox.ui.legal.*
 
 /** Full-screen first-run pages; account sign-in starts after the consent steps. */
@@ -88,19 +88,19 @@ internal fun MeloXOnboardingWelcomePage(
             Modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(horizontal = 32.dp, vertical = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            MeloXGlassButton(
+            MeloXButton(
                 onClick = onContinue,
                 modifier = Modifier.fillMaxWidth(),
-                style = MeloXGlassButtonStyle.BorderedProminent,
+                style = MeloXButtonStyle.BorderedProminent,
                 contentPadding = PaddingValues(vertical = 12.dp),
             ) {
                 Text(stringResource(R.string.onboarding_continue), fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
             }
             Spacer(Modifier.height(8.dp))
-            MeloXGlassButton(
+            MeloXButton(
                 onClick = onLicenses,
                 modifier = Modifier.fillMaxWidth(),
-                style = MeloXGlassButtonStyle.Plain,
+                style = MeloXButtonStyle.Plain,
                 contentPadding = PaddingValues(vertical = 9.dp),
             ) {
                 Text(stringResource(R.string.onboarding_licenses), fontSize = 13.sp)
@@ -137,15 +137,15 @@ private fun MeloXOnboardingChoicePage(
             content()
             Spacer(Modifier.height(24.dp))
         }
-        MeloXGlassButton(onClick = onPrimary, modifier = Modifier.fillMaxWidth(),
-            style = MeloXGlassButtonStyle.BorderedProminent,
+        MeloXButton(onClick = onPrimary, modifier = Modifier.fillMaxWidth(),
+            style = MeloXButtonStyle.BorderedProminent,
             contentPadding = PaddingValues(vertical = 12.dp)) {
             Text(primaryLabel, fontSize = 16.sp, fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center)
         }
         Spacer(Modifier.height(8.dp))
-        MeloXGlassButton(onClick = onSecondary, modifier = Modifier.fillMaxWidth(),
-            style = MeloXGlassButtonStyle.Plain,
+        MeloXButton(onClick = onSecondary, modifier = Modifier.fillMaxWidth(),
+            style = MeloXButtonStyle.Plain,
             contentPadding = PaddingValues(vertical = 9.dp)) {
             Text(secondaryLabel, fontSize = 14.sp, textAlign = TextAlign.Center)
         }
@@ -165,7 +165,7 @@ internal fun MeloXOnboardingLegalPage(onAgree: () -> Unit, onDecline: () -> Unit
         MeloXLegalLinks(modifier = Modifier.padding(vertical = 16.dp))
         Text(stringResource(R.string.legal_agree_note), fontSize = 12.sp, lineHeight = 18.sp,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = .54f), textAlign = TextAlign.Center)
-        MeloXGlassButton(onClick = onOpenProject, style = MeloXGlassButtonStyle.Plain) {
+        MeloXButton(onClick = onOpenProject, style = MeloXButtonStyle.Plain) {
             Text(stringResource(R.string.legal_project))
         }
     }
@@ -180,7 +180,7 @@ internal fun MeloXOnboardingCloudPage(onReject: () -> Unit, onAccept: () -> Unit
     ) {
         Text(MELOX_CLOUD_CONTROL_MESSAGE, fontSize = 15.sp, lineHeight = 23.sp,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = .68f))
-        MeloXGlassButton(onClick = { showPolicy = true }, style = MeloXGlassButtonStyle.Plain) {
+        MeloXButton(onClick = { showPolicy = true }, style = MeloXButtonStyle.Plain) {
             Text("查看云控隐私协议")
         }
     }
@@ -269,28 +269,28 @@ internal fun MeloXOnboardingAccountPage(
             Modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(horizontal = 32.dp, vertical = 24.dp),
         ) {
             if (isLoggedIn) {
-                MeloXGlassButton(
+                MeloXButton(
                     onClick = onFinish,
                     modifier = Modifier.fillMaxWidth(),
-                    style = MeloXGlassButtonStyle.BorderedProminent,
+                    style = MeloXButtonStyle.BorderedProminent,
                     contentPadding = PaddingValues(vertical = 12.dp),
                 ) {
                     Text(stringResource(R.string.onboarding_start), fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
                 }
             } else {
-                MeloXGlassButton(
+                MeloXButton(
                     onClick = onLogin,
                     modifier = Modifier.fillMaxWidth(),
-                    style = MeloXGlassButtonStyle.BorderedProminent,
+                    style = MeloXButtonStyle.BorderedProminent,
                     contentPadding = PaddingValues(vertical = 12.dp),
                 ) {
                     Text(stringResource(R.string.app_login_netease), fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
                 }
                 Spacer(Modifier.height(8.dp))
-                MeloXGlassButton(
+                MeloXButton(
                     onClick = onFinish,
                     modifier = Modifier.fillMaxWidth(),
-                    style = MeloXGlassButtonStyle.Plain,
+                    style = MeloXButtonStyle.Plain,
                     contentPadding = PaddingValues(vertical = 9.dp),
                 ) {
                     Text(stringResource(R.string.onboarding_maybe_later), fontSize = 14.sp)

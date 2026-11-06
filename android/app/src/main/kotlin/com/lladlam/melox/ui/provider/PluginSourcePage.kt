@@ -12,7 +12,7 @@ import com.lladlam.melox.core.music.provider.MeloXMusicProviders
 import com.lladlam.melox.playback.ProviderPlaybackCommands
 import com.lladlam.melox.ui.search.PluginCatalogBrowser
 import com.lladlam.melox.ui.search.ProviderSearchSongResults
-import com.lladlam.melox.ui.glass.MeloXIosTopBar
+import com.lladlam.melox.ui.controls.MeloXTopBar
 
 /** Native tab shell, shared registry, collection navigation and the existing song rows/actions. */
 @Composable
@@ -22,7 +22,7 @@ internal fun PluginSourcePage(source: SourceId, section: String) {
     val generation by registry.changes.collectAsState()
     var error by remember(source) { mutableStateOf<String?>(null) }
     Column(Modifier.fillMaxSize().statusBarsPadding()) {
-        MeloXIosTopBar(title = registry[source]?.displayName ?: source.value)
+        MeloXTopBar(title = registry[source]?.displayName ?: source.value)
         error?.let { Text(it, Modifier.padding(20.dp), color = MaterialTheme.colorScheme.error) }
         Box(Modifier.weight(1f)) {
             PluginCatalogBrowser(registry, source.value, "", generation, initialSection = section) { tracks ->

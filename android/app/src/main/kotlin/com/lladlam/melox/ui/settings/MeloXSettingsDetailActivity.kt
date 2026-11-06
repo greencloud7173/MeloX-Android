@@ -19,7 +19,7 @@ import com.lladlam.melox.core.account.NeteaseSessionStore
 import com.lladlam.melox.core.music.model.MusicSource
 import com.lladlam.melox.ui.MeloXPageHost
 import com.lladlam.melox.ui.finishMeloXPage
-import com.lladlam.melox.ui.glass.LocalMeloXBackdrop
+import com.lladlam.melox.ui.controls.LocalMeloXBackdrop
 import com.lladlam.melox.ui.prepareMeloXPageWindow
 import com.lladlam.melox.ui.startMeloXPage
 import com.lladlam.melox.ui.theme.MeloXTheme
@@ -63,8 +63,8 @@ class MeloXSettingsDetailActivity : ComponentActivity() {
                 MeloXTheme {
                     // ⚠ 玻璃背板（2026-10-08 修复）：这里也是**独立 compose 树**，与
                     //   MeloXNeteaseLoginActivity 同构 —— 之前没人 provide
-                    //   `LocalMeloXBackdrop` ⇒ 子页里所有 `MeloXGlassToggle` /
-                    //   玻璃控件经 `meloXGlassBackdrop()` 拿到 null，全部走
+                    //   `LocalMeloXBackdrop` ⇒ 子页里所有 `MeloXSwitch` /
+                    //   玻璃控件经 `meloXBackdrop()` 拿到 null，全部走
                     //   无玻璃 else 分支 ⇒ 长按永远没有液态效果（真机探针实证）。
                     //   模式对齐 NeteaseLogin：稳定源层（纯背景色）+ provider 包裹内容。
                     val pageBackdrop = rememberLayerBackdrop()

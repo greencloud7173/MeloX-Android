@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.runtime.CompositionLocalProvider
 import com.kyant.backdrop.backdrops.layerBackdrop
 import com.kyant.backdrop.backdrops.rememberLayerBackdrop
-import com.lladlam.melox.ui.glass.LocalMeloXBackdrop
+import com.lladlam.melox.ui.controls.LocalMeloXBackdrop
 
 /**
  * **网易云登录页 —— 一个真实 Activity。**
@@ -43,7 +43,7 @@ import com.lladlam.melox.ui.glass.LocalMeloXBackdrop
  * - `prepareMeloXPageWindow()` 必须在 `setContent` 之前：按 App 真实配色设窗口底色，避免转场第一帧
  *   闪一次错色。
  * - 本页用 `rememberLayerBackdrop()` + `layerBackdrop` 自建玻璃背板，并用 `LocalMeloXBackdrop`
- *   注入整棵组合树 —— 否则 `MeloXGlassIconButton`（返回键）没有可模糊的背板，会退化成死板图标，
+ *   注入整棵组合树 —— 否则 `MeloXIconButton`（返回键）没有可模糊的背板，会退化成死板图标，
  *   与首页 / 列表页的液态返回键不同款。
  *
  * 登录结果通过 `Activity.setResult` 回传：成功 `RESULT_OK`、取消 `RESULT_CANCELED`，由调用方

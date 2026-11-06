@@ -43,11 +43,11 @@ import com.lladlam.melox.ui.account.AppleMusicLoginScreen
 import com.lladlam.melox.ui.account.BilibiliLoginScreen
 import com.lladlam.melox.ui.account.SpotifyLoginScreen
 import com.lladlam.melox.ui.account.YouTubeLoginScreen
-import com.lladlam.melox.ui.glass.meloXContentSurface
-import com.lladlam.melox.ui.glass.MeloXGlassDialog
-import com.lladlam.melox.ui.glass.MeloXGlassButton
-import com.lladlam.melox.ui.glass.MeloXGlassButtonStyle
-import com.lladlam.melox.ui.glass.MeloXGlassSheet
+import com.lladlam.melox.ui.controls.meloXContentSurface
+import com.lladlam.melox.ui.controls.MeloXDialog
+import com.lladlam.melox.ui.controls.MeloXButton
+import com.lladlam.melox.ui.controls.MeloXButtonStyle
+import com.lladlam.melox.ui.controls.MeloXSheet
 import com.lladlam.melox.ui.settings.SettingsScreen
 import kotlinx.coroutines.launch
 
@@ -196,7 +196,7 @@ fun ProviderSettingsHub(
         val currentAccount = remember(loginRevision, currentSource, showServiceDialog) {
             accountManager.state(currentSource)
         }
-        MeloXGlassSheet(
+        MeloXSheet(
             visible = true,
             onDismiss = { showServiceDialog = false },
             modifier = Modifier.fillMaxHeight(0.88f),
@@ -370,10 +370,10 @@ fun ProviderSettingsHub(
                         }
                     }
             }
-            MeloXGlassButton(
+            MeloXButton(
                 onClick = { showServiceDialog = false },
                 modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
-                style = MeloXGlassButtonStyle.BorderedProminent,
+                style = MeloXButtonStyle.BorderedProminent,
             ) { Text(stringResource(R.string.action_done)) }
         }
     }
@@ -387,7 +387,7 @@ fun ProviderSettingsHub(
             ProviderAccountAction.Logout -> stringResource(R.string.provider_logout_body)
             ProviderAccountAction.SwitchAccount -> stringResource(R.string.provider_switch_body)
         }
-        MeloXGlassDialog(
+        MeloXDialog(
             visible = true,
             onDismiss = { pendingAccountAction = null },
         ) {
@@ -401,12 +401,12 @@ fun ProviderSettingsHub(
                 modifier = Modifier.fillMaxWidth().padding(top = 18.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                MeloXGlassButton(
+                MeloXButton(
                     onClick = { pendingAccountAction = null },
                     modifier = Modifier.weight(1f),
-                    style = MeloXGlassButtonStyle.Plain,
+                    style = MeloXButtonStyle.Plain,
                 ) { Text(stringResource(R.string.action_cancel)) }
-                MeloXGlassButton(
+                MeloXButton(
                     onClick = {
                         when (pending.action) {
                             ProviderAccountAction.Logout -> accountManager.logout(pending.source)
@@ -433,9 +433,9 @@ fun ProviderSettingsHub(
                     },
                     modifier = Modifier.weight(1f),
                     style = if (pending.action == ProviderAccountAction.Logout) {
-                        MeloXGlassButtonStyle.Destructive
+                        MeloXButtonStyle.Destructive
                     } else {
-                        MeloXGlassButtonStyle.BorderedProminent
+                        MeloXButtonStyle.BorderedProminent
                     },
                 ) { Text(if (pending.action == ProviderAccountAction.Logout) stringResource(R.string.provider_logout) else stringResource(R.string.provider_continue)) }
             }
@@ -443,7 +443,7 @@ fun ProviderSettingsHub(
     }
 
     if (showLiteVipClaim) {
-        MeloXGlassDialog(visible = true, onDismiss = { showLiteVipClaim = false }) {
+        MeloXDialog(visible = true, onDismiss = { showLiteVipClaim = false }) {
             Text(stringResource(R.string.provider_kugou_lite_daily_vip), style = MaterialTheme.typography.titleLarge)
             Text(
                 stringResource(R.string.provider_kugou_lite_daily_vip_body),
@@ -457,12 +457,12 @@ fun ProviderSettingsHub(
                 modifier = Modifier.fillMaxWidth().padding(top = 18.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                MeloXGlassButton(
+                MeloXButton(
                     onClick = { showLiteVipClaim = false },
                     modifier = Modifier.weight(1f),
-                    style = MeloXGlassButtonStyle.Plain,
+                    style = MeloXButtonStyle.Plain,
                 ) { Text(stringResource(R.string.action_cancel)) }
-                MeloXGlassButton(
+                MeloXButton(
                     onClick = {
                         scope.launch {
                             val provider = KugouLiteProvider(
@@ -489,7 +489,7 @@ fun ProviderSettingsHub(
                         }
                     },
                     modifier = Modifier.weight(1f),
-                    style = MeloXGlassButtonStyle.BorderedProminent,
+                    style = MeloXButtonStyle.BorderedProminent,
                 ) { Text(stringResource(R.string.provider_kugou_lite_daily_vip_claim)) }
             }
         }
@@ -529,7 +529,7 @@ private fun ProviderSourceSelectionRow(
         }
         Text(
             if (selected) "✓" else "",
-            color = com.lladlam.melox.ui.glass.MeloXSystemColors.Red,
+            color = com.lladlam.melox.ui.controls.MeloXSystemColors.Red,
             fontSize = 19.sp,
         )
     }

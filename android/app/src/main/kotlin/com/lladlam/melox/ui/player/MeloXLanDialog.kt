@@ -47,13 +47,13 @@ import com.lladlam.melox.lan.MeloXLanPermissions
 import com.lladlam.melox.lan.MeloXLanPlayback
 import com.lladlam.melox.lan.MeloXLanRuntime
 import com.lladlam.melox.lan.MeloXLanTrack
-import com.lladlam.melox.ui.glass.MeloXGlassButton
-import com.lladlam.melox.ui.glass.MeloXGlassButtonStyle
-import com.lladlam.melox.ui.glass.MeloXGlassDialog
-import com.lladlam.melox.ui.glass.MeloXGlassTextField
-import com.lladlam.melox.ui.glass.MeloXShapes
-import com.lladlam.melox.ui.glass.MeloXSymbol
-import com.lladlam.melox.ui.glass.MeloXSymbolIcon
+import com.lladlam.melox.ui.controls.MeloXButton
+import com.lladlam.melox.ui.controls.MeloXButtonStyle
+import com.lladlam.melox.ui.controls.MeloXDialog
+import com.lladlam.melox.ui.controls.MeloXTextField
+import com.lladlam.melox.ui.controls.MeloXShapes
+import com.lladlam.melox.ui.controls.MeloXSymbol
+import com.lladlam.melox.ui.controls.MeloXSymbolIcon
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
@@ -189,7 +189,7 @@ internal fun MeloXLanDialog(
         onDismiss()
     }
 
-    MeloXGlassDialog(visible = visible, onDismiss = { dismiss() }) {
+    MeloXDialog(visible = visible, onDismiss = { dismiss() }) {
         Text(stringResource(R.string.lan_nearby), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
         Text(
             stringResource(
@@ -218,23 +218,23 @@ internal fun MeloXLanDialog(
                     modifier = Modifier.padding(top = 4.dp),
                 )
                 Spacer(Modifier.height(8.dp))
-                MeloXGlassTextField(
+                MeloXTextField(
                     value = pin,
                     onValueChange = { value -> pin = value.filter(Char::isDigit).take(4) },
                     placeholder = { Text(stringResource(R.string.lan_pin_hint_short)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
                 )
                 Row(Modifier.fillMaxWidth().padding(top = 10.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    MeloXGlassButton(
+                    MeloXButton(
                         onClick = { pinRequired = false; pin = "" },
                         modifier = Modifier.weight(1f),
-                        style = MeloXGlassButtonStyle.Bordered,
+                        style = MeloXButtonStyle.Bordered,
                         shape = MeloXShapes.capsule,
                     ) { Text(stringResource(R.string.action_cancel)) }
-                    MeloXGlassButton(
+                    MeloXButton(
                         onClick = { selected?.let { connect(it, pin) } },
                         modifier = Modifier.weight(1f),
-                        style = MeloXGlassButtonStyle.BorderedProminent,
+                        style = MeloXButtonStyle.BorderedProminent,
                         shape = MeloXShapes.capsule,
                     ) { Text(stringResource(R.string.lan_connect)) }
                 }
@@ -249,10 +249,10 @@ internal fun MeloXLanDialog(
                 )
                 if (client == null && !connecting) {
                     // The connection was closed (e.g. cast ended); allow retry.
-                    MeloXGlassButton(
+                    MeloXButton(
                         onClick = { connect(device, null) },
                         modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
-                        style = MeloXGlassButtonStyle.BorderedProminent,
+                        style = MeloXButtonStyle.BorderedProminent,
                         shape = MeloXShapes.capsule,
                     ) { Text(stringResource(R.string.lan_connect)) }
                 }
@@ -285,7 +285,7 @@ internal fun MeloXLanDialog(
                     }
                 }
                 Row(Modifier.fillMaxWidth().padding(top = 10.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    MeloXGlassButton(
+                    MeloXButton(
                         onClick = {
                             scope.launch {
                                 val current = MeloXLanRuntime.currentTrack()
@@ -304,12 +304,12 @@ internal fun MeloXLanDialog(
                             }
                         },
                         modifier = Modifier.weight(1f),
-                        style = MeloXGlassButtonStyle.Bordered,
+                        style = MeloXButtonStyle.Bordered,
                         shape = MeloXShapes.capsule,
                     ) { Text(stringResource(R.string.lan_transfer), fontSize = 12.sp) }
-                    MeloXGlassButton(
+                    MeloXButton(
                         onClick = {
-                            val c = client ?: return@MeloXGlassButton
+                            val c = client ?: return@MeloXButton
                             if (castActive) {
                                 MeloXLanRuntime.stopCastSender()
                                 castActive = false
@@ -333,7 +333,7 @@ internal fun MeloXLanDialog(
                             }
                         },
                         modifier = Modifier.weight(1f),
-                        style = MeloXGlassButtonStyle.Bordered,
+                        style = MeloXButtonStyle.Bordered,
                         shape = MeloXShapes.capsule,
                     ) { Text(stringResource(if (castActive) R.string.lan_cast_stop else R.string.lan_cast), fontSize = 12.sp) }
                 }
@@ -358,7 +358,7 @@ internal fun MeloXLanDialog(
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = .78f),
                     )
                 }
-                MeloXGlassButton(
+                MeloXButton(
                     onClick = {
                         scope.launch {
                             val queue = MeloXLanRuntime.queueSnapshot()
@@ -393,13 +393,13 @@ internal fun MeloXLanDialog(
                         }
                     },
                     modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
-                    style = MeloXGlassButtonStyle.BorderedProminent,
+                    style = MeloXButtonStyle.BorderedProminent,
                     shape = MeloXShapes.capsule,
                 ) { Text(stringResource(R.string.lan_together), fontSize = 13.sp) }
-                MeloXGlassButton(
+                MeloXButton(
                     onClick = { resetDevice() },
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                    style = MeloXGlassButtonStyle.Bordered,
+                    style = MeloXButtonStyle.Bordered,
                     shape = MeloXShapes.capsule,
                 ) { Text(stringResource(R.string.lan_close_device), fontSize = 12.sp) }
             } else {
@@ -469,16 +469,16 @@ internal fun MeloXLanDialog(
             }
         }
         Row(Modifier.fillMaxWidth().padding(top = 12.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            MeloXGlassButton(
+            MeloXButton(
                 onClick = { scan() },
                 modifier = Modifier.weight(1f),
-                style = MeloXGlassButtonStyle.Bordered,
+                style = MeloXButtonStyle.Bordered,
                 shape = MeloXShapes.capsule,
             ) { Text(stringResource(if (scanning) R.string.lan_scanning else R.string.lan_scan), fontSize = 13.sp) }
-            MeloXGlassButton(
+            MeloXButton(
                 onClick = { dismiss() },
                 modifier = Modifier.width(92.dp),
-                style = MeloXGlassButtonStyle.BorderedProminent,
+                style = MeloXButtonStyle.BorderedProminent,
                 shape = MeloXShapes.capsule,
             ) { Text(stringResource(R.string.action_done), fontSize = 13.sp) }
         }

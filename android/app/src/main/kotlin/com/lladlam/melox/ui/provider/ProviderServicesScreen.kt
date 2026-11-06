@@ -63,17 +63,17 @@ import com.lladlam.melox.ui.account.AppleMusicLoginScreen
 import com.lladlam.melox.ui.account.BilibiliLoginScreen
 import com.lladlam.melox.ui.account.SpotifyLoginScreen
 import com.lladlam.melox.ui.account.YouTubeLoginScreen
-import com.lladlam.melox.ui.glass.MeloXGlassButton
-import com.lladlam.melox.ui.glass.MeloXGlassButtonStyle
-import com.lladlam.melox.ui.glass.MeloXGlassDialog
-import com.lladlam.melox.ui.glass.MeloXGlassToggle
-import com.lladlam.melox.ui.glass.MeloXIosGroupedList
-import com.lladlam.melox.ui.glass.MeloXIosListRow
-import com.lladlam.melox.ui.glass.MeloXIosTopBar
-import com.lladlam.melox.ui.glass.MeloXSymbol
-import com.lladlam.melox.ui.glass.MeloXSymbolIcon
-import com.lladlam.melox.ui.glass.MeloXSystemColors
-import com.lladlam.melox.ui.glass.MeloXGlassTextField
+import com.lladlam.melox.ui.controls.MeloXButton
+import com.lladlam.melox.ui.controls.MeloXButtonStyle
+import com.lladlam.melox.ui.controls.MeloXDialog
+import com.lladlam.melox.ui.controls.MeloXSwitch
+import com.lladlam.melox.ui.controls.MeloXGroupedList
+import com.lladlam.melox.ui.controls.MeloXListRow
+import com.lladlam.melox.ui.controls.MeloXTopBar
+import com.lladlam.melox.ui.controls.MeloXSymbol
+import com.lladlam.melox.ui.controls.MeloXSymbolIcon
+import com.lladlam.melox.ui.controls.MeloXSystemColors
+import com.lladlam.melox.ui.controls.MeloXTextField
 import com.lladlam.melox.ui.legal.MeloXLegalDocument
 import com.lladlam.melox.ui.legal.MeloXLegalDocumentDialog
 import com.lladlam.melox.ui.legal.MeloXThirdPartyMusicSourceConsentDialog
@@ -265,7 +265,7 @@ fun ProviderServicesScreen(
             .padding(horizontal = 20.dp)
             .padding(top = 18.dp, bottom = MeloXBottomContentClearance),
     ) {
-        MeloXIosTopBar(
+        MeloXTopBar(
             title = stringResource(R.string.provider_music_services),
             contentPadding = PaddingValues(horizontal = 0.dp),
             navigation = {
@@ -282,10 +282,10 @@ fun ProviderServicesScreen(
         Spacer(Modifier.size(26.dp))
 
         ServicesSectionLabel(stringResource(R.string.provider_sources))
-        MeloXIosGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
+        MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
             MusicProviderSelectionStore.visibleSources().forEachIndexed { index, source ->
                 val account = accountManager.state(source)
-                MeloXIosListRow(
+                MeloXListRow(
                     title = source.displayName,
                     leading = {
                         MeloXSymbolIcon(
@@ -306,8 +306,8 @@ fun ProviderServicesScreen(
         Spacer(Modifier.size(24.dp))
         ServicesSectionLabel(stringResource(R.string.provider_current_account))
         PluginServiceSection()
-        MeloXIosGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
-                MeloXIosListRow(
+        MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
+                MeloXListRow(
                     title = currentSource.displayName,
                     subtitle = when {
                         currentSource == MusicSource.Local -> stringResource(R.string.provider_local_no_login)
@@ -337,13 +337,13 @@ fun ProviderServicesScreen(
                 showTopSeparator = false,
             )
             if (currentAccount.loggedIn) {
-                MeloXIosListRow(
+                MeloXListRow(
                     title = stringResource(R.string.provider_switch_account),
                     subtitle = stringResource(R.string.provider_switch_relogin_subtitle),
                     leading = { MeloXSymbolIcon(MeloXSymbol.Refresh, Modifier.size(24.dp), MeloXSystemColors.Red) },
                     onClick = { pendingAction = currentSource to ServicesAccountAction.Switch },
                 )
-                MeloXIosListRow(
+                MeloXListRow(
                     title = stringResource(R.string.provider_logout_title, currentSource.displayName),
                     subtitle = stringResource(R.string.provider_logout_this),
                     leading = { MeloXSymbolIcon(MeloXSymbol.Xmark, Modifier.size(24.dp), MeloXSystemColors.Red) },
@@ -359,15 +359,15 @@ fun ProviderServicesScreen(
         }
         if (currentSource == MusicSource.Local) {
             ServicesSectionLabel(stringResource(R.string.provider_local_library))
-            MeloXIosGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
-                MeloXIosListRow(
+            MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
+                MeloXListRow(
                     title = if (localScanBusy) stringResource(R.string.provider_scanning_local) else stringResource(R.string.provider_scan_device),
                     subtitle = stringResource(R.string.provider_scan_subtitle, localTrackCount),
                     leading = { MeloXSymbolIcon(MeloXSymbol.Search, Modifier.size(24.dp), MeloXSystemColors.Red) },
                     onClick = { requestLocalScan() },
                     showTopSeparator = false,
                 )
-                MeloXIosListRow(
+                MeloXListRow(
                     title = stringResource(R.string.provider_add_folder),
                     subtitle = stringResource(R.string.provider_add_folder_subtitle),
                     leading = { MeloXSymbolIcon(MeloXSymbol.Storage, Modifier.size(24.dp), MeloXSystemColors.Red) },
@@ -375,7 +375,7 @@ fun ProviderServicesScreen(
                     showTopSeparator = true,
                 )
                 localScanMessage?.let { message ->
-                    MeloXIosListRow(
+                    MeloXListRow(
                         title = message,
                         subtitle = stringResource(R.string.provider_local_stays_local),
                         leading = { Spacer(Modifier.width(25.dp)) },
@@ -384,7 +384,7 @@ fun ProviderServicesScreen(
                     )
                 }
                 localRepository.scanRoots().forEach { root ->
-                    MeloXIosListRow(
+                    MeloXListRow(
                         title = stringResource(R.string.provider_authorized_folder),
                         subtitle = root.uri,
                         leading = { Spacer(Modifier.width(25.dp)) },
@@ -401,20 +401,20 @@ fun ProviderServicesScreen(
             Spacer(Modifier.size(24.dp))
         }
         ServicesSectionLabel(stringResource(R.string.provider_third_party))
-        MeloXIosGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
-            MeloXIosListRow(
+        MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
+            MeloXListRow(
                 title = "Jellyfin",
                 subtitle = if (accountManager.state(MusicSource.Jellyfin).loggedIn) stringResource(R.string.provider_jellyfin_connected) else stringResource(R.string.provider_jellyfin_connect_hint),
                 leading = { MeloXSymbolIcon(MeloXSymbol.Devices, Modifier.size(24.dp), MeloXSystemColors.Red) },
                 onClick = { jellyfinError = null; showJellyfinDialog = true },
                 showTopSeparator = false,
             )
-            MeloXIosListRow(
+            MeloXListRow(
                 title = stringResource(R.string.provider_enable_third_party),
                 subtitle = stringResource(R.string.provider_third_party_consent_hint),
                 leading = { MeloXSymbolIcon(MeloXSymbol.Info, Modifier.size(24.dp), MeloXSystemColors.Red) },
                 trailing = {
-                    MeloXGlassToggle(
+                    MeloXSwitch(
                         checked = thirdPartySourcesEnabled,
                         onCheckedChange = { enabled ->
                             if (enabled) showThirdPartySourceConsent = true
@@ -428,12 +428,12 @@ fun ProviderServicesScreen(
                 showTopSeparator = true,
             )
             if (thirdPartySourcesEnabled) {
-                MeloXIosListRow(
+                MeloXListRow(
                     title = stringResource(R.string.provider_membership_fallback),
                     subtitle = stringResource(R.string.provider_membership_fallback_subtitle),
                     leading = { Spacer(Modifier.width(25.dp)) },
                     trailing = {
-                        MeloXGlassToggle(
+                        MeloXSwitch(
                             checked = membershipFallbackOnly,
                             onCheckedChange = {
                                 membershipFallbackOnly = it
@@ -443,13 +443,13 @@ fun ProviderServicesScreen(
                     },
                     showTopSeparator = false,
                 )
-                MeloXIosListRow(
+                MeloXListRow(
                     title = stringResource(R.string.provider_chksz),
                     subtitle = if (chkszApiKey.isBlank()) stringResource(R.string.provider_chksz_missing) else stringResource(R.string.provider_chksz_configured),
                     leading = { Spacer(Modifier.width(25.dp)) },
                     onClick = { showChkszKeyDialog = true },
                 )
-                MeloXIosListRow(
+                MeloXListRow(
                     title = stringResource(R.string.provider_view_third_party_terms),
                     subtitle = stringResource(R.string.provider_third_party_terms_subtitle),
                     leading = { Spacer(Modifier.width(25.dp)) },
@@ -461,8 +461,8 @@ fun ProviderServicesScreen(
         if (thirdPartySourcesEnabled) {
             Spacer(Modifier.size(24.dp))
             ServicesSectionLabel(stringResource(R.string.provider_added_sources))
-            MeloXIosGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
-                MeloXIosListRow(
+            MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
+                MeloXListRow(
                     title = stringResource(R.string.provider_add_source),
                     subtitle = stringResource(R.string.provider_add_source_subtitle),
                     leading = { MeloXSymbolIcon(MeloXSymbol.Plus, Modifier.size(24.dp), MeloXSystemColors.Red) },
@@ -470,7 +470,7 @@ fun ProviderServicesScreen(
                     showTopSeparator = false,
                 )
                 lxSources.forEach { source ->
-                    MeloXIosListRow(
+                    MeloXListRow(
                         title = source.metadata.name ?: source.id,
                         subtitle = listOfNotNull(
                             source.metadata.version?.let { "v$it" },
@@ -490,13 +490,13 @@ fun ProviderServicesScreen(
 
         Spacer(Modifier.size(24.dp))
         ServicesSectionLabel(stringResource(R.string.provider_cross_search))
-        MeloXIosGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
-            MeloXIosListRow(
+        MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
+            MeloXListRow(
                 title = stringResource(R.string.provider_unified_title),
                 subtitle = stringResource(R.string.provider_unified_subtitle),
                 leading = { MeloXSymbolIcon(MeloXSymbol.Apps, Modifier.size(24.dp), MeloXSystemColors.Red) },
                 trailing = {
-                    MeloXGlassToggle(
+                    MeloXSwitch(
                         checked = unifiedEnabled,
                         onCheckedChange = {
                             unifiedEnabled = it
@@ -510,7 +510,7 @@ fun ProviderServicesScreen(
             if (unifiedEnabled) {
                 MusicProviderSelectionStore.visibleSources().forEach { source ->
                     val account = accountManager.state(source)
-                    MeloXIosListRow(
+                    MeloXListRow(
                         title = source.displayName,
                         subtitle = if (account.loggedIn) stringResource(R.string.provider_unified_participates) else stringResource(R.string.provider_unified_skipped),
                         detail = if (source in unifiedSources) stringResource(R.string.provider_enabled) else "",
@@ -528,7 +528,7 @@ fun ProviderServicesScreen(
 
     pendingAction?.let { (source, action) ->
         val isLogout = action == ServicesAccountAction.Logout
-        MeloXGlassDialog(visible = true, onDismiss = { pendingAction = null }) {
+        MeloXDialog(visible = true, onDismiss = { pendingAction = null }) {
             Text(if (isLogout) stringResource(R.string.provider_logout_confirm, source.displayName) else stringResource(R.string.provider_switch_confirm, source.displayName), style = MaterialTheme.typography.titleLarge)
             Text(
                 if (isLogout) stringResource(R.string.provider_logout_short_body) else stringResource(R.string.provider_switch_short_body),
@@ -536,8 +536,8 @@ fun ProviderServicesScreen(
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = .62f),
             )
             Row(Modifier.fillMaxWidth().padding(top = 18.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                MeloXGlassButton(onClick = { pendingAction = null }, modifier = Modifier.weight(1f), style = MeloXGlassButtonStyle.Plain) { Text(stringResource(R.string.action_cancel)) }
-                MeloXGlassButton(
+                MeloXButton(onClick = { pendingAction = null }, modifier = Modifier.weight(1f), style = MeloXButtonStyle.Plain) { Text(stringResource(R.string.action_cancel)) }
+                MeloXButton(
                     onClick = {
                         if (isLogout) accountManager.logout(source) else accountManager.prepareAccountSwitch(source)
                         loginRevision++
@@ -560,7 +560,7 @@ fun ProviderServicesScreen(
                         }
                     },
                     modifier = Modifier.weight(1f),
-                    style = if (isLogout) MeloXGlassButtonStyle.Destructive else MeloXGlassButtonStyle.BorderedProminent,
+                    style = if (isLogout) MeloXButtonStyle.Destructive else MeloXButtonStyle.BorderedProminent,
                 ) { Text(if (isLogout) stringResource(R.string.provider_logout) else stringResource(R.string.provider_continue)) }
             }
         }
@@ -583,7 +583,7 @@ fun ProviderServicesScreen(
         )
     }
     if (showLxImportDialog) {
-        MeloXGlassDialog(visible = true, onDismiss = { showLxImportDialog = false }) {
+        MeloXDialog(visible = true, onDismiss = { showLxImportDialog = false }) {
             Text(stringResource(R.string.provider_import_lx), style = MaterialTheme.typography.titleLarge)
             Text(
                 stringResource(R.string.provider_import_lx_hint),
@@ -592,14 +592,14 @@ fun ProviderServicesScreen(
                 fontSize = 13.sp,
                 lineHeight = 19.sp,
             )
-            MeloXGlassButton(
+            MeloXButton(
                 // Android file providers often label .js as application/javascript,
                 // octet-stream, or provide no MIME type at all.
                 onClick = { lxFileLauncher.launch(arrayOf("*/*")) },
                 modifier = Modifier.fillMaxWidth().padding(top = 14.dp),
-                style = MeloXGlassButtonStyle.BorderedProminent,
+                style = MeloXButtonStyle.BorderedProminent,
             ) { Text(stringResource(R.string.provider_import_local)) }
-            MeloXGlassTextField(
+            MeloXTextField(
                 value = lxImportUrl,
                 onValueChange = { lxImportUrl = it },
                 modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
@@ -610,12 +610,12 @@ fun ProviderServicesScreen(
                 Text(it, modifier = Modifier.padding(top = 7.dp), color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
             }
             Row(Modifier.fillMaxWidth().padding(top = 14.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                MeloXGlassButton(
+                MeloXButton(
                     onClick = { showLxImportDialog = false },
                     modifier = Modifier.weight(1f),
-                    style = MeloXGlassButtonStyle.Plain,
+                    style = MeloXButtonStyle.Plain,
                 ) { Text(stringResource(R.string.action_cancel)) }
-                MeloXGlassButton(
+                MeloXButton(
                     onClick = {
                         val url = lxImportUrl.trim()
                         scope.launch {
@@ -643,23 +643,23 @@ fun ProviderServicesScreen(
                         }
                     },
                     modifier = Modifier.weight(1f),
-                    style = MeloXGlassButtonStyle.BorderedProminent,
+                    style = MeloXButtonStyle.BorderedProminent,
                 ) { Text(stringResource(R.string.provider_import)) }
             }
         }
     }
     if (showJellyfinDialog) {
-        MeloXGlassDialog(visible = true, onDismiss = { if (!jellyfinBusy) showJellyfinDialog = false }) {
+        MeloXDialog(visible = true, onDismiss = { if (!jellyfinBusy) showJellyfinDialog = false }) {
             Text(stringResource(R.string.provider_connect_jellyfin), style = MaterialTheme.typography.titleLarge)
             Text(stringResource(R.string.provider_jellyfin_hint), modifier = Modifier.padding(top = 8.dp), color = MaterialTheme.colorScheme.onSurface.copy(alpha = .62f), fontSize = 13.sp, lineHeight = 19.sp)
-            MeloXGlassTextField(jellyfinServerUrl, { jellyfinServerUrl = it }, Modifier.fillMaxWidth().padding(top = 12.dp), placeholder = { Text("https://music.example.com") }, singleLine = true)
-            MeloXGlassTextField(jellyfinUsername, { jellyfinUsername = it }, Modifier.fillMaxWidth().padding(top = 10.dp), placeholder = { Text(stringResource(R.string.provider_username)) }, singleLine = true)
-            MeloXGlassTextField(jellyfinPassword, { jellyfinPassword = it }, Modifier.fillMaxWidth().padding(top = 10.dp), placeholder = { Text(stringResource(R.string.provider_password)) }, singleLine = true)
+            MeloXTextField(jellyfinServerUrl, { jellyfinServerUrl = it }, Modifier.fillMaxWidth().padding(top = 12.dp), placeholder = { Text("https://music.example.com") }, singleLine = true)
+            MeloXTextField(jellyfinUsername, { jellyfinUsername = it }, Modifier.fillMaxWidth().padding(top = 10.dp), placeholder = { Text(stringResource(R.string.provider_username)) }, singleLine = true)
+            MeloXTextField(jellyfinPassword, { jellyfinPassword = it }, Modifier.fillMaxWidth().padding(top = 10.dp), placeholder = { Text(stringResource(R.string.provider_password)) }, singleLine = true)
             Row(
                 Modifier.fillMaxWidth().padding(top = 10.dp).clickable { jellyfinTrustServer = !jellyfinTrustServer },
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                MeloXGlassToggle(checked = jellyfinTrustServer, onCheckedChange = { jellyfinTrustServer = it })
+                MeloXSwitch(checked = jellyfinTrustServer, onCheckedChange = { jellyfinTrustServer = it })
                 Text(
                     stringResource(R.string.provider_jellyfin_insecure),
                     modifier = Modifier.padding(start = 10.dp).weight(1f),
@@ -670,8 +670,8 @@ fun ProviderServicesScreen(
             }
             jellyfinError?.let { Text(it, Modifier.padding(top = 7.dp), color = MaterialTheme.colorScheme.error, fontSize = 12.sp) }
             Row(Modifier.fillMaxWidth().padding(top = 14.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                MeloXGlassButton(onClick = { JellyfinSessionStore.clear(context); showJellyfinDialog = false }, modifier = Modifier.weight(1f), style = MeloXGlassButtonStyle.Plain) { Text(stringResource(R.string.provider_logout)) }
-                MeloXGlassButton(
+                MeloXButton(onClick = { JellyfinSessionStore.clear(context); showJellyfinDialog = false }, modifier = Modifier.weight(1f), style = MeloXButtonStyle.Plain) { Text(stringResource(R.string.provider_logout)) }
+                MeloXButton(
                     onClick = {
                         jellyfinBusy = true
                         scope.launch {
@@ -689,13 +689,13 @@ fun ProviderServicesScreen(
                                 .onFailure { jellyfinBusy = false; jellyfinError = it.message ?: context.getString(R.string.provider_jellyfin_failed) }
                         }
                     },
-                    modifier = Modifier.weight(1f), style = MeloXGlassButtonStyle.BorderedProminent,
+                    modifier = Modifier.weight(1f), style = MeloXButtonStyle.BorderedProminent,
                 ) { Text(if (jellyfinBusy) stringResource(R.string.provider_connecting) else stringResource(R.string.provider_connect)) }
             }
         }
     }
     if (showChkszKeyDialog) {
-        MeloXGlassDialog(visible = true, onDismiss = { showChkszKeyDialog = false }) {
+        MeloXDialog(visible = true, onDismiss = { showChkszKeyDialog = false }) {
             Text(stringResource(R.string.provider_chksz_title), style = MaterialTheme.typography.titleLarge)
             Text(
                 stringResource(R.string.provider_chksz_body),
@@ -704,30 +704,30 @@ fun ProviderServicesScreen(
                 fontSize = 13.sp,
                 lineHeight = 19.sp,
             )
-            MeloXGlassTextField(
+            MeloXTextField(
                 value = chkszApiKey,
                 onValueChange = { chkszApiKey = it },
                 modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
                 placeholder = { Text(stringResource(R.string.provider_api_key_placeholder)) },
             )
             Row(Modifier.fillMaxWidth().padding(top = 14.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                MeloXGlassButton(
+                MeloXButton(
                     onClick = {
                         ChkszApiKeyStore.clear(context)
                         chkszApiKey = ""
                         showChkszKeyDialog = false
                     },
                     modifier = Modifier.weight(1f),
-                    style = MeloXGlassButtonStyle.Plain,
+                    style = MeloXButtonStyle.Plain,
                 ) { Text(stringResource(R.string.provider_clear)) }
-                MeloXGlassButton(
+                MeloXButton(
                     onClick = {
                         ChkszApiKeyStore.write(context, chkszApiKey)
                         chkszApiKey = ChkszApiKeyStore.read(context)
                         showChkszKeyDialog = false
                     },
                     modifier = Modifier.weight(1f),
-                    style = MeloXGlassButtonStyle.BorderedProminent,
+                    style = MeloXButtonStyle.BorderedProminent,
                 ) { Text(stringResource(R.string.provider_save)) }
             }
         }

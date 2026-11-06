@@ -18,9 +18,9 @@ import com.lladlam.melox.playback.ProviderPlaybackCommands
 import com.lladlam.melox.ui.MeloXPageHost
 import com.lladlam.melox.ui.prepareMeloXPageWindow
 import com.lladlam.melox.ui.theme.MeloXTheme
-import com.lladlam.melox.ui.glass.MeloXIosTopBar
-import com.lladlam.melox.ui.glass.MeloXIosGroupedList
-import com.lladlam.melox.ui.glass.MeloXIosListRow
+import com.lladlam.melox.ui.controls.MeloXTopBar
+import com.lladlam.melox.ui.controls.MeloXGroupedList
+import com.lladlam.melox.ui.controls.MeloXListRow
 
 /** Deep links preserve identity and show an explicit native playback action; they never auto-install/enable. */
 class PluginTrackLinkActivity : ComponentActivity() {
@@ -35,9 +35,9 @@ class PluginTrackLinkActivity : ComponentActivity() {
             val provider = remember(generation) { registry[track.id.sourceId] }
             var message by remember { mutableStateOf<String?>(null) }
             Column(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding().padding(20.dp)) {
-                MeloXIosTopBar(title = "音乐源歌曲")
-                MeloXIosGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
-                    MeloXIosListRow(title = track.title, subtitle = "${provider?.displayName ?: "来源缺失或已禁用"}\n${track.id.sourceId.value}\n${track.id.value}", onClick = {})
+                MeloXTopBar(title = "音乐源歌曲")
+                MeloXGroupedList(surfaceColor = MaterialTheme.colorScheme.surface) {
+                    MeloXListRow(title = track.title, subtitle = "${provider?.displayName ?: "来源缺失或已禁用"}\n${track.id.sourceId.value}\n${track.id.value}", onClick = {})
                 }
                 Button(enabled = provider?.supports(MusicCapability.Playback) == true, onClick = {
                     val music = MusicTrack(track.id, track.title, listOf(MusicArtistRef(name = "未知歌手")))

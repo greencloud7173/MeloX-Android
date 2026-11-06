@@ -30,10 +30,10 @@ import androidx.compose.ui.unit.sp
 import com.lladlam.melox.R
 import com.lladlam.melox.core.provider.applemusic.AppleMusicSessionStore
 import com.lladlam.melox.core.provider.applemusic.AppleMusicSdkBridge
-import com.lladlam.melox.ui.glass.MeloXGlassButton
-import com.lladlam.melox.ui.glass.MeloXGlassButtonStyle
-import com.lladlam.melox.ui.glass.MeloXGlassTextField
-import com.lladlam.melox.ui.glass.MeloXSystemColors
+import com.lladlam.melox.ui.controls.MeloXButton
+import com.lladlam.melox.ui.controls.MeloXButtonStyle
+import com.lladlam.melox.ui.controls.MeloXTextField
+import com.lladlam.melox.ui.controls.MeloXSystemColors
 import com.lladlam.melox.ui.legal.MeloXLegalLinks
 
 /**
@@ -81,9 +81,9 @@ fun AppleMusicLoginScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            MeloXGlassButton(
+            MeloXButton(
                 onClick = onDismiss,
-                style = MeloXGlassButtonStyle.Plain,
+                style = MeloXButtonStyle.Plain,
             ) { Text(stringResource(R.string.action_cancel), color = MeloXSystemColors.Red) }
             Text(stringResource(R.string.account_configure_apple), fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
             Spacer(Modifier.height(1.dp).weight(0.01f))
@@ -94,26 +94,26 @@ fun AppleMusicLoginScreen(
             fontSize = 13.sp,
             lineHeight = 19.sp,
         )
-        MeloXGlassTextField(
+        MeloXTextField(
             value = developerToken,
             onValueChange = { developerToken = it; error = null },
             modifier = Modifier.fillMaxWidth(),
             placeholder = { Text("Developer Token", color = Color.Gray) },
         )
-        MeloXGlassTextField(
+        MeloXTextField(
             value = musicUserToken,
             onValueChange = { musicUserToken = it; error = null },
             modifier = Modifier.fillMaxWidth(),
             placeholder = { Text(stringResource(R.string.account_music_user_token), color = Color.Gray) },
         )
-        MeloXGlassTextField(
+        MeloXTextField(
             value = storefront,
             onValueChange = { storefront = it.take(8); error = null },
             modifier = Modifier.fillMaxWidth(),
             placeholder = { Text(stringResource(R.string.account_storefront), color = Color.Gray) },
         )
         error?.let { Text(it, color = MaterialTheme.colorScheme.error, fontSize = 13.sp) }
-        MeloXGlassButton(
+        MeloXButton(
             onClick = {
                 val intent = developerToken.trim().takeIf(String::isNotBlank)?.let {
                     AppleMusicSdkBridge.createAuthenticationIntent(context, it)
@@ -129,9 +129,9 @@ fun AppleMusicLoginScreen(
                 }
             },
             modifier = Modifier.fillMaxWidth(),
-            style = MeloXGlassButtonStyle.BorderedProminent,
+            style = MeloXButtonStyle.BorderedProminent,
         ) { Text(stringResource(R.string.account_apple_sign_in)) }
-        MeloXGlassButton(
+        MeloXButton(
             onClick = {
                 if (developerToken.isBlank()) {
                     error = activityContext.getString(R.string.account_developer_token_required)
@@ -141,16 +141,16 @@ fun AppleMusicLoginScreen(
                 }
             },
             modifier = Modifier.fillMaxWidth(),
-            style = MeloXGlassButtonStyle.Bordered,
+            style = MeloXButtonStyle.Bordered,
         ) { Text(stringResource(R.string.account_save_api_only)) }
         if (initial.isConfigured) {
-            MeloXGlassButton(
+            MeloXButton(
                 onClick = {
                     AppleMusicSessionStore.clear(context)
                     onLoggedIn()
                 },
                 modifier = Modifier.fillMaxWidth(),
-                style = MeloXGlassButtonStyle.Destructive,
+                style = MeloXButtonStyle.Destructive,
             ) { Text(stringResource(R.string.account_clear_apple)) }
         }
         Spacer(Modifier.weight(1f))

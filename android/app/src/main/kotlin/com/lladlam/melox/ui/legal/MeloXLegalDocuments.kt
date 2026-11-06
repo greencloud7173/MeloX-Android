@@ -40,12 +40,12 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.lladlam.melox.R
-import com.lladlam.melox.ui.glass.MeloXGlassButton
-import com.lladlam.melox.ui.glass.MeloXGlassButtonStyle
-import com.lladlam.melox.ui.glass.MeloXGlassDialog
-import com.lladlam.melox.ui.glass.MeloXSymbol
-import com.lladlam.melox.ui.glass.MeloXSymbolIcon
-import com.lladlam.melox.ui.glass.MeloXSystemColors
+import com.lladlam.melox.ui.controls.MeloXButton
+import com.lladlam.melox.ui.controls.MeloXButtonStyle
+import com.lladlam.melox.ui.controls.MeloXDialog
+import com.lladlam.melox.ui.controls.MeloXSymbol
+import com.lladlam.melox.ui.controls.MeloXSymbolIcon
+import com.lladlam.melox.ui.controls.MeloXSystemColors
 
 const val MELOX_LEGAL_VERSION = "1.3-2026-10-25"
 
@@ -110,7 +110,7 @@ fun MeloXThirdPartyMusicSourceConsentDialog(
     onAccept: () -> Unit,
 ) {
     var showPolicy by remember { mutableStateOf(false) }
-    MeloXGlassDialog(visible = true, onDismiss = {}) {
+    MeloXDialog(visible = true, onDismiss = {}) {
         Text(stringResource(R.string.legal_third_party_title), style = MaterialTheme.typography.titleLarge)
         Text(
             stringResource(R.string.legal_third_party_body),
@@ -133,15 +133,15 @@ fun MeloXThirdPartyMusicSourceConsentDialog(
             Modifier.fillMaxWidth().padding(top = 12.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            MeloXGlassButton(
+            MeloXButton(
                 onClick = onReject,
                 modifier = Modifier.weight(1f),
-                style = MeloXGlassButtonStyle.Plain,
+                style = MeloXButtonStyle.Plain,
             ) { Text(stringResource(R.string.legal_disagree)) }
-            MeloXGlassButton(
+            MeloXButton(
                 onClick = onAccept,
                 modifier = Modifier.weight(1f),
-                style = MeloXGlassButtonStyle.BorderedProminent,
+                style = MeloXButtonStyle.BorderedProminent,
             ) { Text(stringResource(R.string.legal_agree_enable)) }
         }
     }
@@ -259,7 +259,7 @@ fun MeloXFirstLaunchLegalConsent(
     onDecline: () -> Unit,
     onOpenProject: () -> Unit,
 ) {
-    MeloXGlassDialog(visible = true, onDismiss = {}) {
+    MeloXDialog(visible = true, onDismiss = {}) {
         Text(stringResource(R.string.legal_welcome), style = MaterialTheme.typography.titleLarge)
         Text(
             text = stringResource(R.string.legal_welcome_body),
@@ -290,8 +290,8 @@ fun MeloXFirstLaunchLegalConsent(
         // ★ 2026-10-07 用户报障：「不同意并退出」被挤成**两行**。
         //
         //   算一下就知道这不是偶发，是必然：屏宽 360dp → 弹窗 304dp（两侧各 28dp）
-        //   → 内容 268dp（`MeloXGlassDialog` 内层再收 18dp×2）→ 每颗按钮 129dp
-        //   （再减 10dp 间隔后÷2）→ 扣掉 `MeloXGlassButton` 默认的 16dp×2 内边距，
+        //   → 内容 268dp（`MeloXDialog` 内层再收 18dp×2）→ 每颗按钮 129dp
+        //   （再减 10dp 间隔后÷2）→ 扣掉 `MeloXButton` 默认的 16dp×2 内边距，
         //   **文字只剩 97dp**；而「不同意并退出」是 6 个全角字，16sp 下 ≈ 96dp
         //   —— 卡在临界点上，字体渲染多一点点就翻行（右侧 5 字的「同意并继续」≈80dp，
         //   所以只有左边那颗炸，这也解释了为什么看起来"只有一个是两行"）。
@@ -310,10 +310,10 @@ fun MeloXFirstLaunchLegalConsent(
                 .padding(top = 10.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            MeloXGlassButton(
+            MeloXButton(
                 onClick = onDecline,
                 modifier = Modifier.weight(1f),
-                style = MeloXGlassButtonStyle.Plain,
+                style = MeloXButtonStyle.Plain,
                 contentPadding = PaddingValues(horizontal = 6.dp, vertical = 10.dp),
             ) {
                 Text(
@@ -322,10 +322,10 @@ fun MeloXFirstLaunchLegalConsent(
                     textAlign = TextAlign.Center,
                 )
             }
-            MeloXGlassButton(
+            MeloXButton(
                 onClick = onAgree,
                 modifier = Modifier.weight(1f),
-                style = MeloXGlassButtonStyle.BorderedProminent,
+                style = MeloXButtonStyle.BorderedProminent,
                 contentPadding = PaddingValues(horizontal = 6.dp, vertical = 10.dp),
             ) {
                 Text(
